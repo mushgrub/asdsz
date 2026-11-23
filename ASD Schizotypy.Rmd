@@ -413,3 +413,232 @@ summary(cfa_mod_new, standardized=TRUE, fit.measures=TRUE)
 #write.csv(round(inspect(cfa_mod_new,what="std")$lambda,2), "aq new cfa.csv")
 ```
 
+### Data Cleanup #2 FU1
+
+Cleaning after AQ factor scores are computed
+
+```{r}
+data = read.csv("survey content.csv")
+AQ_scores = read.csv("AQ imputed.csv")
+```
+
+
+original AQ scores, again, these are referring to the items loading onto AQ factors found in Zhu et al., (2022)
+
+```{r}
+original_AQ_social_discourse = AQ_scores %>% dplyr::select(AQ._1:AQ._3) %>% rowMeans(na.rm = T)
+original_AQ_pattern = AQ_scores %>% dplyr::select(AQ._9:AQ._14) %>% rowMeans(na.rm=T)
+original_AQ_imagination = AQ_scores %>% dplyr::select(AQ._18:AQ._22) %>% rowMeans(na.rm=T)
+original_AQ_social_cognition = AQ_scores %>% dplyr::select(AQ._27:AQ._30) %>% rowMeans(na.rm=T)
+original_AQ_social_anhedonia = AQ_scores %>% dplyr::select(AQ._36:AQ._41) %>% rowMeans(na.rm=T)
+
+original_AQ_scores = data.frame(ID = AQ_scores$ID, original_AQ_social_anhedonia,original_AQ_pattern,original_AQ_social_cognition, original_AQ_social_discourse, original_AQ_imagination)
+
+
+AQ_scores %>% dplyr::select(AQ._1:AQ._3) %>% psych::alpha()
+AQ_scores %>% dplyr::select(AQ._9:AQ._14) %>% psych::alpha()
+AQ_scores %>% dplyr::select(AQ._18:AQ._22) %>% psych::alpha()
+AQ_scores %>% dplyr::select(AQ._27:AQ._30) %>% psych::alpha()
+AQ_scores %>% dplyr::select(AQ._36:AQ._41) %>% psych::alpha()
+```
+
+
+New AQ scores; Iris dropped 6 items (AQ 5, 15, 16, 23, 24, and 35). These items were the only AQ items that were NOT administered in FU2! 
+
+```{r}
+new_AQ_social_discourse = AQ_scores %>% dplyr::select(AQ._1:AQ._4, AQ._6:AQ._8) %>% rowMeans(na.rm = T) #AQ5
+new_AQ_pattern = AQ_scores %>% dplyr::select(AQ._9:AQ._14, AQ._17) %>% rowMeans(na.rm = T) #AQ15 & 16
+new_AQ_imagination = AQ_scores %>% dplyr::select(AQ._18:AQ._22, AQ._25:AQ._26) %>% rowMeans(na.rm = T) #AQ 23, 24
+new_AQ_social_cogition = AQ_scores %>% dplyr::select(AQ._27:AQ._34) %>% rowMeans(na.rm = T) #AQ35
+new_AQ_social_anhedonia = AQ_scores %>% dplyr::select(AQ._36:AQ._41) %>% rowMeans(na.rm = T)
+
+
+
+new_AQ_scores = data.frame(ID = AQ_scores$ID,new_AQ_social_anhedonia, new_AQ_pattern, new_AQ_social_cogition, new_AQ_social_discourse,new_AQ_imagination)
+
+AQ_scores %>% dplyr::select(AQ._1:AQ._4, AQ._6:AQ._8) %>% psych::alpha()
+AQ_scores %>% dplyr::select(AQ._9:AQ._14, AQ._17) %>% psych::alpha()
+AQ_scores %>% dplyr::select(AQ._18:AQ._22, AQ._25:AQ._26) %>% psych::alpha()
+AQ_scores %>% dplyr::select(AQ._27:AQ._34) %>% psych::alpha()
+AQ_scores %>% dplyr::select(AQ._36:AQ._41) %>% psych::alpha()
+
+
+AQ_scores %>% dplyr::select(AQ._18:AQ._22) %>% corr.test()
+
+AQ_scores %>% dplyr::select(AQ._18:AQ._22, AQ._25:AQ._26) %>% corr.test()
+```
+
+Calculate MSS Disorganized Schizotypy Subscale scores
+```{r}
+MSS_scores = data %>% dplyr::select(starts_with("MSS")) %>% rowMeans(na.rm = T)
+MSS = data.frame(ID = data$ID, MSS = MSS_scores)
+
+data %>% dplyr::select(starts_with("MSS")) %>% psych::alpha()
+```
+
+Calculate WSS subscale scores
+
+```{r}
+data %>% dplyr::select(starts_with("WSS")) %>% psych::alpha()
+WSS_survey = data %>% dplyr::select(starts_with("WSS"))
+```
+
+# magical ideation
+
+```{r}
+magical_ideation_scale =  WSS_survey %>% dplyr::select(WSS_1:WSS_16)
+magical_ideation_scale$WSS_12 = !magical_ideation_scale$WSS_12
+wss_magical_ideation_scores = magical_ideation_scale %>% rowMeans(na.rm=T)
+magical_ideation_scale %>% psych::alpha()
+```
+
+# perceptual aberration
+
+```{r}
+WSS_survey %>% dplyr::select(WSS_17:WSS_31) %>% psych::alpha()
+wss_perceptual_aberration_score = WSS_survey %>% dplyr::select(WSS_17:WSS_31) %>% rowMeans(na.rm=T)
+```
+
+# social anhedonia
+
+```{r}
+social_anhedonia_scale = WSS_survey %>% dplyr::select(WSS_32:WSS_47)
+
+social_anhedonia_scale %>% psych::alpha()
+
+wss_social_anhedonia_score = social_anhedonia_scale%>% rowMeans(na.rm=T)
+```
+# physical anhedonia
+
+```{r}
+physical_anhedonia_scale = WSS_survey %>% dplyr::select(WSS_48:WSS_63)
+
+physical_anhedonia_scale %>% psych::alpha()
+
+wss_physical_anhedonia_score = physical_anhedonia_scale%>% rowMeans(na.rm=T)
+```
+
+```{r}
+WSS_scores = data.frame(ID = data$ID, wss_magical_ideation_scores, wss_perceptual_aberration_score, wss_social_anhedonia_score, wss_physical_anhedonia_score)
+```
+
+## SPQ
+
+# Ideas of reference
+
+```{r}
+SPQ_scales = data %>% dplyr::select(starts_with("SPQ"))
+```
+
+
+```{r}
+spq_idea_of_reference = SPQ_scales %>% dplyr::select(SPQ_1:SPQ_3) %>% rowMeans(na.rm=T)
+spq_suspiciousness = SPQ_scales %>% dplyr::select(SPQ_4:SPQ_6) %>% rowMeans(na.rm = T)
+spq_no_close_friends = SPQ_scales %>% dplyr::select(SPQ_7:SPQ_10) %>% rowMeans(na.rm = T)
+spq_constricted_affect = SPQ_scales %>% dplyr::select(SPQ_11:SPQ_13) %>% rowMeans(na.rm=T)
+spq_eccentric_behavior = SPQ_scales %>% dplyr::select(SPQ_14:SPQ_17) %>% rowMeans(na.rm=T)
+spq_social_anxiety = SPQ_scales %>% dplyr::select(SPQ_18:SPQ_21) %>% rowMeans(na.rm=T)
+spq_magical_thinking = SPQ_scales %>% dplyr::select(SPQ_22:SPQ_26) %>% rowMeans(na.rm=T)
+spq_odd_speech = SPQ_scales %>% dplyr::select(SPQ_27:SPQ_30) %>% rowMeans(na.rm=T)
+spq_unusual_perception = SPQ_scales %>% dplyr::select(SPQ_31:SPQ_35) %>% rowMeans(na.rm=T)
+
+SPQ_scales %>% dplyr::select(SPQ_1:SPQ_3) %>% psych::alpha()
+SPQ_scales %>% dplyr::select(SPQ_4:SPQ_6) %>% psych::alpha()
+SPQ_scales %>% dplyr::select(SPQ_7:SPQ_10) %>% psych::alpha()
+SPQ_scales %>% dplyr::select(SPQ_11:SPQ_13) %>% psych::alpha()
+SPQ_scales %>% dplyr::select(SPQ_14:SPQ_17) %>% psych::alpha()
+SPQ_scales %>% dplyr::select(SPQ_18:SPQ_21) %>% psych::alpha()
+SPQ_scales %>% dplyr::select(SPQ_22:SPQ_26) %>% psych::alpha()
+SPQ_scales %>% dplyr::select(SPQ_27:SPQ_30) %>% psych::alpha()
+SPQ_scales %>% dplyr::select(SPQ_31:SPQ_35) %>% psych::alpha()
+
+SPQ_scores = data.frame(ID = data$ID, spq_idea_of_reference, spq_suspiciousness, spq_no_close_friends, spq_constricted_affect, spq_eccentric_behavior, spq_social_anxiety, spq_magical_thinking, spq_odd_speech, spq_unusual_perception)
+```
+
+```{r}
+df_schizotypy = cbind(MSS, WSS_scores, SPQ_scores)
+
+positive = df_schizotypy %>% dplyr::select(wss_magical_ideation_scores, wss_perceptual_aberration_score, spq_idea_of_reference, spq_suspiciousness, spq_magical_thinking, spq_unusual_perception)
+
+negative = df_schizotypy %>% dplyr::select(wss_social_anhedonia_score, wss_physical_anhedonia_score, spq_no_close_friends, spq_constricted_affect, spq_social_anxiety)
+
+disorganized = df_schizotypy %>% dplyr::select(MSS, spq_eccentric_behavior, spq_odd_speech)
+
+schizotypy_df_organized = cbind(ID = data$ID, positive, negative, disorganized)
+
+```
+
+
+## Sensory Sensitivity
+
+```{r}
+SeSS = data %>% dplyr::select(starts_with("SeSS"))
+data %>% dplyr::select(starts_with("SeSS")) %>% psych::alpha()
+```
+
+# visual
+
+```{r}
+SeSS %>% dplyr::select(SeSS_1:SeSS_10) %>% psych::alpha()
+visual_score = SeSS %>% dplyr::select(SeSS_1:SeSS_10) %>% rowMeans(na.rm=T)
+```
+
+# auditory
+```{r}
+SeSS %>% dplyr::select(SeSS_11:SeSS_21) %>% psych::alpha()
+auditory_score = SeSS %>% dplyr::select(SeSS_11:SeSS_21) %>% rowMeans(na.rm=T)
+```
+
+# somatosensory
+
+```{r}
+SeSS %>% dplyr::select(SeSS_22:SeSS_37) %>% psych::alpha()
+somatosensory_score = SeSS %>% dplyr::select(SeSS_22:SeSS_37) %>% rowMeans(na.rm=T)
+```
+
+```{r}
+SeSS_score = data.frame(ID = data$ID,visual_score,auditory_score, somatosensory_score)
+SeSS_score$SeSS = SeSS_score %>% dplyr::select(-ID) %>% rowMeans(na.rm=T)
+```
+
+## ASI
+
+```{r}
+data %>% dplyr::select(starts_with("ASI")) %>% psych::alpha()
+```
+
+```{r}
+ASI_score = data %>% dplyr::select(starts_with("ASI"))  %>% rowMeans(na.rm = T)
+ASI_df = data.frame(ID = data$ID, ASI_score)
+data %>% dplyr::select(starts_with("ASI"))  %>% psych::alpha()
+```
+
+
+```{r}
+
+score_list = list(original_AQ_scores, new_AQ_scores, schizotypy_df_organized, SeSS_score,ASI_df)
+
+complete_scores = score_list %>% purrr::reduce(full_join, by='ID')
+```
+
+
+Winsorize the scores to replace outliers
+
+```{r}
+winsor = function(x){
+  upper = mean(x, na.rm=T) + 3 * sd(x, na.rm=T)
+  lower = mean(x, na.rm=T) - 3 * sd(x, na.rm=T)
+  x[x > upper] = upper
+  x[x<lower] = lower
+  return(x)
+}
+
+complete_scores_winsorized = complete_scores %>% mutate(across(original_AQ_social_anhedonia:ASI_score, winsor))
+```
+
+```{r}
+write.csv(complete_scores, "complete scores.csv")
+write.csv(complete_scores_winsorized, "complete scores winsorzied.csv")
+```
+
+
