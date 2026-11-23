@@ -1,0 +1,280 @@
+---
+title: "AQ Factor Analysis FU1"
+output: html_document
+date: "11/2/26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(psych)
+library(paran)
+library(lavaan)
+library(mice)
+```
+
+
+```{r}
+survey_original = read.csv("survey content.csv")
+
+AQ = survey_original %>% dplyr::select(contains("AQ"))
+
+AQ_imputed_results = mice(AQ, seed = 1234)
+AQ_imputed = complete(AQ_imputed_results,2)
+AQ_imputed = data.frame(ID = survey_original$ID, AQ_imputed)
+write.csv(AQ_imputed, "AQ imputed.csv")
+```
+
+```{r}
+survey = read.csv("AQ imputed.csv") %>% dplyr::select(-X, -ID)
+```
+
+
+```{r}
+##Zhu (2022) Social Discourse Convention Items 
+survey %>% dplyr::select(AQ._1:AQ._3) %>% corr.test()
+survey %>% dplyr::select(AQ._1:AQ._3) %>% performance::item_intercor()
+survey %>% dplyr::select(AQ._1:AQ._3) %>% psych::alpha()
+
+##all Social Discourse Convention items, including items from BAAP and SRS-2
+survey %>% dplyr::select(AQ._1:AQ._8) %>% performance::item_intercor()
+survey %>% dplyr::select(AQ._1:AQ._8) %>% psych::alpha()
+
+
+##all Social Discourse Convention items minus item from SRS-2 (i.e., AQ._5)
+survey %>% dplyr::select(AQ._1:AQ._8, -AQ._5) %>% psych::alpha()
+```
+
+```{r}
+##Zhu (2022) Interest in Details/Pattern Items 
+survey %>% dplyr::select(AQ._9:AQ._14) %>% corr.test()
+survey %>% dplyr::select(AQ._9:AQ._14) %>% psych::alpha()
+
+##all Interest in Details/Pattern Items, including items from IASQ
+survey %>% dplyr::select(AQ._9:AQ._17) %>% psych::alpha()
+
+
+##all Interest in Details/Pattern Items, including items from IASQ but with poorly fitting items excluded
+survey %>% dplyr::select(AQ._9:AQ._14, AQ._17) %>% psych::alpha()
+```
+
+```{r}
+##Zhu (2022) Imagination Ability Items 
+survey %>% dplyr::select(AQ._18:AQ._22) %>% corr.test()
+survey %>% dplyr::select(AQ._18:AQ._22) %>% psych::alpha()
+
+##all Imagination Ability Items, including two new items 
+survey %>% dplyr::select(AQ._18:AQ._26) %>% corr.test()
+survey %>% dplyr::select(AQ._18:AQ._26) %>% psych::alpha()
+
+##all Imagination Ability Items, but with two new items dropped
+survey %>% dplyr::select(AQ._18:AQ._26, -AQ._23,-AQ._24) %>% psych::alpha()
+
+
+```
+
+```{r}
+
+##Zhu (2022) Social Cognition Items 
+survey %>% dplyr::select(AQ._27:AQ._30) %>% corr.test()
+survey %>% dplyr::select(AQ._27:AQ._30) %>% psych::alpha()
+
+## all Social Cognition Items, including item from IASQ
+survey %>% dplyr::select(AQ._27:AQ._35) %>% corr.test()
+survey %>% dplyr::select(AQ._27:AQ._35) %>% psych::alpha()
+
+
+## all Social Cognition Items, but with item from IASQ dropped
+survey %>% dplyr::select(AQ._27:AQ._34) %>% corr.test()
+survey %>% dplyr::select(AQ._27:AQ._34) %>% psych::alpha()
+```
+
+```{r}
+##Zhu (2022) Social Anhedonia Items; all items retained for the present study too
+survey %>% dplyr::select(AQ._36:AQ._41) %>% psych::alpha()
+```
+
+
+## Original AQ measures
+##Laura's notes - I am confused why these are the original AQ measures when several questions are missing; is the original AQ meaning original from the Chirica paper? 
+##Think i figured this out as of 11/2/26; original AQ measures are referring to the items from Zhu et al., (2022) (minus items loading onto desire for predictability/routine, which were not included in the present study). Therein lies the secret of AQ_original
+
+```{r}
+AQ_original = survey %>% dplyr::select(AQ._1:AQ._3, AQ._9:AQ._14, AQ._18:AQ._22, AQ._27:AQ._30, AQ._36:AQ._41)
+#AQ_original = survey %>% dplyr::select(AQ._1:AQ._3, AQ._9:AQ._14, AQ._18:AQ._22, AQ._27:AQ._30, AQ._36:AQ._41) %>% dplyr::select(-AQ._20, -AQ._21, -AQ._29) ## not sure why this version of AQ_original excludes items 20, 21 and 29? They were retained in Zhu et al (2022) and in FU2
+
+```
+
+
+```{r}
+paran(AQ_original, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c("black", "red", "blue"))
+```
+##AQ PFC, above results suggest that there are five factors
+
+```{r}
+mod_original_PCF = fa(AQ_original, nfactors = 5, fm = "pa") ##Principal factor solution
+?fa()
+#write.csv(mod_original_PCF$loadings, "original PFC loading.csv")
+#write.csv(mod_original_PCF$communality, "original PFC commu.csv")
+
+mod_original_PCF$PVAL
+mod_original_PCF$dof
+mod_original_PCF$chi
+
+mod_original_PCF$TLI
+1 - (1 - mod_original_PCF$TLI)* mod_original_PCF$dof / mod_original_PCF$null.dof
+mod_original_PCF$RMSEA
+```
+
+
+## AQ original EFA
+
+```{r}
+AQ_EFA_mod_original = fa(AQ_original, nfactors = 5, fm = "ml")
+#write.csv(AQ_EFA_mod_original$loadings, "original EFA loadings.csv")
+#write.csv(AQ_EFA_mod_original$communalities, "original EFA comm.csv")
+
+AQ_EFA_mod_original$PVAL
+AQ_EFA_mod_original$dof
+AQ_EFA_mod_original$chi
+AQ_EFA_mod_original$RMSEA
+
+
+AQ_EFA_mod_original$TLI
+1 - (1 - AQ_EFA_mod_original$TLI)* AQ_EFA_mod_original$dof / AQ_EFA_mod_original$null.dof
+
+
+
+```
+
+## AQ original CFA
+
+```{r}
+CFA_AQ_original_spec = "
+social_anhedonia =~ AQ._36+AQ._37+AQ._38+AQ._39+AQ._40+AQ._41 
+detail_pattern =~ AQ._9+AQ._10+AQ._12+AQ._13+AQ._14
+social_cog =~ AQ._27+AQ._28+AQ._29+AQ._30
+discourse_convention =~ AQ._1 +AQ._2+AQ._3
+imagination =~ AQ._18+AQ._19+AQ._20+AQ._21+AQ._22
+
+social_anhedonia~~detail_pattern
+social_anhedonia~~social_cog
+social_anhedonia~~discourse_convention
+social_anhedonia~~imagination
+detail_pattern~~social_cog
+detail_pattern~~discourse_convention
+detail_pattern~~imagination
+social_cog~~discourse_convention
+social_cog~~imagination
+discourse_convention~~imagination
+"
+
+cfa_mod_original = cfa(CFA_AQ_original_spec, AQ_original)
+summary(cfa_mod_original, standardized=TRUE, fit.measures=TRUE)
+write.csv(round(inspect(cfa_mod_original,what="std")$lambda,2), "aq original cfa.csv")
+```
+
+`
+-------------------------------------------
+
+## AQ new PAF
+
+##as of 11/2/26 @ 9:11pm, I am trying to figure how how it was determined that these items below should be dropped; does it have something to do with the alpha() output for each of the subscales above? Time will tell; maybe it has to do with the factor loadings 
+
+```{r}
+#AQ_imputed = survey %>%  dplyr::select(-AQ._20, -AQ._21, -AQ._29, -X, -AQ._9, -AQ._12, -AQ._15, -AQ._19, -AQ._23, -AQ._24, -AQ._35, -AQ._7, -AQ._16)
+
+```
+
+```{r}
+paran(survey, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c("black", "red", "blue"))
+```
+
+```{r}
+mod_new_PCF = fa(survey, nfactors = 5, fm = "pa")
+
+#write.csv(mod_new_PCF$loadings, "new PAF loadings.csv")
+#write.csv(mod_new_PCF$communality, "new PAF comm.csv")
+
+mod_new_PCF$TLI
+1 - (1 - mod_new_PCF$TLI)* mod_new_PCF$dof / mod_new_PCF$null.dof
+mod_new_PCF$RMSEA
+
+mod_new_PCF
+```
+
+
+
+## AQ new EFA
+
+```{r}
+AQ_EFA_mod_new = fa(survey, nfactors = 5, fm = "ml")
+
+
+#write.csv(AQ_EFA_mod_new$loadings, "new EFA loadings.csv")
+#write.csv(AQ_EFA_mod_new$communality, "new EFA comm.csv")
+
+AQ_EFA_mod_new$PVAL
+AQ_EFA_mod_new$dof
+AQ_EFA_mod_new$RMSEA
+
+AQ_EFA_mod_new$chi
+
+AQ_EFA_mod_new$TLI
+1 - (1 - AQ_EFA_mod_new$TLI)* AQ_EFA_mod_new$dof / AQ_EFA_mod_new$null.dof
+
+AQ_EFA_mod_new$loadings
+summary(AQ_EFA_mod_new)
+
+```
+
+```{r}
+##why did iris drop certain items?
+
+social_discourse_convention = AQ_imputed %>% dplyr::select(AQ._1, AQ._2, AQ._3, AQ._4, AQ._5, AQ._6, AQ._8) %>% rowMeans()
+pattern = AQ_imputed %>% dplyr::select(AQ._10, AQ._13, AQ._14, AQ._17) %>% rowMeans()
+imagination = AQ_imputed %>% dplyr::select(AQ._18, AQ._22, AQ._25, AQ._26) %>% rowMeans()
+social_cognition = AQ_imputed %>% dplyr::select(AQ._27, AQ._28, AQ._30, AQ._31, AQ._32, AQ._34) %>% rowMeans()
+social_anhedonia = AQ_imputed %>% dplyr::select(AQ._36, AQ._37, AQ._38, AQ._39, AQ._40, AQ._41) %>% rowMeans()
+
+AQ_scores = data.frame(ID = survey_original$ID, social_discourse_convention, pattern, imagination, social_cognition, social_anhedonia)
+
+write.csv(AQ_scores, "AQ scores.csv")
+```
+
+
+------------------------
+## AQ new CFA
+
+```{r}
+CFA_AQ_new_spec = "
+social_anhedonia =~ AQ._36+AQ._37+AQ._38+AQ._39+AQ._40+AQ._41 
+detail_pattern =~ AQ._9+AQ._10+AQ._12+AQ._13+AQ._14+AQ._15+AQ._16+AQ._17
+social_cog =~ AQ._27+AQ._28+AQ._29+AQ._30 +AQ._31+AQ._32+AQ._34+AQ._35
+discourse_convention =~ AQ._1 +AQ._2+AQ._3+AQ._4 +AQ._5+AQ._6+AQ._7 +AQ._8
+imagination =~ AQ._18+AQ._19+AQ._20+AQ._21+AQ._22+AQ._23+AQ._24+AQ._25+AQ._26
+
+social_anhedonia~~detail_pattern
+social_anhedonia~~social_cog
+social_anhedonia~~discourse_convention
+social_anhedonia~~imagination
+detail_pattern~~social_cog
+detail_pattern~~discourse_convention
+detail_pattern~~imagination
+social_cog~~discourse_convention
+social_cog~~imagination
+discourse_convention~~imagination
+"
+
+cfa_mod_new = cfa(CFA_AQ_new_spec, AQ_imputed)
+summary(cfa_mod_new, standardized=TRUE, fit.measures=TRUE)
+write.csv(round(inspect(cfa_mod_new,what="std")$lambda,2), "aq new cfa.csv")
+```
+
+
+

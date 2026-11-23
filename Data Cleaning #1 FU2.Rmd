@@ -1,0 +1,201 @@
+---
+title: "ASD & Sz Data Cleanup FU2"
+output: html_notebook
+date: 10/30/26
+---
+
+Initial cleaning, modified from Iris' code
+
+```{r}
+library(dplyr)
+getwd()
+
+```
+
+```{r}
+
+getwd()
+data_originalFU2 = read.csv("C:/Users/laura/OneDrive/Documents/Autism and Schizotypy/Autism and Schizotypy/Schizotypy and Autism_FU2.csv")
+```
+
+```{r}
+##create a data frame with all of the questions
+content_FU2 = data_originalFU2 %>% dplyr::select(MSS._1:Q58)
+questions_FU2 <- sapply(content_FU2[1, ], function(x) sub("^.*?- ", "", as.character(x)))
+
+df_FU2=as.data.frame(questions_FU2)
+
+write.csv(df_FU2, "all questions_FU2.csv")
+
+```
+
+```{r}
+##filter out folks without IDs, who did not consent, and who have been living in the US less than 2 years
+
+data_FU2 <- data_originalFU2 %>% dplyr::filter(ID != "", consent1 != "", US >= 2)
+
+?filter
+
+##remove unnecessary rows (first row)
+data_FU2 = data_FU2[-1,]
+
+##and unnecessary columns so that only ID and survey questions remain ##need to add demos to a separate df
+data_FU2 = data_FU2 %>% dplyr::select(-(StartDate:parent_edu), -PROLIFIC_PID)
+```
+
+Attention Check Items
+```{r}
+question_FU2 = data_FU2[1,] %>% as.vector() %>% unlist() %>% unname()
+name_FU2 = colnames(data_FU2)
+quest_df_FU2 = data.frame(question_FU2, name_FU2)
+
+##only retain participants who passed 5 attention check items and then remove the attention check columns so they are not counted in the data analysis
+data_attention_checked_FU2 = data_FU2 %>% filter(AQ._24 == "Agree") %>%
+  filter(SeSS_14 == "Prefer Not to Answer") %>%
+  filter(WSS_32 == "TRUE") %>% 
+  filter(SPQ_6 == "Strongly Agree") %>% 
+  filter(REI._5 == "somewhat false") %>%
+  dplyr::select(-AQ._24,-SeSS_14, -WSS_32, -SPQ_6, -REI._5)
+
+##mark all missing and "Prefer Not to Answer" responses as NA
+data_attention_checked_FU2[data_attention_checked_FU2 == "" | data_attention_checked_FU2 == "Prefer Not to Answer" | data_attention_checked_FU2 == "Prefer not to Answer"] = NA
+
+```
+
+```{r}
+##drop participants who answered less than 90% of questions by 
+data_content_FU2 = data_attention_checked_FU2 %>% dplyr::select(MSS._1:Q58) 
+check_empty_prop_FU2 = function(x){sum(is.na(x)) /ncol(data_content_FU2)}
+data_attention_checked_FU2$empty_prop_FU2 =apply(data_content_FU2, 1, check_empty_prop_FU2)
+
+data_attention_checked_FU2 = data_attention_checked_FU2 %>% filter(empty_prop_FU2 < 0.1)
+
+##remove the empty_prop_FU2 column as it is no longer needed
+data_attention_checked_FU2 = data_attention_checked_FU2 %>% dplyr::select(-empty_prop_FU2)
+
+```
+
+```{r}
+##change character responses to numeric / true/false
+data_attention_checked_FU2[data_attention_checked_FU2 == "TRUE"] = T
+data_attention_checked_FU2[data_attention_checked_FU2 == "FALSE"] = F
+data_attention_checked_FU2[data_attention_checked_FU2 == "Strongly Disagree"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Disagree"] = 2
+data_attention_checked_FU2[data_attention_checked_FU2 == "Neutral"] = 3
+data_attention_checked_FU2[data_attention_checked_FU2 == "Agree"] = 4
+data_attention_checked_FU2[data_attention_checked_FU2 == "Strongly Agree"] = 5
+
+data_attention_checked_FU2[data_attention_checked_FU2 == "Never"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Rarely"] = 2
+data_attention_checked_FU2[data_attention_checked_FU2 == "Occasionally"] = 3
+data_attention_checked_FU2[data_attention_checked_FU2 == "Usually"] = 4
+data_attention_checked_FU2[data_attention_checked_FU2 == "Always"] = 5
+
+data_attention_checked_FU2[data_attention_checked_FU2 == "completely false"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "somewhat false"] = 2
+data_attention_checked_FU2[data_attention_checked_FU2 == "neutral"] = 3
+data_attention_checked_FU2[data_attention_checked_FU2 == "somewhat true"] = 4
+data_attention_checked_FU2[data_attention_checked_FU2 == "completely true"] = 5
+
+data_attention_checked_FU2[data_attention_checked_FU2 == "YES"] = TRUE
+data_attention_checked_FU2[data_attention_checked_FU2 == "NO"] = FALSE
+
+##Scoring for BIF is a little more involved >.<, although there is most definitely an easier way to do this 
+data_attention_checked_FU2[data_attention_checked_FU2 == "getting organized"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "writing things down"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "gaining knowledge"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "following lines of print"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Removing odors from clothes"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Putting clothes into the machine"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Getting something to eat"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Pulling an apple off a branch"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Getting firewood"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Wielding an axe"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Showing one's cleanliness"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Vacuuming the floor"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Making the room look fresh"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Applying brush strokes"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Maintaining a place to live"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Writing a check"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Making the room look nice"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Watering plants"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Securing the house"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Putting a key in the lock"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Influencing the election"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Marking a ballot"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Getting a good view"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Holding on to branches"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Revealing what you're like"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Answering questions"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Preventing tooth decay"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Moving a brush around in one's mouth"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Showing one's knowledge"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Answering questions"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Showing friendliness"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Saying hello"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Showing moral courage"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == 'Saying "no"'] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Getting nutrition"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Chewing and swallowing"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Getting fresh vegetables"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Planting seeds"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Seeing countryside"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Following a map"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Protecting your teeth"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Going to the dentist"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Teaching a child something"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Using simple words"] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == "Seeing if someone's home"] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == "Moving a finger"] = 0
+
+##Makes t/f logical and all numbers integers
+df_boolean_FU2 = data_attention_checked_FU2 %>% dplyr::select(contains(c("MSS", "ASI", "WSS"))) %>% dplyr::mutate_all(as.logical)
+df_numeric_FU2 = data_attention_checked_FU2 %>% dplyr::select(contains(c("SeSS", "SPQ", "AQ", "Q", "REI"))) %>% dplyr::mutate_all(as.integer)
+
+df_content_FU2 = cbind(ID = data_attention_checked_FU2$ID, df_boolean_FU2, df_numeric_FU2)
+```
+
+
+##Reverse score items 
+
+```{r}
+##checked using df_FU2 
+df_content_FU2$AQ._14 = 6 - df_content_FU2$AQ._14
+df_content_FU2$AQ._16 = 6 - df_content_FU2$AQ._16
+df_content_FU2$AQ._17 = 6 - df_content_FU2$AQ._17
+df_content_FU2$AQ._18 = 6 - df_content_FU2$AQ._18
+df_content_FU2$AQ._19 = 6 - df_content_FU2$AQ._19
+df_content_FU2$AQ._20 = 6 - df_content_FU2$AQ._20
+df_content_FU2$AQ._21 = 6 - df_content_FU2$AQ._21
+df_content_FU2$AQ._22 = 6 - df_content_FU2$AQ._22
+df_content_FU2$AQ._25 = 6 - df_content_FU2$AQ._25
+df_content_FU2$AQ._26 = 6 - df_content_FU2$AQ._26
+df_content_FU2$AQ._27 = 6 - df_content_FU2$AQ._27
+df_content_FU2$AQ._29 = 6 - df_content_FU2$AQ._29
+df_content_FU2$AQ._30 = 6 - df_content_FU2$AQ._30
+df_content_FU2$AQ._31 = 6 - df_content_FU2$AQ._31
+df_content_FU2$AQ._32 = 6 - df_content_FU2$AQ._32
+df_content_FU2$AQ._33 = 6 - df_content_FU2$AQ._33
+
+df_content_FU2$WSS_11 = !df_content_FU2$WSS_11
+df_content_FU2$WSS_31 = !df_content_FU2$WSS_31
+df_content_FU2$WSS_33 = !df_content_FU2$WSS_33
+df_content_FU2$WSS_34 = !df_content_FU2$WSS_34
+df_content_FU2$WSS_35 = !df_content_FU2$WSS_35
+df_content_FU2$WSS_38 = !df_content_FU2$WSS_38
+df_content_FU2$WSS_40 = !df_content_FU2$WSS_40
+df_content_FU2$WSS_42 = !df_content_FU2$WSS_42
+df_content_FU2$WSS_43 = !df_content_FU2$WSS_43
+df_content_FU2$WSS_44 = !df_content_FU2$WSS_44
+df_content_FU2$WSS_45 = !df_content_FU2$WSS_45
+df_content_FU2$WSS_46 = !df_content_FU2$WSS_46
+
+df_content_FU2$REI._1 = 6 - df_content_FU2$REI._1
+df_content_FU2$REI._2 = 6 - df_content_FU2$REI._2
+df_content_FU2$REI._6 = 6 - df_content_FU2$REI._6
+```
+
+```{r}
+write.csv(df_content_FU2, "survey content FU2.csv")
+```
+

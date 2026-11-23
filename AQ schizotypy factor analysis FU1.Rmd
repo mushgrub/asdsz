@@ -1,0 +1,289 @@
+---
+title: "AQ schizotypy factor analysis"
+output: html_document
+date: "2024-02-01"
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(psych)
+library(paran)
+library(lavaan)
+```
+
+```{r}
+data = read.csv("complete scores winsorzied.csv")
+
+```
+
+## pure replication
+
+```{r}
+data_chirica = data %>% dplyr::select(
+  starts_with("original_AQ"), starts_with("wss"), starts_with("spq")
+)
+```
+
+
+
+```{r}
+paran(data_chirica, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c("black", "red", "blue"))
+
+```
+
+
+```{r}
+mod_original = fa(data_chirica, nfactors = 3,fm = "ml")
+
+#write.csv(round(mod_original$communality,2), "1.csv")
+
+round(mod_original$PVAL,5)
+mod_original$dof
+mod_original$RMSEA
+
+mod_original$chi
+
+mod_original$TLI
+1 - (1 - mod_original$TLI)* mod_original$dof / mod_original$null.dof
+```
+
+
+
+
+### Correlations
+
+```{r}
+
+aberrant_salience = data_chirica %>% dplyr::select(wss_magical_ideation_scores, spq_unusual_perception, spq_magical_thinking, spq_suspiciousness, spq_idea_of_reference, spq_odd_speech, original_AQ_social_discourse, wss_perceptual_aberration_score, original_AQ_pattern, spq_eccentric_behavior) %>% rowMeans(na.rm=T)
+
+asociality = data_chirica %>% dplyr::select(original_AQ_social_anhedonia, spq_no_close_friends, spq_social_anxiety, spq_constricted_affect, wss_social_anhedonia_score) %>% rowMeans(na.rm=T)
+
+non_divergent = data_chirica %>% dplyr::select(original_AQ_imagination, wss_physical_anhedonia_score, original_AQ_social_anhedonia)%>% rowMeans(na.rm=T)
+
+cbind(aberrant_salience, asociality, non_divergent) %>% corr.test()
+```
+
+
+
+## excluding disorganized
+
+```{r}
+data_excluding_disorganized = data %>% dplyr::select(starts_with("new_AQ"), starts_with("spq"), starts_with("wss"))
+```
+
+
+```{r}
+paran(data_excluding_disorganized, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c("black", "red", "blue"))
+```
+
+
+```{r}
+
+data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 3, fm = "pa")
+
+data_excluding_disorganized_mod$PVAL
+data_excluding_disorganized_mod$dof
+data_excluding_disorganized_mod$RMSEA
+
+data_excluding_disorganized_mod$chi
+
+data_excluding_disorganized_mod$TLI
+1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof
+
+
+#write.csv(data_excluding_disorganized_mod$communality, "1.csv")
+```
+
+```{r}
+
+data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 3, fm = "ml")
+
+data_excluding_disorganized_mod$PVAL
+data_excluding_disorganized_mod$dof
+data_excluding_disorganized_mod$RMSEA
+
+data_excluding_disorganized_mod$chi
+
+data_excluding_disorganized_mod$TLI
+1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof
+
+
+#write.csv(data_excluding_disorganized_mod$communality, "1.csv")
+```
+
+```{r}
+data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 4, fm = "pa")
+
+data_excluding_disorganized_mod$PVAL
+data_excluding_disorganized_mod$dof
+data_excluding_disorganized_mod$RMSEA
+
+data_excluding_disorganized_mod$chi
+
+data_excluding_disorganized_mod$TLI
+1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof
+
+
+write.csv(data_excluding_disorganized_mod$communality, "1.csv")
+```
+
+
+## including MSS
+
+
+```{r}
+new_data = data %>% dplyr::select(
+  starts_with("new_AQ"),
+  starts_with("wss"),
+  starts_with("spq"),
+  MSS)
+```
+
+```{r}
+paran(new_data, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c("black", "red", "blue"))
+```
+
+
+```{r}
+new_data_mod = fa(new_data, nfactors = 3, fm = "pa")
+
+new_data_mod$PVAL
+new_data_mod$dof
+new_data_mod$RMSEA
+
+new_data_mod$chi
+
+new_data_mod$TLI
+1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof
+
+
+#write.csv(new_data_mod$communality, "1.csv")
+```
+
+```{r}
+new_data_mod = fa(new_data, nfactors = 3, fm = "ml")
+
+new_data_mod$PVAL
+new_data_mod$dof
+new_data_mod$RMSEA
+
+new_data_mod$chi
+
+new_data_mod$TLI
+1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof
+
+
+write.csv(new_data_mod$communality, "1.csv")
+```
+
+```{r}
+new_data_mod = fa(new_data, nfactors = 4, fm = "pa")
+
+new_data_mod$PVAL
+new_data_mod$dof
+new_data_mod$RMSEA
+
+new_data_mod$chi
+
+new_data_mod$TLI
+1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof
+
+
+write.csv(new_data_mod$communality, "1.csv")
+```
+
+## CFA
+
+```{r}
+cfa_original = "
+aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + spq_odd_speech + original_AQ_social_discourse + wss_perceptual_aberration_score + original_AQ_pattern + spq_eccentric_behavior
+Asociality =~ original_AQ_social_anhedonia + spq_no_close_friends + spq_social_anxiety + spq_constricted_affect + wss_social_anhedonia_score
+non_divergent_thinking =~ original_AQ_imagination + wss_physical_anhedonia_score + original_AQ_social_cognition
+"
+
+mod_replication = cfa(cfa_original, data)
+summary(mod_replication,fit.measures=T,standardized=TRUE)
+
+mod_replication
+```
+
+```{r}
+
+cfa_excluding_wss = "
+aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + spq_odd_speech + new_AQ_social_discourse + wss_perceptual_aberration_score + new_AQ_pattern + spq_eccentric_behavior
+Asociality =~ new_AQ_social_anhedonia + spq_no_close_friends + spq_social_anxiety + spq_constricted_affect + wss_social_anhedonia_score
+non_divergent_thinking =~ new_AQ_imagination + wss_physical_anhedonia_score + new_AQ_social_cogition
+"
+
+mod_excluding_WSS = cfa(cfa_excluding_wss, data)
+summary(mod_excluding_WSS,fit.measures=T,standardized=TRUE)
+```
+
+
+
+# correlations
+
+```{r}
+
+correlation_syntax = "
+aberrant_salience_positive =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + wss_perceptual_aberration_score +  new_AQ_pattern
+
+asociality =~ new_AQ_social_anhedonia + spq_no_close_friends+ spq_constricted_affect + wss_social_anhedonia_score + new_AQ_imagination + new_AQ_social_cogition + wss_physical_anhedonia_score
+
+aberrant_salience_disorganized =~  new_AQ_social_discourse  +  spq_eccentric_behavior + spq_odd_speech + MSS + spq_social_anxiety
+
+aberrant_salience_positive~~asociality
+aberrant_salience_positive ~~aberrant_salience_disorganized
+
+SeSS ~~ aberrant_salience_positive
+SeSS ~~ asociality
+SeSS ~~ aberrant_salience_disorganized
+
+ASI_score ~~ aberrant_salience_positive
+ASI_score ~~ asociality
+ASI_score ~~ aberrant_salience_disorganized
+
+SeSS ~~ ASI_score
+"
+
+correlation_mod = sem(correlation_syntax, data)
+summary(correlation_mod,fit.measures=T,standardized=TRUE)
+
+```
+
+## correlation replication
+```{r}
+
+correlation_syntax = "
+aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + wss_perceptual_aberration_score +  new_AQ_pattern+  spq_eccentric_behavior + spq_odd_speech + new_AQ_social_discourse
+
+asociality =~ new_AQ_social_anhedonia + spq_no_close_friends+ spq_social_anxiety+spq_constricted_affect+wss_social_anhedonia_score
+
+disorganized =~ new_AQ_imagination + new_AQ_social_cogition + wss_physical_anhedonia_score + MSS
+
+aberrant_salience~~asociality
+aberrant_salience ~~disorganized
+
+SeSS ~~ aberrant_salience
+SeSS ~~ asociality
+SeSS ~~ disorganized
+
+ASI_score ~~ aberrant_salience
+ASI_score ~~ asociality
+ASI_score ~~ disorganized
+
+SeSS ~~ ASI_score
+"
+
+correlation_mod = sem(correlation_syntax, data)
+summary(correlation_mod,fit.measures=T,standardized=TRUE)
+
+```
