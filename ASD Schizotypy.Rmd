@@ -2,7 +2,9 @@
 title: "Schizotypy and ASD"
 author: "Laura Hernandez"
 date: "2026-11-23"
-output: html_document
+output: 
+  html_document: 
+    keep_md: true
 ---
 
 ```{r setup, include=FALSE}
