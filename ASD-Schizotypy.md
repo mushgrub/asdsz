@@ -7,6 +7,15 @@ output:
     keep_md: true
 ---
 
+# ASD and Schizotypy 
+
+## Follow Up 1 {.tabset}
+
+### Data Cleaning #1 for FU1
+
+Here we are getting the raw data file from FU1 into a useable form. 
+
+
 ``` r
 library(dplyr)
 ```
@@ -35,5 +44,124 @@ questions = sapply(sapply(content[1,], strsplit, "- "), "[[",2)
 df=as.data.frame(questions)
 
 write.csv(df, "all questions.csv")
+
+data = data_original %>% filter(id != "")
+data = data[-c(1,2),]
+data = data %>% dplyr::select(-LocationLatitude, -LocationLongitude, -DistributionChannel, -(RecordedDate:UserLanguage), -IPAddress)
+```
+
+Attention Check items; this only includes folks who passed the attention check items. Then, it removes the attention check questions from the data. 
+
+
+``` r
+question = data[1,] %>% as.vector() %>% unlist() %>% unname()
+name = colnames(data)
+quest_df = data.frame(question, name)
+
+data_attention_checked = data %>% filter(MSS._7 == "TRUE") %>%
+  filter(AQ._11 == "Strongly Agree") %>%
+  filter(AQ._33 == "Neutral") %>%
+  filter(SeSS_14 == "Always") %>%
+  filter(SeSS_28 == "Prefer Not to Answer") %>%
+  filter(ASI_4 == "NO") %>% 
+  filter(WSS_7 == "TRUE") %>% 
+  filter(WSS_36 == "FALSE") %>% 
+  filter(WSS_55 == "FALSE") %>% 
+  filter(SPQ_8 == "Agree") %>% 
+  filter(SPQ_33 == "Strongly Agree") %>%
+  select(-MSS._7,-AQ._11, -AQ._33, -SeSS_14, -SeSS_28, -ASI_4, -WSS_7, -WSS_36, -WSS_55, -SPQ_8, -SPQ_33)
+
+data_attention_checked[data_attention_checked == "" | data_attention_checked == "Prefer Not to Answer"] = NA
+```
+
+We also need to remove people who have been living in the US for two years or less and who answered less than 90% of the survey. 
+
+
+``` r
+data_attention_checked$US = as.numeric(data_attention_checked$US)
+data_attention_checked = data_attention_checked %>% filter(US >= 2 & US < 100)
+
+data_content = data_attention_checked %>% select(MSS._1:SPQ_35) 
+check_empty_prop = function(x){sum(is.na(x)) /ncol(data_content)}
+data_attention_checked$empty_prop =apply(data_content, 1, check_empty_prop)
+
+data_attention_checked = data_attention_checked %>% filter(empty_prop < 0.1)
+
+data_attention_checked = data_attention_checked %>% select(-empty_prop)
+```
+
+Here we are changing responses to true/false (logical) or numeric (for Likert-style responses).
+
+
+``` r
+data_attention_checked[data_attention_checked == "TRUE"] = T
+data_attention_checked[data_attention_checked == "FALSE"] = F
+data_attention_checked[data_attention_checked == "Strongly Disagree"] = 1
+data_attention_checked[data_attention_checked == "Disagree"] = 2
+data_attention_checked[data_attention_checked == "Neutral"] = 3
+data_attention_checked[data_attention_checked == "Agree"] = 4
+data_attention_checked[data_attention_checked == "Strongly Agree"] = 5
+
+data_attention_checked[data_attention_checked == "Never"] = 1
+data_attention_checked[data_attention_checked == "Rarely"] = 2
+data_attention_checked[data_attention_checked == "Occasionally"] = 3
+data_attention_checked[data_attention_checked == "Usually"] = 4
+data_attention_checked[data_attention_checked == "Always"] = 5
+
+data_attention_checked[data_attention_checked == "YES"] = TRUE
+data_attention_checked[data_attention_checked == "NO"] = FALSE
+
+df_boolean = data_attention_checked %>% select(contains(c("MSS", "ASI", "WSS"))) %>% mutate_all(as.logical)
+df_numeric = data_attention_checked %>% select(contains(c("SeSS", "SPQ", "AQ"))) %>% mutate_all(as.integer)
+
+df_content = cbind(ID = data_attention_checked$ID, df_boolean, df_numeric)
+```
+
+Reverse score the necessary items.
+
+
+``` r
+df_content$AQ._18 = 6 - df_content$AQ._18
+df_content$AQ._20 = 6 - df_content$AQ._20
+df_content$AQ._21 = 6 - df_content$AQ._21 
+df_content$AQ._22 = 6 - df_content$AQ._22
+df_content$AQ._23 = 6 - df_content$AQ._23
+df_content$AQ._25 = 6 - df_content$AQ._25
+df_content$AQ._26 = 6 - df_content$AQ._26
+df_content$AQ._27 = 6 - df_content$AQ._27
+df_content$AQ._28 = 6 - df_content$AQ._28
+df_content$AQ._30 = 6 - df_content$AQ._30
+df_content$AQ._31 = 6 - df_content$AQ._31
+df_content$AQ._32 = 6 - df_content$AQ._32
+df_content$AQ._36 = 6 - df_content$AQ._36
+df_content$AQ._37 = 6 - df_content$AQ._37
+df_content$AQ._38 = 6 - df_content$AQ._38
+df_content$AQ._39 = 6 - df_content$AQ._39
+df_content$AQ._40 = 6 - df_content$AQ._40
+
+df_content$WSS_12 = !df_content$WSS_12
+df_content$WSS_35 = !df_content$WSS_35
+df_content$WSS_41 = !df_content$WSS_41
+df_content$WSS_43 = !df_content$WSS_43
+df_content$WSS_44 = !df_content$WSS_44
+df_content$WSS_45 = !df_content$WSS_45
+df_content$WSS_46 = !df_content$WSS_46
+df_content$WSS_48 = !df_content$WSS_48
+df_content$WSS_49 = !df_content$WSS_49
+df_content$WSS_50 = !df_content$WSS_50
+df_content$WSS_51 = !df_content$WSS_51
+df_content$WSS_54 = !df_content$WSS_54
+df_content$WSS_57 = !df_content$WSS_57
+df_content$WSS_59 = !df_content$WSS_59
+df_content$WSS_60 = !df_content$WSS_60
+df_content$WSS_61 = !df_content$WSS_61
+df_content$WSS_62 = !df_content$WSS_62
+df_content$WSS_63 = !df_content$WSS_63
+```
+
+And save the cleaned data as a cvs!
+
+``` r
+write.csv(df_content, "survey content.csv")
 ```
 

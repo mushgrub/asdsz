@@ -357,6 +357,14 @@ display: none;
 </div>
 
 
+<div id="asd-and-schizotypy" class="section level1">
+<h1>ASD and Schizotypy</h1>
+<div id="follow-up-1" class="section level2 tabset">
+<h2 class="tabset">Follow Up 1</h2>
+<div id="data-cleaning-1-for-fu1" class="section level3">
+<h3>Data Cleaning #1 for FU1</h3>
+<p>Here we are getting the raw data file from FU1 into a useable
+form.</p>
 <pre class="r"><code>library(dplyr)</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
@@ -371,7 +379,109 @@ content = data_original %&gt;% dplyr::select(MSS._1:SPQ_35)
 questions = sapply(sapply(content[1,], strsplit, &quot;- &quot;), &quot;[[&quot;,2) 
 df=as.data.frame(questions)
 
-write.csv(df, &quot;all questions.csv&quot;)</code></pre>
+write.csv(df, &quot;all questions.csv&quot;)
+
+data = data_original %&gt;% filter(id != &quot;&quot;)
+data = data[-c(1,2),]
+data = data %&gt;% dplyr::select(-LocationLatitude, -LocationLongitude, -DistributionChannel, -(RecordedDate:UserLanguage), -IPAddress)</code></pre>
+<p>Attention Check items; this only includes folks who passed the
+attention check items. Then, it removes the attention check questions
+from the data.</p>
+<pre class="r"><code>question = data[1,] %&gt;% as.vector() %&gt;% unlist() %&gt;% unname()
+name = colnames(data)
+quest_df = data.frame(question, name)
+
+data_attention_checked = data %&gt;% filter(MSS._7 == &quot;TRUE&quot;) %&gt;%
+  filter(AQ._11 == &quot;Strongly Agree&quot;) %&gt;%
+  filter(AQ._33 == &quot;Neutral&quot;) %&gt;%
+  filter(SeSS_14 == &quot;Always&quot;) %&gt;%
+  filter(SeSS_28 == &quot;Prefer Not to Answer&quot;) %&gt;%
+  filter(ASI_4 == &quot;NO&quot;) %&gt;% 
+  filter(WSS_7 == &quot;TRUE&quot;) %&gt;% 
+  filter(WSS_36 == &quot;FALSE&quot;) %&gt;% 
+  filter(WSS_55 == &quot;FALSE&quot;) %&gt;% 
+  filter(SPQ_8 == &quot;Agree&quot;) %&gt;% 
+  filter(SPQ_33 == &quot;Strongly Agree&quot;) %&gt;%
+  select(-MSS._7,-AQ._11, -AQ._33, -SeSS_14, -SeSS_28, -ASI_4, -WSS_7, -WSS_36, -WSS_55, -SPQ_8, -SPQ_33)
+
+data_attention_checked[data_attention_checked == &quot;&quot; | data_attention_checked == &quot;Prefer Not to Answer&quot;] = NA</code></pre>
+<p>We also need to remove people who have been living in the US for two
+years or less and who answered less than 90% of the survey.</p>
+<pre class="r"><code>data_attention_checked$US = as.numeric(data_attention_checked$US)
+data_attention_checked = data_attention_checked %&gt;% filter(US &gt;= 2 &amp; US &lt; 100)
+
+data_content = data_attention_checked %&gt;% select(MSS._1:SPQ_35) 
+check_empty_prop = function(x){sum(is.na(x)) /ncol(data_content)}
+data_attention_checked$empty_prop =apply(data_content, 1, check_empty_prop)
+
+data_attention_checked = data_attention_checked %&gt;% filter(empty_prop &lt; 0.1)
+
+data_attention_checked = data_attention_checked %&gt;% select(-empty_prop)</code></pre>
+<p>Here we are changing responses to true/false (logical) or numeric
+(for Likert-style responses).</p>
+<pre class="r"><code>data_attention_checked[data_attention_checked == &quot;TRUE&quot;] = T
+data_attention_checked[data_attention_checked == &quot;FALSE&quot;] = F
+data_attention_checked[data_attention_checked == &quot;Strongly Disagree&quot;] = 1
+data_attention_checked[data_attention_checked == &quot;Disagree&quot;] = 2
+data_attention_checked[data_attention_checked == &quot;Neutral&quot;] = 3
+data_attention_checked[data_attention_checked == &quot;Agree&quot;] = 4
+data_attention_checked[data_attention_checked == &quot;Strongly Agree&quot;] = 5
+
+data_attention_checked[data_attention_checked == &quot;Never&quot;] = 1
+data_attention_checked[data_attention_checked == &quot;Rarely&quot;] = 2
+data_attention_checked[data_attention_checked == &quot;Occasionally&quot;] = 3
+data_attention_checked[data_attention_checked == &quot;Usually&quot;] = 4
+data_attention_checked[data_attention_checked == &quot;Always&quot;] = 5
+
+data_attention_checked[data_attention_checked == &quot;YES&quot;] = TRUE
+data_attention_checked[data_attention_checked == &quot;NO&quot;] = FALSE
+
+df_boolean = data_attention_checked %&gt;% select(contains(c(&quot;MSS&quot;, &quot;ASI&quot;, &quot;WSS&quot;))) %&gt;% mutate_all(as.logical)
+df_numeric = data_attention_checked %&gt;% select(contains(c(&quot;SeSS&quot;, &quot;SPQ&quot;, &quot;AQ&quot;))) %&gt;% mutate_all(as.integer)
+
+df_content = cbind(ID = data_attention_checked$ID, df_boolean, df_numeric)</code></pre>
+<p>Reverse score the necessary items.</p>
+<pre class="r"><code>df_content$AQ._18 = 6 - df_content$AQ._18
+df_content$AQ._20 = 6 - df_content$AQ._20
+df_content$AQ._21 = 6 - df_content$AQ._21 
+df_content$AQ._22 = 6 - df_content$AQ._22
+df_content$AQ._23 = 6 - df_content$AQ._23
+df_content$AQ._25 = 6 - df_content$AQ._25
+df_content$AQ._26 = 6 - df_content$AQ._26
+df_content$AQ._27 = 6 - df_content$AQ._27
+df_content$AQ._28 = 6 - df_content$AQ._28
+df_content$AQ._30 = 6 - df_content$AQ._30
+df_content$AQ._31 = 6 - df_content$AQ._31
+df_content$AQ._32 = 6 - df_content$AQ._32
+df_content$AQ._36 = 6 - df_content$AQ._36
+df_content$AQ._37 = 6 - df_content$AQ._37
+df_content$AQ._38 = 6 - df_content$AQ._38
+df_content$AQ._39 = 6 - df_content$AQ._39
+df_content$AQ._40 = 6 - df_content$AQ._40
+
+df_content$WSS_12 = !df_content$WSS_12
+df_content$WSS_35 = !df_content$WSS_35
+df_content$WSS_41 = !df_content$WSS_41
+df_content$WSS_43 = !df_content$WSS_43
+df_content$WSS_44 = !df_content$WSS_44
+df_content$WSS_45 = !df_content$WSS_45
+df_content$WSS_46 = !df_content$WSS_46
+df_content$WSS_48 = !df_content$WSS_48
+df_content$WSS_49 = !df_content$WSS_49
+df_content$WSS_50 = !df_content$WSS_50
+df_content$WSS_51 = !df_content$WSS_51
+df_content$WSS_54 = !df_content$WSS_54
+df_content$WSS_57 = !df_content$WSS_57
+df_content$WSS_59 = !df_content$WSS_59
+df_content$WSS_60 = !df_content$WSS_60
+df_content$WSS_61 = !df_content$WSS_61
+df_content$WSS_62 = !df_content$WSS_62
+df_content$WSS_63 = !df_content$WSS_63</code></pre>
+<p>And save the cleaned data as a cvs!</p>
+<pre class="r"><code>write.csv(df_content, &quot;survey content.csv&quot;)</code></pre>
+</div>
+</div>
+</div>
 
 
 
