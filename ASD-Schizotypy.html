@@ -3678,6 +3678,914 @@ complete_scores = score_list %&gt;% purrr::reduce(full_join, by=&#39;ID&#39;)</c
 complete_scores_winsorized = complete_scores %&gt;% mutate(across(original_AQ_social_anhedonia:ASI_score, winsor))</code></pre>
 <pre class="r"><code>write.csv(complete_scores, &quot;complete scores.csv&quot;)
 write.csv(complete_scores_winsorized, &quot;complete scores winsorzied.csv&quot;)</code></pre>
+<div id="aq-and-schizotypy-factor-analysis-fu1" class="section level3">
+<h3>AQ and Schizotypy Factor Analysis FU1</h3>
+<p>These are the actual factor analyses we are most interested in.</p>
+<pre class="r"><code>library(dplyr)
+library(psych)
+library(paran)
+library(lavaan)</code></pre>
+<pre class="r"><code>data = read.csv(&quot;complete scores winsorzied.csv&quot;)</code></pre>
+</div>
+</div>
+<div id="replicating-analyses-from-chirica" class="section level2">
+<h2>Replicating analyses from Chirica</h2>
+<pre class="r"><code>data_chirica = data %&gt;% dplyr::select(
+  starts_with(&quot;original_AQ&quot;), starts_with(&quot;wss&quot;), starts_with(&quot;spq&quot;)
+)</code></pre>
+<pre class="r"><code>paran(data_chirica, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c(&quot;black&quot;, &quot;red&quot;, &quot;blue&quot;))</code></pre>
+<pre><code>## Using eigendecomposition of correlation matrix.</code></pre>
+<pre><code>## 
+## Computing: 10%  20%  30%  40%  50%  60%  70%  80%  90%  100%</code></pre>
+<pre><code>## 
+## Results of Horn&#39;s Parallel Analysis for component retention
+## 540 iterations, using the mean estimate
+## 
+## ──────────────────────────────────────────────────
+## Component   Adjusted    Unadjusted    Estimated
+##             Eigenvalue  Eigenvalue    Bias
+## ──────────────────────────────────────────────────
+## 1           5.730440    6.110305      0.379865
+## 2           1.731604    2.033188      0.301583
+## 3           1.143775    1.390964      0.247189
+## 4           1.028107    1.226148      0.198041
+## ──────────────────────────────────────────────────
+## Criterion: retain adjusted eigenvalues &gt; 1.
+## (4 components retained)</code></pre>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Above suggests four factors, but we will run three factors with the
+original model using maximum likelihood.</p>
+<pre class="r"><code>mod_original = fa(data_chirica, nfactors = 3,fm = &quot;ml&quot;)
+
+write.csv(round(mod_original$communality,2), &quot;Chirica Communality FU1.csv&quot;)
+
+round(mod_original$PVAL,5)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>mod_original$dof</code></pre>
+<pre><code>## [1] 102</code></pre>
+<pre class="r"><code>mod_original$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.09017465 0.08190808 0.09889302 0.90000000</code></pre>
+<pre class="r"><code>mod_original$chi</code></pre>
+<pre><code>## [1] 165.9794</code></pre>
+<pre class="r"><code>mod_original$TLI</code></pre>
+<pre><code>## [1] 0.8221947</code></pre>
+<pre class="r"><code>1 - (1 - mod_original$TLI)* mod_original$dof / mod_original$null.dof</code></pre>
+<pre><code>## [1] 0.8814632</code></pre>
+<p>Correlations for Chirica replication</p>
+<pre class="r"><code>aberrant_salience = data_chirica %&gt;% dplyr::select(wss_magical_ideation_scores, spq_unusual_perception, spq_magical_thinking, spq_suspiciousness, spq_idea_of_reference, spq_odd_speech, original_AQ_social_discourse, wss_perceptual_aberration_score, original_AQ_pattern, spq_eccentric_behavior) %&gt;% rowMeans(na.rm=T)
+
+asociality = data_chirica %&gt;% dplyr::select(original_AQ_social_anhedonia, spq_no_close_friends, spq_social_anxiety, spq_constricted_affect, wss_social_anhedonia_score) %&gt;% rowMeans(na.rm=T)
+
+non_divergent = data_chirica %&gt;% dplyr::select(original_AQ_imagination, wss_physical_anhedonia_score, original_AQ_social_anhedonia)%&gt;% rowMeans(na.rm=T)
+
+cbind(aberrant_salience, asociality, non_divergent) %&gt;% corr.test()</code></pre>
+<pre><code>## Call:corr.test(x = .)
+## Correlation matrix 
+##                   aberrant_salience asociality non_divergent
+## aberrant_salience              1.00       0.55          0.13
+## asociality                     0.55       1.00          0.56
+## non_divergent                  0.13       0.56          1.00
+## Sample Size 
+## [1] 422
+## Probability values (Entries above the diagonal are adjusted for multiple tests.) 
+##                   aberrant_salience asociality non_divergent
+## aberrant_salience              0.00          0          0.01
+## asociality                     0.00          0          0.00
+## non_divergent                  0.01          0          0.00
+## 
+##  To see confidence intervals of the correlations, print with the short=FALSE option</code></pre>
+<p>New FU1 data, but excluding disorganized schizotypy scores</p>
+<pre class="r"><code>data_excluding_disorganized = data %&gt;% dplyr::select(starts_with(&quot;new_AQ&quot;), starts_with(&quot;spq&quot;), starts_with(&quot;wss&quot;))</code></pre>
+<pre class="r"><code>paran(data_excluding_disorganized, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c(&quot;black&quot;, &quot;red&quot;, &quot;blue&quot;))</code></pre>
+<pre><code>## Using eigendecomposition of correlation matrix.</code></pre>
+<pre><code>## 
+## Computing: 10%  20%  30%  40%  50%  60%  70%  80%  90%  100%</code></pre>
+<pre><code>## 
+## Results of Horn&#39;s Parallel Analysis for component retention
+## 540 iterations, using the mean estimate
+## 
+## ──────────────────────────────────────────────────
+## Component   Adjusted    Unadjusted    Estimated
+##             Eigenvalue  Eigenvalue    Bias
+## ──────────────────────────────────────────────────
+## 1           5.850265    6.229851      0.379585
+## 2           1.766005    2.071048      0.305042
+## 3           1.186499    1.434426      0.247927
+## 4           1.011802    1.213039      0.201236
+## ──────────────────────────────────────────────────
+## Criterion: retain adjusted eigenvalues &gt; 1.
+## (4 components retained)</code></pre>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Suggests 4 factors, but we will use 3 using Principal Access
+Factoring</p>
+<pre class="r"><code>data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 3, fm = &quot;pa&quot;)
+
+data_excluding_disorganized_mod$PVAL</code></pre>
+<pre><code>## [1] 3.047154e-56</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$dof</code></pre>
+<pre><code>## [1] 102</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.09781221 0.08963252 0.10645503 0.90000000</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$chi</code></pre>
+<pre><code>## [1] 175.8581</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$TLI</code></pre>
+<pre><code>## [1] 0.8004841</code></pre>
+<pre class="r"><code>1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof</code></pre>
+<pre><code>## [1] 0.8669894</code></pre>
+<pre class="r"><code>write.csv(data_excluding_disorganized_mod$communality, &quot;Excluding Disorganized Communality 3F PAF FU1.csv&quot;)</code></pre>
+<p>3 factors EFA</p>
+<pre class="r"><code>data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 3, fm = &quot;ml&quot;)
+
+data_excluding_disorganized_mod$PVAL</code></pre>
+<pre><code>## [1] 2.729312e-55</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$dof</code></pre>
+<pre><code>## [1] 102</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.09716348 0.08897716 0.10581203 0.90000000</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$chi</code></pre>
+<pre><code>## [1] 179.6845</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$TLI</code></pre>
+<pre><code>## [1] 0.8031203</code></pre>
+<pre class="r"><code>1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof</code></pre>
+<pre><code>## [1] 0.8687469</code></pre>
+<pre class="r"><code>write.csv(data_excluding_disorganized_mod$communality, &quot;Excluding Disorganized Communality 3F EFA FU1.csv&quot;)</code></pre>
+<p>Now looking at 4 factors as the Parallel Analysis suggested</p>
+<pre class="r"><code>data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 4, fm = &quot;pa&quot;)
+
+data_excluding_disorganized_mod$PVAL</code></pre>
+<pre><code>## [1] 4.48628e-29</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$dof</code></pre>
+<pre><code>## [1] 87</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.08037794 0.07126422 0.08995389 0.90000000</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$chi</code></pre>
+<pre><code>## [1] 89.4809</code></pre>
+<pre class="r"><code>data_excluding_disorganized_mod$TLI</code></pre>
+<pre><code>## [1] 0.8650025</code></pre>
+<pre class="r"><code>1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof</code></pre>
+<pre><code>## [1] 0.9232367</code></pre>
+<pre class="r"><code>write.csv(data_excluding_disorganized_mod$communality, &quot;Excluding Disorganized Communality 4F PAF FU1.csv&quot;)</code></pre>
+<p>Adding MSS Disorganized Schizotypy</p>
+<pre class="r"><code>new_data = data %&gt;% dplyr::select(
+  starts_with(&quot;new_AQ&quot;),
+  starts_with(&quot;wss&quot;),
+  starts_with(&quot;spq&quot;),
+  MSS)</code></pre>
+<pre class="r"><code>paran(new_data, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c(&quot;black&quot;, &quot;red&quot;, &quot;blue&quot;))</code></pre>
+<pre><code>## Using eigendecomposition of correlation matrix.</code></pre>
+<pre><code>## 
+## Computing: 10%  20%  30%  40%  50%  60%  70%  80%  90%  100%</code></pre>
+<pre><code>## 
+## Results of Horn&#39;s Parallel Analysis for component retention
+## 570 iterations, using the mean estimate
+## 
+## ──────────────────────────────────────────────────
+## Component   Adjusted    Unadjusted    Estimated
+##             Eigenvalue  Eigenvalue    Bias
+## ──────────────────────────────────────────────────
+## 1           6.179453    6.574752      0.395299
+## 2           1.756607    2.074701      0.318093
+## 3           1.220468    1.483122      0.262654
+## 4           1.038005    1.251657      0.213651
+## ──────────────────────────────────────────────────
+## Criterion: retain adjusted eigenvalues &gt; 1.
+## (4 components retained)</code></pre>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Suggests four factors, but we will start with running 3 factors</p>
+<pre class="r"><code>new_data_mod = fa(new_data, nfactors = 3, fm = &quot;pa&quot;)
+
+new_data_mod$PVAL</code></pre>
+<pre><code>## [1] 4.972498e-57</code></pre>
+<pre class="r"><code>new_data_mod$dof</code></pre>
+<pre><code>## [1] 117</code></pre>
+<pre class="r"><code>new_data_mod$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.09345773 0.08577996 0.10156997 0.90000000</code></pre>
+<pre class="r"><code>new_data_mod$chi</code></pre>
+<pre><code>## [1] 192.4253</code></pre>
+<pre class="r"><code>new_data_mod$TLI</code></pre>
+<pre><code>## [1] 0.8082744</code></pre>
+<pre class="r"><code>1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof</code></pre>
+<pre><code>## [1] 0.8688193</code></pre>
+<pre class="r"><code>write.csv(new_data_mod$communality, &quot;New Communality 3F PAF FU1.csv&quot;)</code></pre>
+<pre class="r"><code>new_data_mod = fa(new_data, nfactors = 3, fm = &quot;ml&quot;)
+
+new_data_mod$PVAL</code></pre>
+<pre><code>## [1] 4.103665e-56</code></pre>
+<pre class="r"><code>new_data_mod$dof</code></pre>
+<pre><code>## [1] 117</code></pre>
+<pre class="r"><code>new_data_mod$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.09287717 0.08519306 0.10099487 0.90000000</code></pre>
+<pre class="r"><code>new_data_mod$chi</code></pre>
+<pre><code>## [1] 196.6246</code></pre>
+<pre class="r"><code>new_data_mod$TLI</code></pre>
+<pre><code>## [1] 0.8106474</code></pre>
+<pre class="r"><code>1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof</code></pre>
+<pre><code>## [1] 0.870443</code></pre>
+<pre class="r"><code>write.csv(new_data_mod$communality, &quot;New Communality 3F EFA FU1.csv&quot;)</code></pre>
+<pre class="r"><code>new_data_mod = fa(new_data, nfactors = 4, fm = &quot;pa&quot;)
+
+new_data_mod$PVAL</code></pre>
+<pre><code>## [1] 5.400699e-28</code></pre>
+<pre class="r"><code>new_data_mod$dof</code></pre>
+<pre><code>## [1] 101</code></pre>
+<pre class="r"><code>new_data_mod$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.07520941 0.06665054 0.08418816 0.90000000</code></pre>
+<pre class="r"><code>new_data_mod$chi</code></pre>
+<pre><code>## [1] 96.31671</code></pre>
+<pre class="r"><code>new_data_mod$TLI</code></pre>
+<pre><code>## [1] 0.8755811</code></pre>
+<pre class="r"><code>1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof</code></pre>
+<pre><code>## [1] 0.9265128</code></pre>
+<pre class="r"><code>write.csv(new_data_mod$communality, &quot;New Communality 4F PAF FU1.csv&quot;)</code></pre>
+<p>Original Chirica CFA</p>
+<pre class="r"><code>cfa_original = &quot;
+aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + spq_odd_speech + original_AQ_social_discourse + wss_perceptual_aberration_score + original_AQ_pattern + spq_eccentric_behavior
+Asociality =~ original_AQ_social_anhedonia + spq_no_close_friends + spq_social_anxiety + spq_constricted_affect + wss_social_anhedonia_score
+non_divergent_thinking =~ original_AQ_imagination + wss_physical_anhedonia_score + original_AQ_social_cognition
+&quot;
+
+mod_replication = cfa(cfa_original, data)
+summary(mod_replication,fit.measures=T,standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 85 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        39
+## 
+##   Number of observations                           422
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               833.883
+##   Degrees of freedom                               132
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                               918.487
+##   Degrees of freedom                               132
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              3181.949
+##   Degrees of freedom                               153
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.768
+##   Tucker-Lewis Index (TLI)                       0.731
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -5398.827
+##   Loglikelihood unrestricted model (H1)      -4981.886
+##                                                       
+##   Akaike (AIC)                               10875.654
+##   Bayesian (BIC)                             11033.410
+##   Sample-size adjusted Bayesian (SABIC)      10909.650
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.112
+##   90 Percent confidence interval - lower         0.105
+##   90 Percent confidence interval - upper         0.120
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    1.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.084
+## 
+## Goodness of Fit Index:
+## 
+##   Goodness of Fit Index (GFI)                    0.828
+##   90 Percent confidence interval - lower         0.811
+##   90 Percent confidence interval - upper         0.845
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                             Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv
+##   aberrant_salience =~                                                  
+##     wss_mgcl_dtn_s             1.000                               0.134
+##     spq_nsl_prcptn             4.875    0.328   14.864    0.000    0.652
+##     spq_mgcl_thnkn             2.814    0.268   10.508    0.000    0.376
+##     spq_suspicsnss             5.162    0.372   13.885    0.000    0.690
+##     spq_id_f_rfrnc             5.618    0.397   14.155    0.000    0.751
+##     spq_odd_speech             4.226    0.377   11.203    0.000    0.565
+##     orgnl_AQ_scl_d             2.835    0.304    9.332    0.000    0.379
+##     wss_prcptl_br_             0.781    0.062   12.609    0.000    0.104
+##     orgnl_AQ_pttrn             2.012    0.268    7.510    0.000    0.269
+##     spq_ccntrc_bhv             5.078    0.374   13.574    0.000    0.679
+##   Asociality =~                                                         
+##     orgnl_AQ_scl_n             1.000                               0.444
+##     spq_n_cls_frnd             1.951    0.155   12.571    0.000    0.866
+##     spq_socil_nxty             1.326    0.133    9.969    0.000    0.589
+##     spq_cnstrctd_f             1.384    0.119   11.586    0.000    0.614
+##     wss_scl_nhdn_s             0.264    0.023   11.292    0.000    0.117
+##   non_divergent_thinking =~                                             
+##     orgnl_AQ_mgntn             1.000                               0.215
+##     wss_physcl_nh_             0.165    0.046    3.615    0.000    0.035
+##     orgnl_AQ_scl_c             2.115    0.531    3.980    0.000    0.454
+##   Std.all
+##          
+##     0.715
+##     0.772
+##     0.543
+##     0.720
+##     0.734
+##     0.579
+##     0.482
+##     0.652
+##     0.387
+##     0.703
+##          
+##     0.614
+##     0.829
+##     0.589
+##     0.722
+##     0.696
+##          
+##     0.337
+##     0.293
+##     0.711
+## 
+## Covariances:
+##                        Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   aberrant_salience ~~                                                      
+##     Asociality            0.037    0.005    7.667    0.000    0.625    0.625
+##     nn_dvrgnt_thnk        0.010    0.003    3.279    0.001    0.342    0.342
+##   Asociality ~~                                                             
+##     nn_dvrgnt_thnk        0.049    0.013    3.708    0.000    0.517    0.517
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .wss_mgcl_dtn_s    0.017    0.001   12.701    0.000    0.017    0.489
+##    .spq_nsl_prcptn    0.287    0.024   11.936    0.000    0.287    0.403
+##    .spq_mgcl_thnkn    0.339    0.025   13.800    0.000    0.339    0.705
+##    .spq_suspicsnss    0.443    0.035   12.647    0.000    0.443    0.482
+##    .spq_id_f_rfrnc    0.483    0.039   12.481    0.000    0.483    0.461
+##    .spq_odd_speech    0.634    0.046   13.649    0.000    0.634    0.665
+##    .orgnl_AQ_scl_d    0.476    0.034   14.001    0.000    0.476    0.768
+##    .wss_prcptl_br_    0.015    0.001   13.234    0.000    0.015    0.574
+##    .orgnl_AQ_pttrn    0.410    0.029   14.220    0.000    0.410    0.850
+##    .spq_ccntrc_bhv    0.471    0.037   12.817    0.000    0.471    0.505
+##    .orgnl_AQ_scl_n    0.326    0.025   13.044    0.000    0.326    0.623
+##    .spq_n_cls_frnd    0.341    0.038    9.084    0.000    0.341    0.312
+##    .spq_socil_nxty    0.652    0.049   13.228    0.000    0.652    0.653
+##    .spq_cnstrctd_f    0.346    0.029   11.810    0.000    0.346    0.478
+##    .wss_scl_nhdn_s    0.015    0.001   12.199    0.000    0.015    0.516
+##    .orgnl_AQ_mgntn    0.359    0.027   13.075    0.000    0.359    0.886
+##    .wss_physcl_nh_    0.013    0.001   13.511    0.000    0.013    0.914
+##    .orgnl_AQ_scl_c    0.202    0.048    4.215    0.000    0.202    0.494
+##     aberrant_salnc    0.018    0.002    8.123    0.000    1.000    1.000
+##     Asociality        0.197    0.030    6.525    0.000    1.000    1.000
+##     nn_dvrgnt_thnk    0.046    0.018    2.616    0.009    1.000    1.000</code></pre>
+<pre class="r"><code>mod_replication</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 85 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        39
+## 
+##   Number of observations                           422
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               833.883
+##   Degrees of freedom                               132
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                               918.487
+##   Degrees of freedom                               132
+##   P-value (Chi-square)                           0.000</code></pre>
+<p>CFA Excluding MSS Disorganized</p>
+<pre class="r"><code>cfa_excluding_mss = &quot;
+aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + spq_odd_speech + new_AQ_social_discourse + wss_perceptual_aberration_score + new_AQ_pattern + spq_eccentric_behavior
+Asociality =~ new_AQ_social_anhedonia + spq_no_close_friends + spq_social_anxiety + spq_constricted_affect + wss_social_anhedonia_score
+non_divergent_thinking =~ new_AQ_imagination + wss_physical_anhedonia_score + new_AQ_social_cogition
+&quot;
+
+mod_excluding_MSS = cfa(cfa_excluding_mss, data)
+summary(mod_excluding_MSS,fit.measures=T,standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 101 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        39
+## 
+##   Number of observations                           422
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               931.402
+##   Degrees of freedom                               132
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                              1040.620
+##   Degrees of freedom                               132
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              3328.463
+##   Degrees of freedom                               153
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.748
+##   Tucker-Lewis Index (TLI)                       0.708
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -5274.871
+##   Loglikelihood unrestricted model (H1)      -4809.170
+##                                                       
+##   Akaike (AIC)                               10627.742
+##   Bayesian (BIC)                             10785.497
+##   Sample-size adjusted Bayesian (SABIC)      10661.738
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.120
+##   90 Percent confidence interval - lower         0.113
+##   90 Percent confidence interval - upper         0.127
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    1.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.091
+## 
+## Goodness of Fit Index:
+## 
+##   Goodness of Fit Index (GFI)                    0.807
+##   90 Percent confidence interval - lower         0.789
+##   90 Percent confidence interval - upper         0.824
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                             Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv
+##   aberrant_salience =~                                                  
+##     wss_mgcl_dtn_s             1.000                               0.132
+##     spq_nsl_prcptn             4.924    0.338   14.574    0.000    0.649
+##     spq_mgcl_thnkn             2.775    0.274   10.145    0.000    0.366
+##     spq_suspicsnss             5.229    0.382   13.677    0.000    0.689
+##     spq_id_f_rfrnc             5.683    0.408   13.915    0.000    0.749
+##     spq_odd_speech             4.383    0.386   11.344    0.000    0.578
+##     nw_AQ_scl_dscr             2.887    0.275   10.493    0.000    0.380
+##     wss_prcptl_br_             0.786    0.064   12.361    0.000    0.103
+##     new_AQ_pattern             2.132    0.273    7.823    0.000    0.281
+##     spq_ccntrc_bhv             5.252    0.385   13.645    0.000    0.692
+##   Asociality =~                                                         
+##     nw_AQ_scl_nhdn             1.000                               0.448
+##     spq_n_cls_frnd             1.923    0.152   12.639    0.000    0.860
+##     spq_socil_nxty             1.330    0.132   10.110    0.000    0.595
+##     spq_cnstrctd_f             1.370    0.118   11.654    0.000    0.613
+##     wss_scl_nhdn_s             0.262    0.023   11.371    0.000    0.117
+##   non_divergent_thinking =~                                             
+##     new_AQ_imagntn             1.000                               0.179
+##     wss_physcl_nh_             0.177    0.049    3.579    0.000    0.032
+##     nw_AQ_scl_cgtn             2.809    0.773    3.636    0.000    0.504
+##   Std.all
+##          
+##     0.704
+##     0.769
+##     0.528
+##     0.719
+##     0.732
+##     0.592
+##     0.546
+##     0.646
+##     0.405
+##     0.717
+##          
+##     0.619
+##     0.824
+##     0.596
+##     0.721
+##     0.696
+##          
+##     0.299
+##     0.263
+##     0.833
+## 
+## Covariances:
+##                        Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   aberrant_salience ~~                                                      
+##     Asociality            0.037    0.005    7.714    0.000    0.634    0.634
+##     nn_dvrgnt_thnk        0.008    0.003    3.129    0.002    0.354    0.354
+##   Asociality ~~                                                             
+##     nn_dvrgnt_thnk        0.040    0.012    3.334    0.001    0.496    0.496
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .wss_mgcl_dtn_s    0.018    0.001   12.830    0.000    0.018    0.504
+##    .spq_nsl_prcptn    0.291    0.024   12.030    0.000    0.291    0.409
+##    .spq_mgcl_thnkn    0.347    0.025   13.864    0.000    0.347    0.722
+##    .spq_suspicsnss    0.445    0.035   12.686    0.000    0.445    0.484
+##    .spq_id_f_rfrnc    0.486    0.039   12.538    0.000    0.486    0.465
+##    .spq_odd_speech    0.619    0.046   13.601    0.000    0.619    0.650
+##    .nw_AQ_scl_dscr    0.341    0.025   13.797    0.000    0.341    0.702
+##    .wss_prcptl_br_    0.015    0.001   13.291    0.000    0.015    0.582
+##    .new_AQ_pattern    0.402    0.028   14.190    0.000    0.402    0.836
+##    .spq_ccntrc_bhv    0.453    0.036   12.705    0.000    0.453    0.486
+##    .nw_AQ_scl_nhdn    0.322    0.025   13.003    0.000    0.322    0.617
+##    .spq_n_cls_frnd    0.351    0.038    9.300    0.000    0.351    0.322
+##    .spq_socil_nxty    0.644    0.049   13.179    0.000    0.644    0.645
+##    .spq_cnstrctd_f    0.348    0.029   11.832    0.000    0.348    0.480
+##    .wss_scl_nhdn_s    0.015    0.001   12.196    0.000    0.015    0.515
+##    .new_AQ_imagntn    0.329    0.024   13.625    0.000    0.329    0.911
+##    .wss_physcl_nh_    0.014    0.001   13.908    0.000    0.014    0.931
+##    .nw_AQ_scl_cgtn    0.112    0.059    1.894    0.058    0.112    0.307
+##     aberrant_salnc    0.017    0.002    7.968    0.000    1.000    1.000
+##     Asociality        0.200    0.030    6.588    0.000    1.000    1.000
+##     nn_dvrgnt_thnk    0.032    0.013    2.433    0.015    1.000    1.000</code></pre>
+<p>Correlations with SeSS and ASI</p>
+<pre class="r"><code>correlation_syntax = &quot;
+aberrant_salience_positive =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + wss_perceptual_aberration_score +  new_AQ_pattern
+
+asociality =~ new_AQ_social_anhedonia + spq_no_close_friends+ spq_constricted_affect + wss_social_anhedonia_score + new_AQ_imagination + new_AQ_social_cogition + wss_physical_anhedonia_score
+
+aberrant_salience_disorganized =~  new_AQ_social_discourse  +  spq_eccentric_behavior + spq_odd_speech + MSS + spq_social_anxiety
+
+aberrant_salience_positive~~asociality
+aberrant_salience_positive ~~aberrant_salience_disorganized
+
+SeSS ~~ aberrant_salience_positive
+SeSS ~~ asociality
+SeSS ~~ aberrant_salience_disorganized
+
+ASI_score ~~ aberrant_salience_positive
+ASI_score ~~ asociality
+ASI_score ~~ aberrant_salience_disorganized
+
+SeSS ~~ ASI_score
+&quot;
+
+correlation_mod = sem(correlation_syntax, data)
+summary(correlation_mod,fit.measures=T,standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 132 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        50
+## 
+##   Number of observations                           422
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               980.730
+##   Degrees of freedom                               181
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                              1073.412
+##   Degrees of freedom                               181
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              3959.759
+##   Degrees of freedom                               210
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.787
+##   Tucker-Lewis Index (TLI)                       0.753
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -5437.663
+##   Loglikelihood unrestricted model (H1)      -4947.298
+##                                                       
+##   Akaike (AIC)                               10975.326
+##   Bayesian (BIC)                             11177.577
+##   Sample-size adjusted Bayesian (SABIC)      11018.910
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.102
+##   90 Percent confidence interval - lower         0.096
+##   90 Percent confidence interval - upper         0.109
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    1.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.083
+## 
+## Goodness of Fit Index:
+## 
+##   Goodness of Fit Index (GFI)                    0.832
+##   90 Percent confidence interval - lower         0.816
+##   90 Percent confidence interval - upper         0.848
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                                     Estimate  Std.Err  z-value  P(&gt;|z|)
+##   aberrant_salience_positive =~                                        
+##     wss_mgcl_dtn_s                     1.000                           
+##     spq_nsl_prcptn                     4.664    0.297   15.685    0.000
+##     spq_mgcl_thnkn                     2.847    0.249   11.454    0.000
+##     spq_suspicsnss                     4.917    0.339   14.491    0.000
+##     spq_id_f_rfrnc                     5.282    0.362   14.594    0.000
+##     wss_prcptl_br_                     0.773    0.057   13.593    0.000
+##     new_AQ_pattern                     2.042    0.252    8.111    0.000
+##   asociality =~                                                        
+##     nw_AQ_scl_nhdn                     1.000                           
+##     spq_n_cls_frnd                     1.840    0.146   12.635    0.000
+##     spq_cnstrctd_f                     1.288    0.113   11.439    0.000
+##     wss_scl_nhdn_s                     0.273    0.023   12.009    0.000
+##     new_AQ_imagntn                     0.168    0.070    2.412    0.016
+##     nw_AQ_scl_cgtn                     0.588    0.074    7.922    0.000
+##     wss_physcl_nh_                     0.073    0.014    5.121    0.000
+##   aberrant_salience_disorganized =~                                    
+##     nw_AQ_scl_dscr                     1.000                           
+##     spq_ccntrc_bhv                     1.554    0.109   14.273    0.000
+##     spq_odd_speech                     1.473    0.109   13.510    0.000
+##     MSS                                0.368    0.030   12.070    0.000
+##     spq_socil_nxty                     1.228    0.110   11.180    0.000
+##    Std.lv  Std.all
+##                   
+##     0.140    0.751
+##     0.655    0.776
+##     0.400    0.577
+##     0.691    0.720
+##     0.742    0.725
+##     0.109    0.678
+##     0.287    0.414
+##                   
+##     0.457    0.632
+##     0.840    0.804
+##     0.588    0.692
+##     0.125    0.740
+##     0.077    0.128
+##     0.268    0.443
+##     0.033    0.277
+##                   
+##     0.488    0.700
+##     0.758    0.785
+##     0.719    0.736
+##     0.179    0.651
+##     0.599    0.600
+## 
+## Covariances:
+##                                     Estimate  Std.Err  z-value  P(&gt;|z|)
+##   aberrant_salience_positive ~~                                        
+##     asociality                         0.036    0.005    7.364    0.000
+##     abrrnt_slnc_ds                     0.050    0.006    8.851    0.000
+##     SeSS                               0.039    0.005    7.752    0.000
+##   asociality ~~                                                        
+##     SeSS                               0.120    0.017    6.921    0.000
+##   aberrant_salience_disorganized ~~                                    
+##     SeSS                               0.165    0.019    8.576    0.000
+##   aberrant_salience_positive ~~                                        
+##     ASI_score                          0.018    0.002    8.085    0.000
+##   asociality ~~                                                        
+##     ASI_score                          0.012    0.006    1.933    0.053
+##   aberrant_salience_disorganized ~~                                    
+##     ASI_score                          0.046    0.007    6.336    0.000
+##   SeSS ~~                                                              
+##     ASI_score                          0.046    0.008    6.012    0.000
+##   asociality ~~                                                        
+##     abrrnt_slnc_ds                     0.136    0.018    7.497    0.000
+##    Std.lv  Std.all
+##                   
+##     0.560    0.560
+##     0.726    0.726
+##     0.279    0.467
+##                   
+##     0.263    0.441
+##                   
+##     0.339    0.568
+##                   
+##     0.125    0.494
+##                   
+##     0.026    0.104
+##                   
+##     0.095    0.376
+##                   
+##     0.046    0.306
+##                   
+##     0.611    0.611
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .wss_mgcl_dtn_s    0.015    0.001   12.119    0.000    0.015    0.437
+##    .spq_nsl_prcptn    0.283    0.024   11.696    0.000    0.283    0.398
+##    .spq_mgcl_thnkn    0.321    0.024   13.605    0.000    0.321    0.667
+##    .spq_suspicsnss    0.443    0.035   12.521    0.000    0.443    0.481
+##    .spq_id_f_rfrnc    0.497    0.040   12.464    0.000    0.497    0.474
+##    .wss_prcptl_br_    0.014    0.001   12.946    0.000    0.014    0.540
+##    .new_AQ_pattern    0.399    0.028   14.146    0.000    0.399    0.829
+##    .nw_AQ_scl_nhdn    0.314    0.025   12.798    0.000    0.314    0.601
+##    .spq_n_cls_frnd    0.386    0.040    9.703    0.000    0.386    0.353
+##    .spq_cnstrctd_f    0.378    0.031   12.121    0.000    0.378    0.522
+##    .wss_scl_nhdn_s    0.013    0.001   11.315    0.000    0.013    0.452
+##    .new_AQ_imagntn    0.355    0.024   14.483    0.000    0.355    0.984
+##    .nw_AQ_scl_cgtn    0.294    0.021   13.897    0.000    0.294    0.803
+##    .wss_physcl_nh_    0.013    0.001   14.314    0.000    0.013    0.923
+##    .nw_AQ_scl_dscr    0.247    0.020   12.339    0.000    0.247    0.509
+##    .spq_ccntrc_bhv    0.357    0.033   10.842    0.000    0.357    0.383
+##    .spq_odd_speech    0.436    0.037   11.825    0.000    0.436    0.458
+##    .MSS               0.044    0.003   12.866    0.000    0.044    0.577
+##    .spq_socil_nxty    0.640    0.048   13.262    0.000    0.640    0.641
+##     SeSS              0.356    0.025   14.526    0.000    0.356    1.000
+##     ASI_score         0.064    0.004   14.526    0.000    0.064    1.000
+##     abrrnt_slnc_ps    0.020    0.002    8.663    0.000    1.000    1.000
+##     asociality        0.209    0.031    6.724    0.000    1.000    1.000
+##     abrrnt_slnc_ds    0.238    0.031    7.772    0.000    1.000    1.000</code></pre>
+</div>
+<div id="correlation-replication" class="section level2">
+<h2>correlation replication</h2>
+<pre class="r"><code>correlation_syntax = &quot;
+aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + wss_perceptual_aberration_score +  new_AQ_pattern+  spq_eccentric_behavior + spq_odd_speech + new_AQ_social_discourse
+
+asociality =~ new_AQ_social_anhedonia + spq_no_close_friends+ spq_social_anxiety+spq_constricted_affect+wss_social_anhedonia_score
+
+disorganized =~ new_AQ_imagination + new_AQ_social_cogition + wss_physical_anhedonia_score + MSS
+
+aberrant_salience~~asociality
+aberrant_salience ~~disorganized
+
+SeSS ~~ aberrant_salience
+SeSS ~~ asociality
+SeSS ~~ disorganized
+
+ASI_score ~~ aberrant_salience
+ASI_score ~~ asociality
+ASI_score ~~ disorganized
+
+SeSS ~~ ASI_score
+&quot;
+
+correlation_mod = sem(correlation_syntax, data)
+summary(correlation_mod,fit.measures=T,standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 154 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        50
+## 
+##   Number of observations                           422
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                              1163.317
+##   Degrees of freedom                               181
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                              1321.741
+##   Degrees of freedom                               181
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              3959.759
+##   Degrees of freedom                               210
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.738
+##   Tucker-Lewis Index (TLI)                       0.696
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -5528.957
+##   Loglikelihood unrestricted model (H1)      -4947.298
+##                                                       
+##   Akaike (AIC)                               11157.914
+##   Bayesian (BIC)                             11360.164
+##   Sample-size adjusted Bayesian (SABIC)      11201.498
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.113
+##   90 Percent confidence interval - lower         0.107
+##   90 Percent confidence interval - upper         0.120
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    1.000
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.091
+## 
+## Goodness of Fit Index:
+## 
+##   Goodness of Fit Index (GFI)                    0.795
+##   90 Percent confidence interval - lower         0.779
+##   90 Percent confidence interval - upper         0.812
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                        Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   aberrant_salience =~                                                      
+##     wss_mgcl_dtn_s        1.000                               0.129    0.688
+##     spq_nsl_prcptn        4.924    0.351   14.026    0.000    0.634    0.751
+##     spq_mgcl_thnkn        2.745    0.281    9.755    0.000    0.353    0.510
+##     spq_suspicsnss        5.359    0.397   13.486    0.000    0.690    0.719
+##     spq_id_f_rfrnc        5.789    0.424   13.637    0.000    0.745    0.728
+##     wss_prcptl_br_        0.794    0.066   12.079    0.000    0.102    0.638
+##     new_AQ_pattern        2.289    0.280    8.179    0.000    0.295    0.425
+##     spq_ccntrc_bhv        5.445    0.400   13.599    0.000    0.701    0.726
+##     spq_odd_speech        4.670    0.400   11.674    0.000    0.601    0.616
+##     nw_AQ_scl_dscr        3.107    0.284   10.923    0.000    0.400    0.574
+##   asociality =~                                                             
+##     nw_AQ_scl_nhdn        1.000                               0.449    0.621
+##     spq_n_cls_frnd        1.900    0.150   12.648    0.000    0.853    0.816
+##     spq_socil_nxty        1.334    0.131   10.189    0.000    0.599    0.599
+##     spq_cnstrctd_f        1.354    0.116   11.626    0.000    0.608    0.714
+##     wss_scl_nhdn_s        0.265    0.023   11.547    0.000    0.119    0.707
+##   disorganized =~                                                           
+##     new_AQ_imagntn        1.000                               0.070    0.117
+##     nw_AQ_scl_cgtn        4.634    2.213    2.095    0.036    0.327    0.540
+##     wss_physcl_nh_        0.512    0.257    1.994    0.046    0.036    0.299
+##     MSS                   2.387    1.134    2.104    0.035    0.168    0.610
+## 
+## Covariances:
+##                        Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   aberrant_salience ~~                                                      
+##     asociality            0.037    0.005    7.699    0.000    0.638    0.638
+##     disorganized          0.007    0.003    2.075    0.038    0.724    0.724
+##     SeSS                  0.041    0.005    8.283    0.000    0.315    0.529
+##   asociality ~~                                                             
+##     SeSS                  0.119    0.017    6.944    0.000    0.265    0.444
+##   disorganized ~~                                                           
+##     SeSS                  0.025    0.012    2.074    0.038    0.355    0.595
+##   aberrant_salience ~~                                                      
+##     ASI_score             0.016    0.002    7.969    0.000    0.126    0.499
+##   asociality ~~                                                             
+##     ASI_score             0.017    0.006    2.822    0.005    0.039    0.154
+##   disorganized ~~                                                           
+##     ASI_score             0.002    0.001    1.285    0.199    0.027    0.108
+##   SeSS ~~                                                                   
+##     ASI_score             0.046    0.008    6.012    0.000    0.046    0.306
+##   asociality ~~                                                             
+##     disorganized          0.023    0.011    2.069    0.039    0.738    0.738
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .wss_mgcl_dtn_s    0.018    0.001   13.133    0.000    0.018    0.527
+##    .spq_nsl_prcptn    0.311    0.025   12.516    0.000    0.311    0.436
+##    .spq_mgcl_thnkn    0.356    0.025   13.984    0.000    0.356    0.740
+##    .spq_suspicsnss    0.444    0.035   12.863    0.000    0.444    0.483
+##    .spq_id_f_rfrnc    0.492    0.039   12.775    0.000    0.492    0.470
+##    .wss_prcptl_br_    0.015    0.001   13.461    0.000    0.015    0.592
+##    .new_AQ_pattern    0.394    0.028   14.186    0.000    0.394    0.820
+##    .spq_ccntrc_bhv    0.441    0.034   12.797    0.000    0.441    0.473
+##    .spq_odd_speech    0.592    0.044   13.581    0.000    0.592    0.621
+##    .nw_AQ_scl_dscr    0.325    0.024   13.767    0.000    0.325    0.671
+##    .nw_AQ_scl_nhdn    0.321    0.025   12.999    0.000    0.321    0.614
+##    .spq_n_cls_frnd    0.364    0.038    9.612    0.000    0.364    0.334
+##    .spq_socil_nxty    0.640    0.049   13.165    0.000    0.640    0.641
+##    .spq_cnstrctd_f    0.355    0.030   11.962    0.000    0.355    0.490
+##    .wss_scl_nhdn_s    0.014    0.001   12.063    0.000    0.014    0.500
+##    .new_AQ_imagntn    0.356    0.025   14.466    0.000    0.356    0.986
+##    .nw_AQ_scl_cgtn    0.260    0.021   12.183    0.000    0.260    0.709
+##    .wss_physcl_nh_    0.013    0.001   14.075    0.000    0.013    0.911
+##    .MSS               0.048    0.004   10.751    0.000    0.048    0.628
+##     SeSS              0.356    0.025   14.526    0.000    0.356    1.000
+##     ASI_score         0.064    0.004   14.526    0.000    0.064    1.000
+##     aberrant_salnc    0.017    0.002    7.761    0.000    1.000    1.000
+##     asociality        0.202    0.030    6.619    0.000    1.000    1.000
+##     disorganized      0.005    0.005    1.062    0.288    1.000    1.000</code></pre>
 </div>
 </div>
 
