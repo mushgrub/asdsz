@@ -1,8 +1,10 @@
-name: "my-website"
+name: "asdsz"
 navbar:
-  title: "My Website"
+  title: "Autism and Schizotypy"
   left:
     - text: "Home"
       href: index.html
     - text: "About"
       href: about.html
+name: "asdsz"
+output_dir: docs

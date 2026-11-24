@@ -16,7 +16,7 @@ output:
 Here we are getting the raw data file from FU1 into a useable form. 
 
 ```{r}
-
+file.create(".nojekyll")
 library(dplyr)
 data_original = read.csv("C:/r_projects/Autism and Schizotypy/asdsz/Schizotypy and Autism_FU1.csv")
 content = data_original %>% dplyr::select(MSS._1:SPQ_35)
