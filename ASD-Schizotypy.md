@@ -2804,7 +2804,7 @@ data %>% dplyr::select(starts_with("WSS")) %>% psych::alpha()
 WSS_survey = data %>% dplyr::select(starts_with("WSS"))
 ```
 
-# magical ideation
+magical ideation
 
 
 ``` r
@@ -2894,7 +2894,7 @@ magical_ideation_scale %>% psych::alpha()
 ## WSS_16  0.85 0.15 0.01
 ```
 
-# perceptual aberration
+perceptual aberration
 
 
 ``` r
@@ -2973,7 +2973,7 @@ WSS_survey %>% dplyr::select(WSS_17:WSS_31) %>% psych::alpha()
 wss_perceptual_aberration_score = WSS_survey %>% dplyr::select(WSS_17:WSS_31) %>% rowMeans(na.rm=T)
 ```
 
-# social anhedonia
+social anhedonia
 
 
 ``` r
@@ -3053,7 +3053,7 @@ social_anhedonia_scale %>% psych::alpha()
 ``` r
 wss_social_anhedonia_score = social_anhedonia_scale%>% rowMeans(na.rm=T)
 ```
-# physical anhedonia
+physical anhedonia
 
 
 ``` r
@@ -3139,9 +3139,9 @@ wss_physical_anhedonia_score = physical_anhedonia_scale%>% rowMeans(na.rm=T)
 WSS_scores = data.frame(ID = data$ID, wss_magical_ideation_scores, wss_perceptual_aberration_score, wss_social_anhedonia_score, wss_physical_anhedonia_score)
 ```
 
-## SPQ
+SPQ
 
-# Ideas of reference
+Ideas of reference
 
 
 ``` r
@@ -3520,7 +3520,7 @@ schizotypy_df_organized = cbind(ID = data$ID, positive, negative, disorganized)
 ```
 
 
-## Sensory Sensitivity
+Sensory Sensitivity
 
 
 ``` r
@@ -3656,7 +3656,7 @@ data %>% dplyr::select(starts_with("SeSS")) %>% psych::alpha()
 ## SeSS_37 0.36 0.23 0.15 0.15 0.10 0.03
 ```
 
-# visual
+visual
 
 
 ``` r
@@ -3720,7 +3720,7 @@ SeSS %>% dplyr::select(SeSS_1:SeSS_10) %>% psych::alpha()
 visual_score = SeSS %>% dplyr::select(SeSS_1:SeSS_10) %>% rowMeans(na.rm=T)
 ```
 
-# auditory
+auditory
 
 ``` r
 SeSS %>% dplyr::select(SeSS_11:SeSS_21) %>% psych::alpha()
@@ -3783,7 +3783,7 @@ SeSS %>% dplyr::select(SeSS_11:SeSS_21) %>% psych::alpha()
 auditory_score = SeSS %>% dplyr::select(SeSS_11:SeSS_21) %>% rowMeans(na.rm=T)
 ```
 
-# somatosensory
+somatosensory
 
 
 ``` r
@@ -3868,7 +3868,7 @@ SeSS_score = data.frame(ID = data$ID,visual_score,auditory_score, somatosensory_
 SeSS_score$SeSS = SeSS_score %>% dplyr::select(-ID) %>% rowMeans(na.rm=T)
 ```
 
-## ASI
+ASI
 
 
 ``` r
@@ -4017,7 +4017,7 @@ library(lavaan)
 data = read.csv("complete scores winsorzied.csv")
 ```
 
-## Replicating analyses from Chirica
+Replicating analyses from Chirica
 
 
 ``` r
