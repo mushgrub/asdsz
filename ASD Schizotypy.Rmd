@@ -692,8 +692,6 @@ mod_original$TLI
 ```
 
 
-
-
 Correlations for Chirica replication 
 
 ```{r}
@@ -739,6 +737,7 @@ data_excluding_disorganized_mod$TLI
 
 write.csv(data_excluding_disorganized_mod$communality, "Excluding Disorganized Communality 3F PAF FU1.csv")
 ```
+
 3 factors EFA
 
 ```{r}
@@ -757,6 +756,7 @@ data_excluding_disorganized_mod$TLI
 
 write.csv(data_excluding_disorganized_mod$communality, "Excluding Disorganized Communality 3F EFA FU1.csv")
 ```
+
 Now looking at 4 factors as the Parallel Analysis suggested 
 
 ```{r}
@@ -855,6 +855,7 @@ summary(mod_replication,fit.measures=T,standardized=TRUE)
 
 mod_replication
 ```
+
 CFA Excluding MSS Disorganized 
 
 ```{r}
@@ -901,7 +902,7 @@ summary(correlation_mod,fit.measures=T,standardized=TRUE)
 
 ```
 
-## correlation replication
+correlation replication
 
 ```{r}
 

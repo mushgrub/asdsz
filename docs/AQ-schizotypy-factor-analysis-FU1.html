@@ -288,13 +288,15 @@ $(document).ready(function () {
 </div>
 
 
+<div id="aq-and-schizotypy-factor-analysis-fu1" class="section level3">
+<h3>AQ and Schizotypy Factor Analysis FU1</h3>
+<p>These are the actual factor analyses we are most interested in.</p>
 <pre class="r"><code>library(dplyr)
 library(psych)
 library(paran)
 library(lavaan)</code></pre>
 <pre class="r"><code>data = read.csv(&quot;complete scores winsorzied.csv&quot;)</code></pre>
-<div id="pure-replication" class="section level2">
-<h2>pure replication</h2>
+<p>Replicating analyses from Chirica</p>
 <pre class="r"><code>data_chirica = data %&gt;% dplyr::select(
   starts_with(&quot;original_AQ&quot;), starts_with(&quot;wss&quot;), starts_with(&quot;spq&quot;)
 )</code></pre>
@@ -311,17 +313,19 @@ library(lavaan)</code></pre>
 ## Component   Adjusted    Unadjusted    Estimated
 ##             Eigenvalue  Eigenvalue    Bias
 ## ──────────────────────────────────────────────────
-## 1           5.734650    6.110305      0.375655
-## 2           1.731863    2.033188      0.301325
-## 3           1.143873    1.390964      0.247091
-## 4           1.026166    1.226148      0.199981
+## 1           5.734411    6.110305      0.375894
+## 2           1.731341    2.033188      0.301846
+## 3           1.144039    1.390964      0.246925
+## 4           1.026113    1.226148      0.200034
 ## ──────────────────────────────────────────────────
 ## Criterion: retain adjusted eigenvalues &gt; 1.
 ## (4 components retained)</code></pre>
 <p><img src="AQ-schizotypy-factor-analysis-FU1_files/figure-html/unnamed-chunk-4-1.png" alt="" width="672" /></p>
+<p>Above suggests four factors, but we will run three factors with the
+original model using maximum likelihood.</p>
 <pre class="r"><code>mod_original = fa(data_chirica, nfactors = 3,fm = &quot;ml&quot;)
 
-#write.csv(round(mod_original$communality,2), &quot;1.csv&quot;)
+write.csv(round(mod_original$communality,2), &quot;Chirica Communality FU1.csv&quot;)
 
 round(mod_original$PVAL,5)</code></pre>
 <pre><code>## [1] 0</code></pre>
@@ -336,8 +340,7 @@ round(mod_original$PVAL,5)</code></pre>
 <pre><code>## [1] 0.8221947</code></pre>
 <pre class="r"><code>1 - (1 - mod_original$TLI)* mod_original$dof / mod_original$null.dof</code></pre>
 <pre><code>## [1] 0.8814632</code></pre>
-<div id="correlations" class="section level3">
-<h3>Correlations</h3>
+<p>Correlations for Chirica replication</p>
 <pre class="r"><code>aberrant_salience = data_chirica %&gt;% dplyr::select(wss_magical_ideation_scores, spq_unusual_perception, spq_magical_thinking, spq_suspiciousness, spq_idea_of_reference, spq_odd_speech, original_AQ_social_discourse, wss_perceptual_aberration_score, original_AQ_pattern, spq_eccentric_behavior) %&gt;% rowMeans(na.rm=T)
 
 asociality = data_chirica %&gt;% dplyr::select(original_AQ_social_anhedonia, spq_no_close_friends, spq_social_anxiety, spq_constricted_affect, wss_social_anhedonia_score) %&gt;% rowMeans(na.rm=T)
@@ -360,10 +363,7 @@ cbind(aberrant_salience, asociality, non_divergent) %&gt;% corr.test()</code></p
 ## non_divergent                  0.01          0          0.00
 ## 
 ##  To see confidence intervals of the correlations, print with the short=FALSE option</code></pre>
-</div>
-</div>
-<div id="excluding-disorganized" class="section level2">
-<h2>excluding disorganized</h2>
+<p>New FU1 data, but excluding disorganized schizotypy scores</p>
 <pre class="r"><code>data_excluding_disorganized = data %&gt;% dplyr::select(starts_with(&quot;new_AQ&quot;), starts_with(&quot;spq&quot;), starts_with(&quot;wss&quot;))</code></pre>
 <pre class="r"><code>paran(data_excluding_disorganized, cfa=FALSE, graph=TRUE,
       color=TRUE, col=c(&quot;black&quot;, &quot;red&quot;, &quot;blue&quot;))</code></pre>
@@ -378,14 +378,16 @@ cbind(aberrant_salience, asociality, non_divergent) %&gt;% corr.test()</code></p
 ## Component   Adjusted    Unadjusted    Estimated
 ##             Eigenvalue  Eigenvalue    Bias
 ## ──────────────────────────────────────────────────
-## 1           5.853477    6.229851      0.376373
-## 2           1.766304    2.071048      0.304743
-## 3           1.184990    1.434426      0.249435
-## 4           1.013151    1.213039      0.199887
+## 1           5.852773    6.229851      0.377077
+## 2           1.766669    2.071048      0.304378
+## 3           1.185314    1.434426      0.249111
+## 4           1.012578    1.213039      0.200460
 ## ──────────────────────────────────────────────────
 ## Criterion: retain adjusted eigenvalues &gt; 1.
 ## (4 components retained)</code></pre>
 <p><img src="AQ-schizotypy-factor-analysis-FU1_files/figure-html/unnamed-chunk-8-1.png" alt="" width="672" /></p>
+<p>Suggests 4 factors, but we will use 3 using Principal Access
+Factoring</p>
 <pre class="r"><code>data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 3, fm = &quot;pa&quot;)
 
 data_excluding_disorganized_mod$PVAL</code></pre>
@@ -401,7 +403,8 @@ data_excluding_disorganized_mod$PVAL</code></pre>
 <pre><code>## [1] 0.8004841</code></pre>
 <pre class="r"><code>1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof</code></pre>
 <pre><code>## [1] 0.8669894</code></pre>
-<pre class="r"><code>#write.csv(data_excluding_disorganized_mod$communality, &quot;1.csv&quot;)</code></pre>
+<pre class="r"><code>write.csv(data_excluding_disorganized_mod$communality, &quot;Excluding Disorganized Communality 3F PAF FU1.csv&quot;)</code></pre>
+<p>3 factors EFA</p>
 <pre class="r"><code>data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 3, fm = &quot;ml&quot;)
 
 data_excluding_disorganized_mod$PVAL</code></pre>
@@ -417,7 +420,8 @@ data_excluding_disorganized_mod$PVAL</code></pre>
 <pre><code>## [1] 0.8031203</code></pre>
 <pre class="r"><code>1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof</code></pre>
 <pre><code>## [1] 0.8687469</code></pre>
-<pre class="r"><code>#write.csv(data_excluding_disorganized_mod$communality, &quot;1.csv&quot;)</code></pre>
+<pre class="r"><code>write.csv(data_excluding_disorganized_mod$communality, &quot;Excluding Disorganized Communality 3F EFA FU1.csv&quot;)</code></pre>
+<p>Now looking at 4 factors as the Parallel Analysis suggested</p>
 <pre class="r"><code>data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 4, fm = &quot;pa&quot;)
 
 data_excluding_disorganized_mod$PVAL</code></pre>
@@ -433,10 +437,8 @@ data_excluding_disorganized_mod$PVAL</code></pre>
 <pre><code>## [1] 0.8650025</code></pre>
 <pre class="r"><code>1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof</code></pre>
 <pre><code>## [1] 0.9232367</code></pre>
-<pre class="r"><code>write.csv(data_excluding_disorganized_mod$communality, &quot;1.csv&quot;)</code></pre>
-</div>
-<div id="including-mss" class="section level2">
-<h2>including MSS</h2>
+<pre class="r"><code>write.csv(data_excluding_disorganized_mod$communality, &quot;Excluding Disorganized Communality 4F PAF FU1.csv&quot;)</code></pre>
+<p>Adding MSS Disorganized Schizotypy</p>
 <pre class="r"><code>new_data = data %&gt;% dplyr::select(
   starts_with(&quot;new_AQ&quot;),
   starts_with(&quot;wss&quot;),
@@ -455,14 +457,15 @@ data_excluding_disorganized_mod$PVAL</code></pre>
 ## Component   Adjusted    Unadjusted    Estimated
 ##             Eigenvalue  Eigenvalue    Bias
 ## ──────────────────────────────────────────────────
-## 1           6.184601    6.574752      0.390150
-## 2           1.757499    2.074701      0.317201
-## 3           1.224330    1.483122      0.258792
-## 4           1.038363    1.251657      0.213293
+## 1           6.184500    6.574752      0.390251
+## 2           1.757409    2.074701      0.317291
+## 3           1.224150    1.483122      0.258972
+## 4           1.038217    1.251657      0.213439
 ## ──────────────────────────────────────────────────
 ## Criterion: retain adjusted eigenvalues &gt; 1.
 ## (4 components retained)</code></pre>
 <p><img src="AQ-schizotypy-factor-analysis-FU1_files/figure-html/unnamed-chunk-13-1.png" alt="" width="672" /></p>
+<p>Suggests four factors, but we will start with running 3 factors</p>
 <pre class="r"><code>new_data_mod = fa(new_data, nfactors = 3, fm = &quot;pa&quot;)
 
 new_data_mod$PVAL</code></pre>
@@ -478,7 +481,7 @@ new_data_mod$PVAL</code></pre>
 <pre><code>## [1] 0.8082744</code></pre>
 <pre class="r"><code>1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof</code></pre>
 <pre><code>## [1] 0.8688193</code></pre>
-<pre class="r"><code>#write.csv(new_data_mod$communality, &quot;1.csv&quot;)</code></pre>
+<pre class="r"><code>write.csv(new_data_mod$communality, &quot;New Communality 3F PAF FU1.csv&quot;)</code></pre>
 <pre class="r"><code>new_data_mod = fa(new_data, nfactors = 3, fm = &quot;ml&quot;)
 
 new_data_mod$PVAL</code></pre>
@@ -494,7 +497,7 @@ new_data_mod$PVAL</code></pre>
 <pre><code>## [1] 0.8106474</code></pre>
 <pre class="r"><code>1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof</code></pre>
 <pre><code>## [1] 0.870443</code></pre>
-<pre class="r"><code>write.csv(new_data_mod$communality, &quot;1.csv&quot;)</code></pre>
+<pre class="r"><code>write.csv(new_data_mod$communality, &quot;New Communality 3F EFA FU1.csv&quot;)</code></pre>
 <pre class="r"><code>new_data_mod = fa(new_data, nfactors = 4, fm = &quot;pa&quot;)
 
 new_data_mod$PVAL</code></pre>
@@ -510,10 +513,8 @@ new_data_mod$PVAL</code></pre>
 <pre><code>## [1] 0.8755811</code></pre>
 <pre class="r"><code>1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof</code></pre>
 <pre><code>## [1] 0.9265128</code></pre>
-<pre class="r"><code>write.csv(new_data_mod$communality, &quot;1.csv&quot;)</code></pre>
-</div>
-<div id="cfa" class="section level2">
-<h2>CFA</h2>
+<pre class="r"><code>write.csv(new_data_mod$communality, &quot;New Communality 4F PAF FU1.csv&quot;)</code></pre>
+<p>Original Chirica CFA</p>
 <pre class="r"><code>cfa_original = &quot;
 aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + spq_odd_speech + original_AQ_social_discourse + wss_perceptual_aberration_score + original_AQ_pattern + spq_eccentric_behavior
 Asociality =~ original_AQ_social_anhedonia + spq_no_close_friends + spq_social_anxiety + spq_constricted_affect + wss_social_anhedonia_score
@@ -681,14 +682,15 @@ summary(mod_replication,fit.measures=T,standardized=TRUE)</code></pre>
 ##   Test statistic                               918.487
 ##   Degrees of freedom                               132
 ##   P-value (Chi-square)                           0.000</code></pre>
-<pre class="r"><code>cfa_excluding_wss = &quot;
+<p>CFA Excluding MSS Disorganized</p>
+<pre class="r"><code>cfa_excluding_mss = &quot;
 aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + spq_odd_speech + new_AQ_social_discourse + wss_perceptual_aberration_score + new_AQ_pattern + spq_eccentric_behavior
 Asociality =~ new_AQ_social_anhedonia + spq_no_close_friends + spq_social_anxiety + spq_constricted_affect + wss_social_anhedonia_score
 non_divergent_thinking =~ new_AQ_imagination + wss_physical_anhedonia_score + new_AQ_social_cogition
 &quot;
 
-mod_excluding_WSS = cfa(cfa_excluding_wss, data)
-summary(mod_excluding_WSS,fit.measures=T,standardized=TRUE)</code></pre>
+mod_excluding_MSS = cfa(cfa_excluding_mss, data)
+summary(mod_excluding_MSS,fit.measures=T,standardized=TRUE)</code></pre>
 <pre><code>## lavaan 0.7-3 ended normally after 101 iterations
 ## 
 ##   Estimator                                         ML
@@ -829,9 +831,7 @@ summary(mod_excluding_WSS,fit.measures=T,standardized=TRUE)</code></pre>
 ##     aberrant_salnc    0.017    0.002    7.968    0.000    1.000    1.000
 ##     Asociality        0.200    0.030    6.588    0.000    1.000    1.000
 ##     nn_dvrgnt_thnk    0.032    0.013    2.433    0.015    1.000    1.000</code></pre>
-</div>
-<div id="correlations-1" class="section level1">
-<h1>correlations</h1>
+<p>Correlations with SeSS and ASI</p>
 <pre class="r"><code>correlation_syntax = &quot;
 aberrant_salience_positive =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + wss_perceptual_aberration_score +  new_AQ_pattern
 
@@ -1032,8 +1032,7 @@ summary(correlation_mod,fit.measures=T,standardized=TRUE)</code></pre>
 ##     abrrnt_slnc_ps    0.020    0.002    8.663    0.000    1.000    1.000
 ##     asociality        0.209    0.031    6.724    0.000    1.000    1.000
 ##     abrrnt_slnc_ds    0.238    0.031    7.772    0.000    1.000    1.000</code></pre>
-<div id="correlation-replication" class="section level2">
-<h2>correlation replication</h2>
+<p>correlation replication</p>
 <pre class="r"><code>correlation_syntax = &quot;
 aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + wss_perceptual_aberration_score +  new_AQ_pattern+  spq_eccentric_behavior + spq_odd_speech + new_AQ_social_discourse
 
@@ -1192,7 +1191,6 @@ summary(correlation_mod,fit.measures=T,standardized=TRUE)</code></pre>
 ##     aberrant_salnc    0.017    0.002    7.761    0.000    1.000    1.000
 ##     asociality        0.202    0.030    6.619    0.000    1.000    1.000
 ##     disorganized      0.005    0.005    1.062    0.288    1.000    1.000</code></pre>
-</div>
 </div>
 
 

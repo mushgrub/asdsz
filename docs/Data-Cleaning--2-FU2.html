@@ -290,8 +290,21 @@ $(document).ready(function () {
 
 <p>Cleaning after AQ factor scores are computed</p>
 <pre class="r"><code>library(dplyr)
-library(tidyverse)
-library(psych)</code></pre>
+library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.6.2</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ─────────────── tidyverse 2.0.0 ──
+## ✔ forcats   1.0.1     ✔ readr     2.2.0
+## ✔ ggplot2   4.0.4     ✔ stringr   1.6.0
+## ✔ lubridate 1.9.5     ✔ tibble    3.3.1
+## ✔ purrr     1.2.2     ✔ tidyr     1.3.2
+## ── Conflicts ───────────────────────────────── tidyverse_conflicts() ──
+## ✖ ggplot2::%+%()   masks psych::%+%()
+## ✖ ggplot2::alpha() masks psych::alpha()
+## ✖ mice::filter()   masks dplyr::filter(), stats::filter()
+## ✖ dplyr::lag()     masks stats::lag()
+## ✖ MASS::select()   masks dplyr::select()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(psych)</code></pre>
 <pre class="r"><code>data_FU2 = read.csv(&quot;survey content FU2.csv&quot;)
 AQ_scores_FU2 = read.csv(&quot;AQ imputed FU2.csv&quot;)</code></pre>
 <div
