@@ -7,3 +7,13 @@ navbar:
       href: index.html
     - text: "About"
       href: about.html
+    - text: "Follow Up 1"
+      menu: 
+      - text: "Data Cleaning #1"
+        href: Data-Cleaning-FU1.html
+      - text: "AQ Factors"
+        href: AQ-Factors-FU1
+      - text: "Data Cleaning #2"
+        href: Data-Cleaning--2-FU1.html
+      - text: "AQ & Schizotypy Factor Analysis"
+        href: AQ-schizotypy-factor-analysis-FU1.html
