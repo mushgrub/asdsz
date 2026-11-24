@@ -12,6 +12,7 @@ library(dplyr)
 library(psych)
 library(paran)
 library(lavaan)
+library(knitr)
 ```
 
 ```{r}

@@ -30,6 +30,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -220,6 +223,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -227,6 +293,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -246,34 +322,47 @@ $(document).ready(function () {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="about.html">About</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Follow Up 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Data-Cleaning-FU1.html">Data Cleaning #1</a>
+    </li>
+    <li>
+      <a href="AQ-Factors-FU1.html">AQ Factors</a>
+    </li>
+    <li>
+      <a href="Data-Cleaning--2-FU1.html">Data Cleaning #2</a>
+    </li>
+    <li>
+      <a href="AQ-schizotypy-factor-analysis-FU1.html">AQ &amp; Schizotypy Factor Analysis</a>
+    </li>
+  </ul>
 </li>
-<li class="dropdown-header">Follow Up 1</li>
-<li>
-  <a href="Data-Cleaning-FU1.html">Data Cleaning #1</a>
-</li>
-<li>
-  <a href="AQ-Factors-FU1.html">AQ Factors</a>
-</li>
-<li>
-  <a href="Data-Cleaning--2-FU1.html">Data Cleaning #2</a>
-</li>
-<li>
-  <a href="AQ-schizotypy-factor-analysis-FU1.html">AQ &amp; Schizotypy Factor Analysis</a>
-</li>
-<li class="dropdown-header">Follow Up 2</li>
-<li>
-  <a href="Data-Cleaning--1-FU2.html">Data Cleaning #1</a>
-</li>
-<li>
-  <a href="AQ-Factors-FU2.html">AQ Factors</a>
-</li>
-<li>
-  <a href="Data-Cleaning--2-FU2.html">Data Cleaning #2</a>
-</li>
-<li>
-  <a href="AQ-schizotypy-factor-analysis-FU2.html">AQ &amp; Schizotypy Factor Analysis</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Follow Up 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Data-Cleaning--1-FU2.html">Data Cleaning #1</a>
+    </li>
+    <li>
+      <a href="AQ-Factors-FU2.html">AQ Factors</a>
+    </li>
+    <li>
+      <a href="Data-Cleaning--2-FU2.html">Data Cleaning #2</a>
+    </li>
+    <li>
+      <a href="AQ-schizotypy-factor-analysis-FU2.html">AQ &amp; Schizotypy Factor Analysis</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -298,7 +387,8 @@ $(document).ready(function () {
 <pre class="r"><code>library(dplyr)
 library(psych)
 library(paran)
-library(lavaan)</code></pre>
+library(lavaan)
+library(knitr)</code></pre>
 <pre class="r"><code>data = read.csv(&quot;complete scores winsorzied.csv&quot;)</code></pre>
 <p>Replicating analyses from Chirica</p>
 <pre class="r"><code>data_chirica = data %&gt;% dplyr::select(
@@ -1195,9 +1285,1038 @@ summary(correlation_mod,fit.measures=T,standardized=TRUE)</code></pre>
 ##     aberrant_salnc    0.017    0.002    7.761    0.000    1.000    1.000
 ##     asociality        0.202    0.030    6.619    0.000    1.000    1.000
 ##     disorganized      0.005    0.005    1.062    0.288    1.000    1.000</code></pre>
+<p>Finally, we look at the associations between all individual autism
+and schizotypy subscales with aberrant salience and sensory
+sensitivity.</p>
+<pre class="r"><code>complete_scores &lt;- read.csv(&quot;complete scores.csv&quot;)
+
+subscales &lt;- complete_scores %&gt;% dplyr::select(-X, -ID)
+
+correlation_matrix &lt;- corr.test(subscales, use = &quot;pairwise&quot;, method = &quot;pearson&quot;)
+
+p_matrix &lt;- correlation_matrix$p
+p_adj_matrix &lt;- matrix(NA, nrow =  ncol(subscales), ncol = ncol(subscales))
+p_adj_matrix[lower.tri(p_adj_matrix)] &lt;- p.adjust(p_matrix[lower.tri(p_matrix)], method = &quot;fdr&quot;)
+
+stars &lt;- ifelse(p_adj_matrix &lt; .001, &quot;***&quot;,
+         ifelse(p_adj_matrix &lt; .01, &quot;**&quot;,
+         ifelse(p_adj_matrix &lt; .05, &quot;*&quot;, &quot;&quot;)))
+
+r_table &lt;- matrix(
+  paste0(sprintf(&quot;%.2f&quot;, correlation_matrix$r), stars),
+  nrow = ncol(subscales),
+  dimnames = list(colnames(subscales), colnames(subscales))
+)
+
+r_table[upper.tri(r_table, diag = TRUE)] &lt;- &quot;&quot;
+rownames(r_table) &lt;- paste0(seq_len(nrow(r_table)), &quot;. &quot;, rownames(r_table))
+colnames(r_table) &lt;- seq_len(ncol(r_table))
+
+kable(r_table, caption = &quot;Correlation Matrix&quot;)</code></pre>
+<table>
+<caption>Correlation Matrix</caption>
+<colgroup>
+<col width="13%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="1%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+<th align="left">7</th>
+<th align="left">8</th>
+<th align="left">9</th>
+<th align="left">10</th>
+<th align="left">11</th>
+<th align="left">12</th>
+<th align="left">13</th>
+<th align="left">14</th>
+<th align="left">15</th>
+<th align="left">16</th>
+<th align="left">17</th>
+<th align="left">18</th>
+<th align="left">19</th>
+<th align="left">20</th>
+<th align="left">21</th>
+<th align="left">22</th>
+<th align="left">23</th>
+<th align="left">24</th>
+<th align="left">25</th>
+<th align="left">26</th>
+<th align="left">27</th>
+<th align="left">28</th>
+<th align="left">29</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1. original_AQ_social_anhedonia</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">2. original_AQ_pattern</td>
+<td align="left">0.10*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">3. original_AQ_social_cognition</td>
+<td align="left">0.28***</td>
+<td align="left">0.16**</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">4. original_AQ_social_discourse</td>
+<td align="left">0.16**</td>
+<td align="left">0.25***</td>
+<td align="left">0.30***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">5. original_AQ_imagination</td>
+<td align="left">0.15**</td>
+<td align="left">-0.09</td>
+<td align="left">0.25***</td>
+<td align="left">0.01</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">6. new_AQ_social_anhedonia</td>
+<td align="left">1.00***</td>
+<td align="left">0.10*</td>
+<td align="left">0.28***</td>
+<td align="left">0.16**</td>
+<td align="left">0.15**</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">7. new_AQ_pattern</td>
+<td align="left">0.15**</td>
+<td align="left">0.97***</td>
+<td align="left">0.18***</td>
+<td align="left">0.27***</td>
+<td align="left">-0.10</td>
+<td align="left">0.15**</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">8. new_AQ_social_cogition</td>
+<td align="left">0.34***</td>
+<td align="left">0.18***</td>
+<td align="left">0.93***</td>
+<td align="left">0.35***</td>
+<td align="left">0.24***</td>
+<td align="left">0.34***</td>
+<td align="left">0.21***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">9. new_AQ_social_discourse</td>
+<td align="left">0.17***</td>
+<td align="left">0.27***</td>
+<td align="left">0.35***</td>
+<td align="left">0.89***</td>
+<td align="left">-0.00</td>
+<td align="left">0.17***</td>
+<td align="left">0.30***</td>
+<td align="left">0.41***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">10. new_AQ_imagination</td>
+<td align="left">0.12*</td>
+<td align="left">-0.16**</td>
+<td align="left">0.27***</td>
+<td align="left">0.00</td>
+<td align="left">0.95***</td>
+<td align="left">0.12*</td>
+<td align="left">-0.17***</td>
+<td align="left">0.26***</td>
+<td align="left">-0.02</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">11. wss_magical_ideation_scores</td>
+<td align="left">0.13**</td>
+<td align="left">0.32***</td>
+<td align="left">0.09</td>
+<td align="left">0.27***</td>
+<td align="left">-0.14**</td>
+<td align="left">0.13**</td>
+<td align="left">0.31***</td>
+<td align="left">0.07</td>
+<td align="left">0.29***</td>
+<td align="left">-0.19***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">12. wss_perceptual_aberration_score</td>
+<td align="left">0.29***</td>
+<td align="left">0.32***</td>
+<td align="left">0.22***</td>
+<td align="left">0.33***</td>
+<td align="left">-0.05</td>
+<td align="left">0.29***</td>
+<td align="left">0.34***</td>
+<td align="left">0.23***</td>
+<td align="left">0.32***</td>
+<td align="left">-0.06</td>
+<td align="left">0.63***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">13. spq_idea_of_reference</td>
+<td align="left">0.16**</td>
+<td align="left">0.22***</td>
+<td align="left">0.20***</td>
+<td align="left">0.29***</td>
+<td align="left">-0.05</td>
+<td align="left">0.16**</td>
+<td align="left">0.22***</td>
+<td align="left">0.19***</td>
+<td align="left">0.33***</td>
+<td align="left">-0.10*</td>
+<td align="left">0.50***</td>
+<td align="left">0.39***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">14. spq_suspiciousness</td>
+<td align="left">0.18***</td>
+<td align="left">0.23***</td>
+<td align="left">0.24***</td>
+<td align="left">0.34***</td>
+<td align="left">0.05</td>
+<td align="left">0.18***</td>
+<td align="left">0.24***</td>
+<td align="left">0.25***</td>
+<td align="left">0.37***</td>
+<td align="left">0.01</td>
+<td align="left">0.49***</td>
+<td align="left">0.41***</td>
+<td align="left">0.63***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">15. spq_magical_thinking</td>
+<td align="left">0.06</td>
+<td align="left">0.21***</td>
+<td align="left">0.00</td>
+<td align="left">0.16**</td>
+<td align="left">-0.11*</td>
+<td align="left">0.06</td>
+<td align="left">0.20***</td>
+<td align="left">0.01</td>
+<td align="left">0.11*</td>
+<td align="left">-0.14**</td>
+<td align="left">0.59***</td>
+<td align="left">0.38***</td>
+<td align="left">0.38***</td>
+<td align="left">0.39***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">16. spq_unusual_perception</td>
+<td align="left">0.22***</td>
+<td align="left">0.31***</td>
+<td align="left">0.23***</td>
+<td align="left">0.32***</td>
+<td align="left">-0.07</td>
+<td align="left">0.22***</td>
+<td align="left">0.32***</td>
+<td align="left">0.23***</td>
+<td align="left">0.36***</td>
+<td align="left">-0.11*</td>
+<td align="left">0.57***</td>
+<td align="left">0.57***</td>
+<td align="left">0.55***</td>
+<td align="left">0.53***</td>
+<td align="left">0.48***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">17. wss_social_anhedonia_score</td>
+<td align="left">0.61***</td>
+<td align="left">0.17***</td>
+<td align="left">0.26***</td>
+<td align="left">0.27***</td>
+<td align="left">0.06</td>
+<td align="left">0.61***</td>
+<td align="left">0.20***</td>
+<td align="left">0.28***</td>
+<td align="left">0.29***</td>
+<td align="left">0.05</td>
+<td align="left">0.31***</td>
+<td align="left">0.38***</td>
+<td align="left">0.25***</td>
+<td align="left">0.34***</td>
+<td align="left">0.19***</td>
+<td align="left">0.31***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">18. wss_physical_anhedonia_score</td>
+<td align="left">0.15**</td>
+<td align="left">0.02</td>
+<td align="left">0.18***</td>
+<td align="left">0.17***</td>
+<td align="left">0.16**</td>
+<td align="left">0.15**</td>
+<td align="left">0.02</td>
+<td align="left">0.20***</td>
+<td align="left">0.16***</td>
+<td align="left">0.16**</td>
+<td align="left">0.06</td>
+<td align="left">0.15**</td>
+<td align="left">0.00</td>
+<td align="left">0.09</td>
+<td align="left">0.07</td>
+<td align="left">0.04</td>
+<td align="left">0.32***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">19. spq_no_close_friends</td>
+<td align="left">0.44***</td>
+<td align="left">0.16**</td>
+<td align="left">0.29***</td>
+<td align="left">0.22***</td>
+<td align="left">0.11*</td>
+<td align="left">0.44***</td>
+<td align="left">0.18***</td>
+<td align="left">0.30***</td>
+<td align="left">0.29***</td>
+<td align="left">0.09</td>
+<td align="left">0.26***</td>
+<td align="left">0.29***</td>
+<td align="left">0.39***</td>
+<td align="left">0.49***</td>
+<td align="left">0.17***</td>
+<td align="left">0.40***</td>
+<td align="left">0.59***</td>
+<td align="left">0.16***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">20. spq_constricted_affect</td>
+<td align="left">0.40***</td>
+<td align="left">0.16**</td>
+<td align="left">0.22***</td>
+<td align="left">0.16**</td>
+<td align="left">0.15**</td>
+<td align="left">0.40***</td>
+<td align="left">0.19***</td>
+<td align="left">0.26***</td>
+<td align="left">0.22***</td>
+<td align="left">0.12*</td>
+<td align="left">0.23***</td>
+<td align="left">0.23***</td>
+<td align="left">0.32***</td>
+<td align="left">0.43***</td>
+<td align="left">0.17***</td>
+<td align="left">0.37***</td>
+<td align="left">0.40***</td>
+<td align="left">0.11*</td>
+<td align="left">0.67***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">21. spq_social_anxiety</td>
+<td align="left">0.42***</td>
+<td align="left">0.10</td>
+<td align="left">0.28***</td>
+<td align="left">0.24***</td>
+<td align="left">-0.03</td>
+<td align="left">0.42***</td>
+<td align="left">0.12*</td>
+<td align="left">0.32***</td>
+<td align="left">0.30***</td>
+<td align="left">-0.06</td>
+<td align="left">0.22***</td>
+<td align="left">0.25***</td>
+<td align="left">0.47***</td>
+<td align="left">0.46***</td>
+<td align="left">0.09</td>
+<td align="left">0.35***</td>
+<td align="left">0.33***</td>
+<td align="left">-0.02</td>
+<td align="left">0.45***</td>
+<td align="left">0.44***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">22. MSS</td>
+<td align="left">0.20***</td>
+<td align="left">0.15**</td>
+<td align="left">0.26***</td>
+<td align="left">0.48***</td>
+<td align="left">0.06</td>
+<td align="left">0.20***</td>
+<td align="left">0.16**</td>
+<td align="left">0.31***</td>
+<td align="left">0.51***</td>
+<td align="left">0.03</td>
+<td align="left">0.31***</td>
+<td align="left">0.35***</td>
+<td align="left">0.38***</td>
+<td align="left">0.38***</td>
+<td align="left">0.18***</td>
+<td align="left">0.33***</td>
+<td align="left">0.34***</td>
+<td align="left">0.17***</td>
+<td align="left">0.35***</td>
+<td align="left">0.30***</td>
+<td align="left">0.36***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">23. spq_eccentric_behavior</td>
+<td align="left">0.29***</td>
+<td align="left">0.29***</td>
+<td align="left">0.28***</td>
+<td align="left">0.44***</td>
+<td align="left">-0.06</td>
+<td align="left">0.29***</td>
+<td align="left">0.32***</td>
+<td align="left">0.32***</td>
+<td align="left">0.53***</td>
+<td align="left">-0.09</td>
+<td align="left">0.41***</td>
+<td align="left">0.37***</td>
+<td align="left">0.56***</td>
+<td align="left">0.46***</td>
+<td align="left">0.29***</td>
+<td align="left">0.54***</td>
+<td align="left">0.36***</td>
+<td align="left">0.09</td>
+<td align="left">0.40***</td>
+<td align="left">0.41***</td>
+<td align="left">0.48***</td>
+<td align="left">0.49***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">24. spq_odd_speech</td>
+<td align="left">0.12*</td>
+<td align="left">0.22***</td>
+<td align="left">0.25***</td>
+<td align="left">0.53***</td>
+<td align="left">-0.09</td>
+<td align="left">0.12*</td>
+<td align="left">0.22***</td>
+<td align="left">0.28***</td>
+<td align="left">0.60***</td>
+<td align="left">-0.12*</td>
+<td align="left">0.33***</td>
+<td align="left">0.25***</td>
+<td align="left">0.46***</td>
+<td align="left">0.42***</td>
+<td align="left">0.20***</td>
+<td align="left">0.39***</td>
+<td align="left">0.19***</td>
+<td align="left">-0.04</td>
+<td align="left">0.29***</td>
+<td align="left">0.28***</td>
+<td align="left">0.45***</td>
+<td align="left">0.49***</td>
+<td align="left">0.56***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">25. visual_score</td>
+<td align="left">0.31***</td>
+<td align="left">0.29***</td>
+<td align="left">0.26***</td>
+<td align="left">0.39***</td>
+<td align="left">0.05</td>
+<td align="left">0.31***</td>
+<td align="left">0.31***</td>
+<td align="left">0.33***</td>
+<td align="left">0.42***</td>
+<td align="left">0.00</td>
+<td align="left">0.33***</td>
+<td align="left">0.42***</td>
+<td align="left">0.30***</td>
+<td align="left">0.34***</td>
+<td align="left">0.19***</td>
+<td align="left">0.34***</td>
+<td align="left">0.30***</td>
+<td align="left">0.05</td>
+<td align="left">0.27***</td>
+<td align="left">0.22***</td>
+<td align="left">0.43***</td>
+<td align="left">0.32***</td>
+<td align="left">0.40***</td>
+<td align="left">0.38***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">26. auditory_score</td>
+<td align="left">0.31***</td>
+<td align="left">0.24***</td>
+<td align="left">0.28***</td>
+<td align="left">0.33***</td>
+<td align="left">0.13**</td>
+<td align="left">0.31***</td>
+<td align="left">0.27***</td>
+<td align="left">0.36***</td>
+<td align="left">0.40***</td>
+<td align="left">0.08</td>
+<td align="left">0.24***</td>
+<td align="left">0.32***</td>
+<td align="left">0.24***</td>
+<td align="left">0.30***</td>
+<td align="left">0.11*</td>
+<td align="left">0.30***</td>
+<td align="left">0.33***</td>
+<td align="left">0.11*</td>
+<td align="left">0.30***</td>
+<td align="left">0.25***</td>
+<td align="left">0.39***</td>
+<td align="left">0.32***</td>
+<td align="left">0.36***</td>
+<td align="left">0.33***</td>
+<td align="left">0.78***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">27. somatosensory_score</td>
+<td align="left">0.23***</td>
+<td align="left">0.27***</td>
+<td align="left">0.27***</td>
+<td align="left">0.41***</td>
+<td align="left">0.11*</td>
+<td align="left">0.23***</td>
+<td align="left">0.30***</td>
+<td align="left">0.31***</td>
+<td align="left">0.44***</td>
+<td align="left">0.07</td>
+<td align="left">0.27***</td>
+<td align="left">0.36***</td>
+<td align="left">0.26***</td>
+<td align="left">0.32***</td>
+<td align="left">0.19***</td>
+<td align="left">0.31***</td>
+<td align="left">0.31***</td>
+<td align="left">0.17***</td>
+<td align="left">0.26***</td>
+<td align="left">0.22***</td>
+<td align="left">0.30***</td>
+<td align="left">0.30***</td>
+<td align="left">0.35***</td>
+<td align="left">0.32***</td>
+<td align="left">0.73***</td>
+<td align="left">0.69***</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">28. SeSS</td>
+<td align="left">0.32***</td>
+<td align="left">0.29***</td>
+<td align="left">0.30***</td>
+<td align="left">0.42***</td>
+<td align="left">0.11*</td>
+<td align="left">0.32***</td>
+<td align="left">0.32***</td>
+<td align="left">0.37***</td>
+<td align="left">0.46***</td>
+<td align="left">0.05</td>
+<td align="left">0.31***</td>
+<td align="left">0.41***</td>
+<td align="left">0.30***</td>
+<td align="left">0.35***</td>
+<td align="left">0.18***</td>
+<td align="left">0.35***</td>
+<td align="left">0.35***</td>
+<td align="left">0.12*</td>
+<td align="left">0.31***</td>
+<td align="left">0.25***</td>
+<td align="left">0.41***</td>
+<td align="left">0.35***</td>
+<td align="left">0.41***</td>
+<td align="left">0.38***</td>
+<td align="left">0.92***</td>
+<td align="left">0.91***</td>
+<td align="left">0.88***</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">29. ASI_score</td>
+<td align="left">0.06</td>
+<td align="left">0.34***</td>
+<td align="left">0.02</td>
+<td align="left">0.20***</td>
+<td align="left">-0.12*</td>
+<td align="left">0.06</td>
+<td align="left">0.36***</td>
+<td align="left">0.04</td>
+<td align="left">0.23***</td>
+<td align="left">-0.20***</td>
+<td align="left">0.36***</td>
+<td align="left">0.25***</td>
+<td align="left">0.41***</td>
+<td align="left">0.37***</td>
+<td align="left">0.29***</td>
+<td align="left">0.35***</td>
+<td align="left">0.05</td>
+<td align="left">-0.22***</td>
+<td align="left">0.14**</td>
+<td align="left">0.09</td>
+<td align="left">0.21***</td>
+<td align="left">0.19***</td>
+<td align="left">0.31***</td>
+<td align="left">0.34***</td>
+<td align="left">0.30***</td>
+<td align="left">0.25***</td>
+<td align="left">0.27***</td>
+<td align="left">0.31***</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -1230,6 +2349,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

@@ -5,8 +5,6 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "About"
-      href: about.html
     - text: "Follow Up 1"
       menu: 
       - text: "Data Cleaning #1"
@@ -27,3 +25,8 @@ navbar:
         href: Data-Cleaning--2-FU2.html
       - text: "AQ & Schizotypy Factor Analysis"
         href: AQ-schizotypy-factor-analysis-FU2.html
+output:
+  html_document:
+    number_sections: true
+    toc: true
+    toc_float: true
