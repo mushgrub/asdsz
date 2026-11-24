@@ -23,9 +23,7 @@ AQ_scores_FU2 = read.csv("AQ imputed FU2.csv")
 ```
 
 
-
-
-## original AQ scores, again, these are referring to the AQ factors found in Zhu et al., (2022)
+original AQ scores, again, these are referring to the AQ factors found in Zhu et al., (2022)
 
 ```{r}
 original_AQ_social_discourse_FU2 = AQ_scores_FU2 %>% dplyr::select(AQ._1:AQ._3) %>% rowMeans(na.rm = T)
@@ -46,7 +44,7 @@ AQ_scores_FU2 %>% dplyr::select(AQ._29:AQ._34) %>% psych::alpha()
 
 ```
 
-## new AQ scores; Why were certain values dropped? 6 items total were dropped from the CFA; assuming she dropped them due to fit, sot this should be fine I am just going with it; can talk with AB and HB about writing this justification up later on. 
+New AQ scores. Remember, 6 items were dropped from the FU1. New AQ scores include all AQ items administered in FU2.
 
 ```{r}
 new_AQ_social_discourse_FU2 = AQ_scores_FU2 %>% dplyr::select(AQ._1:AQ._7) %>% rowMeans(na.rm = T) 
@@ -69,7 +67,7 @@ AQ_scores_FU2 %>% dplyr::select(AQ._29:AQ._34) %>% psych::alpha()
 
 
 
-## MSS disorganized schizotypy scores
+Calculate MSS Disorganized Schizotypy Subscale scores
 
 ```{r}
 MSS_scores_FU2 = data_FU2 %>% dplyr::select(starts_with("MSS")) %>% rowMeans(na.rm = T)
@@ -78,14 +76,14 @@ MSS_FU2 = data.frame(ID = data_FU2$ID, MSS = MSS_scores_FU2)
 data_FU2 %>% dplyr::select(starts_with("MSS")) %>% psych::alpha()
 ```
 
-##WSS
+Calculate WSS subscale scores
 
 ```{r}
 data_FU2 %>% dplyr::select(starts_with("WSS")) %>% psych::alpha()
 WSS_survey_FU2 = data_FU2 %>% dplyr::select(starts_with("WSS"))
 ```
 
-# magical ideation
+magical ideation
 
 ```{r}
 magical_ideation_scale_FU2 =  WSS_survey_FU2 %>% dplyr::select(WSS_1:WSS_15)
@@ -94,14 +92,14 @@ wss_magical_ideation_scores_FU2 = magical_ideation_scale_FU2 %>% rowMeans(na.rm=
 magical_ideation_scale_FU2 %>% psych::alpha()
 ```
 
-# perceptual aberration
+perceptual aberration
 
 ```{r}
 WSS_survey_FU2 %>% dplyr::select(WSS_16:WSS_30) %>% psych::alpha()
 wss_perceptual_aberration_score_FU2 = WSS_survey_FU2 %>% dplyr::select(WSS_16:WSS_30) %>% rowMeans(na.rm=T)
 ```
 
-# physical anhedonia
+physical anhedonia
 
 ```{r}
 physical_anhedonia_scale_FU2 = WSS_survey_FU2 %>% dplyr::select(WSS_31, WSS_33:WSS_46)
@@ -115,9 +113,7 @@ wss_physical_anhedonia_score_FU2 = physical_anhedonia_scale_FU2 %>% rowMeans(na.
 WSS_scores_FU2 = data.frame(ID = data_FU2$ID, wss_magical_ideation_scores_FU2, wss_perceptual_aberration_score_FU2, wss_physical_anhedonia_score_FU2)
 ```
 
-## SPQ, only No Close Friends, Constricted Affect, and Eccentric Behavior subscales of the SPQ were included
-
-
+SPQ next. Only No Close Friends, Constricted Affect, and Eccentric Behavior subscales of the SPQ were included in FU2. 
 
 ```{r}
 SPQ_scales_FU2 = data_FU2 %>% dplyr::select(starts_with("SPQ"))
@@ -140,7 +136,8 @@ SPQ_scales_FU2 %>% dplyr::select(SPQ_8:SPQ_11) %>% psych::alpha()
 SPQ_scores_FU2 = data.frame(ID = data_FU2$ID, spq_no_close_friends_FU2, spq_constricted_affect_FU2, spq_eccentric_behavior_FU2)
 ```
 
-##Combining all of the schizotypy scores into one data frame
+Combining all of the schizotypy scores into one data frame
+
 ```{r}
 df_schizotypy_FU2 = cbind(MSS_scores_FU2, WSS_scores_FU2, SPQ_scores_FU2)
 
@@ -155,21 +152,21 @@ schizotypy_df_organized_FU2 = cbind(ID = data_FU2$ID, positive_FU2, negative_FU2
 ```
 
 
-## Sensory Sensitivity, only visual and auditory sensory sensitivity were included
+Sensory Sensitivity, only visual and auditory sensory sensitivity were included in FU2.
 
 ```{r}
 SeSS_FU2 = data_FU2 %>% dplyr::select(starts_with("SeSS"))
 data_FU2 %>% dplyr::select(starts_with("SeSS")) %>% psych::alpha()
 ```
 
-# visual
+visual
 
 ```{r}
 SeSS_FU2 %>% dplyr::select(SeSS_1:SeSS_10) %>% psych::alpha()
 visual_score_FU2 = SeSS_FU2 %>% dplyr::select(SeSS_1:SeSS_10) %>% rowMeans(na.rm=T)
 ```
 
-# auditory
+auditory
 ```{r}
 SeSS_FU2 %>% dplyr::select(SeSS_11:SeSS_21) %>% psych::alpha()
 auditory_score_FU2 = SeSS_FU2 %>% dplyr::select(SeSS_11:SeSS_21) %>% rowMeans(na.rm=T)
@@ -182,7 +179,7 @@ SeSS_score_FU2 = data.frame(ID = data_FU2$ID,visual_score_FU2,auditory_score_FU2
 SeSS_score_FU2$SeSS_FU2 = SeSS_score_FU2 %>% dplyr::select(-ID) %>% rowMeans(na.rm=T)
 ```
 
-## ASI (abberrant salience inventory - increased significance subscale)
+ASI (abberrant salience inventory - increased significance subscale)
 
 ```{r}
 data_FU2 %>% dplyr::select(starts_with("ASI")) %>% psych::alpha()
@@ -194,19 +191,21 @@ ASI_df_FU2 = data.frame(ID = data_FU2$ID, ASI_score_FU2)
 ```
 
 
-##REI (Rational/Experiential Inventory )
+REI (Rational/Experiential Inventory)
 
 ```{r}
 REI_FU2 = data_FU2 %>% dplyr::select(starts_with("REI"))
 data_FU2 %>% dplyr::select(starts_with("REI")) %>% psych::alpha()
 ```
-##REI Need for Cognition (Rational)
+
+REI Need for Cognition (Rational)
 
 ```{r}
 REI_FU2 %>% dplyr::select(REI._1:REI._6) %>% psych::alpha()
 REI_NFC_score_FU2 = REI_FU2 %>% dplyr::select(REI._1:REI._6) %>% rowMeans(na.rm=T)
 ```
-##REI Faith in Intuition (Experiential)
+
+REI Faith in Intuition (Experiential)
 
 ```{r}
 REI_FU2 %>% dplyr::select(REI._7:REI._11) %>% psych::alpha()
@@ -217,7 +216,7 @@ REI_FI_score_FU2 = REI_FU2 %>% dplyr::select(REI._7:REI._11) %>% rowMeans(na.rm=
 REI_score_FU2 = data.frame(ID = data_FU2$ID, REI_NFC_score_FU2, REI_FI_score_FU2)
 ```
 
-##Behavior Identification Form
+Behavior Identification Form
 
 ```{r}
 BIF_scores_FU2 = data_FU2 %>% dplyr::select(starts_with("Q")) %>% rowMeans(na.rm = T)
@@ -234,6 +233,8 @@ score_list_FU2 = list(original_AQ_scores_FU2, new_AQ_scores_FU2, schizotypy_df_o
 
 complete_scores_FU2 = score_list_FU2%>% reduce(full_join, by='ID')
 ```
+
+Winsorize the scores to replace outliers
 
 ```{r}
 winsor = function(x){

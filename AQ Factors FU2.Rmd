@@ -16,6 +16,7 @@ library(lavaan)
 library(mice)
 ```
 
+Now that our data are useable, we need to look at the factor structure of the Autism Quotient (AQ) and to select the autism items to be retained for the remaining analyses. 
 
 ```{r}
 survey_original_FU2 = read.csv("survey content FU2.csv")
@@ -32,6 +33,9 @@ write.csv(AQ_imputed_FU2, "AQ imputed FU2.csv")
 survey_FU2 = read.csv("AQ imputed FU2.csv") %>% dplyr::select(-X, -ID)
 ```
 
+The first step is to look at the internal consistency and performance of the AQ factors. Note that I am not entirely confident as to why certain items were excluded when examining these factors beyond replication from Zhu et al., (2022). 
+
+Social Discourse Convention Items, to look at internal consistency of 1) the original Social Discourse convention items from Zhu et al. (2022); 2) all Social Discourse Convention items, including items from BAAP
 
 ```{r}
 ##Zhu (2022) Social Discourse Convention Items 
@@ -46,6 +50,8 @@ survey_FU2 %>% dplyr::select(AQ._1:AQ._7) %>% psych::alpha()
 
 ```
 
+Interest in Details/Pattern Items, to look at internal consistency of 1) the original Interest in Details/Pattern items from Zhu et al., (2022); and 2) all Interest in Details/Pattern items, including item from IASQ
+
 ```{r}
 ##Zhu (2022) Interest in Details/Pattern Items 
 survey_FU2 %>% dplyr::select(AQ._8:AQ._12) %>% corr.test()
@@ -55,6 +61,8 @@ survey_FU2 %>% dplyr::select(AQ._8:AQ._12) %>% psych::alpha()
 survey_FU2 %>% dplyr::select(AQ._8:AQ._13) %>% psych::alpha()
 
 ```
+
+Imagination Ability Items, to look at internal consistency of 1) the original Imagination Ability items from Zhu et al., (2022); 2) all Imagination Ability items
 
 ```{r}
 ##Zhu (2022) Imagination Ability Items 
@@ -66,6 +74,8 @@ survey_FU2 %>% dplyr::select(AQ._14:AQ._20) %>% psych::alpha()
 
 
 ```
+
+Social Cognition Items, to look at internal consistency of 1) the original Social Cognition items from Zhu et al., (2022); 2) all Social Cognition items
 
 ```{r}
 
@@ -79,15 +89,17 @@ survey_FU2 %>% dplyr::select(AQ._21:AQ._28) %>% psych::alpha()
 
 ```
 
+Social Anhedonia Items; note that all items were retained in the present study. 
+
 ```{r}
 ##Zhu (2022) Social Anhedonia Items; all items retained for the present study too
 survey_FU2 %>% dplyr::select(AQ._29:AQ._34) %>% psych::alpha()
 ```
 
 
-## Original AQ measures
-##Laura's notes - I am confused why these are the original AQ measures when several questions are missing; is the original AQ meaning original from the Chirica paper? 
-##Think i figured this out as of 11/2/26; original AQ measures are referring to the items from Zhu et al., (2022) (minus items loading onto desire for predictability/routine, which were not included in the present study). Therein lies the secret of AQ_original
+Original AQ measures
+
+Original AQ measures are referring to the items from Zhu et al., (2022) (excluding AQ items loading onto desire for predictability/routine, which were not included in the present study). 
 
 ```{r}
 
@@ -97,30 +109,34 @@ AQ_original_FU2 = survey_FU2 %>% dplyr::select(AQ._1:AQ._3, AQ._8:AQ._12, AQ._14
 
 ```
 
+Determine number of factors using Parallel Analysis 
 
 ```{r}
 paran(AQ_original_FU2, cfa=FALSE, graph=TRUE,
       color=TRUE, col=c("black", "red", "blue"))
 ```
-##AQ PFC, above results suggest that there are five factors
+
+Results suggest that five factors emerge from the Original AQ (from Zhu et al).
+
+Now we run Principal Axis Factoring using five factors and extract the factor loadings and communalities. We can also look at the p-value, degrees of freedom, Chi-square, TLI, CFI, and RMSEA to examine fit. 
 
 ```{r}
-mod_original_PCF_FU2 = fa(AQ_original_FU2, nfactors = 5, fm = "pa") ##Principal Axis Factoring
+mod_original_PAF_FU2 = fa(AQ_original_FU2, nfactors = 5, fm = "pa") ##Principal Axis Factoring
 ?fa()
-write.csv(mod_original_PCF_FU2$loadings, "original PFC loading FU2.csv")
-write.csv(mod_original_PCF_FU2$communality, "original PFC commu FU2.csv")
+write.csv(mod_original_PAF_FU2$loadings, "original PAC loading FU2.csv")
+write.csv(mod_original_PAF_FU2$communality, "original PAC commu FU2.csv")
 
-mod_original_PCF_FU2$PVAL
-mod_original_PCF_FU2$dof
-mod_original_PCF_FU2$chi
+mod_original_PAF_FU2$PVAL
+mod_original_PAF_FU2$dof
+mod_original_PAF_FU2$chi
 
-mod_original_PCF_FU2$TLI
-1 - (1 - mod_original_PCF_FU2$TLI)* mod_original_PCF_FU2$dof / mod_original_PCF_FU2$null.dof
-mod_original_PCF_FU2$RMSEA
+mod_original_PAF_FU2$TLI
+1 - (1 - mod_original_PAF_FU2$TLI)* mod_original_PAF_FU2$dof / mod_original_PAF_FU2$null.dof
+mod_original_PAF_FU2$RMSEA
 ```
 
 
-## AQ original EFA
+Original AQ Exploratory Factor Analysis with five factors and maximum likelihood factor analysis.
 
 ```{r}
 AQ_EFA_mod_original_FU2 = fa(AQ_original_FU2, nfactors = 5, fm = "ml")
@@ -136,11 +152,9 @@ AQ_EFA_mod_original_FU2$RMSEA
 AQ_EFA_mod_original_FU2$TLI
 1 - (1 - AQ_EFA_mod_original_FU2$TLI)* AQ_EFA_mod_original_FU2$dof / AQ_EFA_mod_original_FU2$null.dof
 
-
-
 ```
 
-## AQ original CFA
+Confirmatory factor analysis with with Original AQ items only. 
 
 ```{r}
 
@@ -169,12 +183,10 @@ summary(cfa_mod_original_FU2, standardized=TRUE, fit.measures=TRUE)
 write.csv(round(inspect(cfa_mod_original_FU2,what="std")$lambda,2), "aq original cfa FU2.csv")
 ```
 
-`
--------------------------------------------
 
-## AQ new PAF
+New AQ Measures 
 
-##as of 11/2/26 @ 9:11pm, I am trying to figure how how it was determined that these items below should be dropped; does it have something to do with the alpha() output for each of the subscales above? Time will tell; maybe it has to do with the factor loadings 
+These analyses include all 33 AQ items that were administered in FU2
 
 ```{r}
 #AQ_imputed = survey %>%  dplyr::select(-AQ._20, -AQ._21, -AQ._29, -X, -AQ._9, -AQ._12, -AQ._15, -AQ._19, -AQ._23, -AQ._24, -AQ._35, -AQ._7, -AQ._16)
@@ -185,6 +197,10 @@ write.csv(round(inspect(cfa_mod_original_FU2,what="std")$lambda,2), "aq original
 paran(survey_FU2, cfa=FALSE, graph=TRUE,
       color=TRUE, col=c("black", "red", "blue"))
 ```
+
+Above results also indicate that there are 5 AQ factors 
+
+Now we run Principal Axis Factoring using five factors and extract the factor loadings and communalities, which are saved as csv files. We can also look at the p-value, degrees of freedom, Chi-square, TLI, CFI, and RMSEA to examine fit.
 
 ```{r}
 mod_new_PCF_FU2 = fa(survey_FU2, nfactors = 5, fm = "pa")
@@ -201,7 +217,7 @@ mod_new_PCF_FU2
 
 
 
-## AQ new EFA
+New AQ Exploratory Factor Analysis with five factors and maximum likelihood factor analysis. 
 
 ```{r}
 AQ_EFA_mod_new_FU2 = fa(survey_FU2, nfactors = 5, fm = "ml")
@@ -224,8 +240,9 @@ summary(AQ_EFA_mod_new_FU2)
 
 ```
 
+Now rather than having individual AQ items, we compute the means of each subscale.  
+
 ```{r}
-##why did iris drop certain items?
 
 social_discourse_convention_FU2 = AQ_imputed_FU2 %>% dplyr::select(AQ._1, AQ._2, AQ._3, AQ._4, AQ._5, AQ._6, AQ._7) %>% rowMeans()
 pattern_FU2 = AQ_imputed_FU2 %>% dplyr::select(AQ._8, AQ._9, AQ._10, AQ._11, AQ._12, AQ._13) %>% rowMeans()
@@ -239,8 +256,7 @@ write.csv(AQ_scores_FU2, "AQ scores FU2.csv")
 ```
 
 
-------------------------
-## AQ new CFA
+Finally, the CFA for the new AQ, which includes all 33 AQ items administered in FU2. 
 
 ```{r}
 CFA_AQ_new_spec_FU2 = "
@@ -264,7 +280,7 @@ discourse_convention~~imagination
 
 cfa_mod_new_FU2 = cfa(CFA_AQ_new_spec_FU2, AQ_imputed_FU2)
 summary(cfa_mod_new_FU2, standardized=TRUE, fit.measures=TRUE)
-#write.csv(round(inspect(cfa_mod_new_FU2,what="std")$lambda,2), "aq new cfa FU2.csv")
+write.csv(round(inspect(cfa_mod_new_FU2,what="std")$lambda,2), "aq new cfa FU2.csv")
 ```
 
 

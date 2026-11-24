@@ -10,16 +10,11 @@ Initial cleaning, modified from Iris' code
 library(dplyr)
 getwd()
 
+data_originalFU2 = read.csv("C:/r_projects/Autism and Schizotypy/asdsz/Schizotypy and Autism_FU2.csv")
 ```
 
+Create a data frame with all of the questions
 ```{r}
-
-getwd()
-data_originalFU2 = read.csv("C:/Users/laura/OneDrive/Documents/Autism and Schizotypy/Autism and Schizotypy/Schizotypy and Autism_FU2.csv")
-```
-
-```{r}
-##create a data frame with all of the questions
 content_FU2 = data_originalFU2 %>% dplyr::select(MSS._1:Q58)
 questions_FU2 <- sapply(content_FU2[1, ], function(x) sub("^.*?- ", "", as.character(x)))
 
@@ -29,12 +24,11 @@ write.csv(df_FU2, "all questions_FU2.csv")
 
 ```
 
+Filter out folks without IDs, who did not consent, and who have been living in the US less than 2 years. 
+
 ```{r}
-##filter out folks without IDs, who did not consent, and who have been living in the US less than 2 years
 
 data_FU2 <- data_originalFU2 %>% dplyr::filter(ID != "", consent1 != "", US >= 2)
-
-?filter
 
 ##remove unnecessary rows (first row)
 data_FU2 = data_FU2[-1,]
@@ -43,7 +37,8 @@ data_FU2 = data_FU2[-1,]
 data_FU2 = data_FU2 %>% dplyr::select(-(StartDate:parent_edu), -PROLIFIC_PID)
 ```
 
-Attention Check Items
+Attention Check Items. Only retain participants who passed 5 attention check items and then remove the attention check columns so they are not counted in the data analysis.
+
 ```{r}
 question_FU2 = data_FU2[1,] %>% as.vector() %>% unlist() %>% unname()
 name_FU2 = colnames(data_FU2)
@@ -156,7 +151,7 @@ df_content_FU2 = cbind(ID = data_attention_checked_FU2$ID, df_boolean_FU2, df_nu
 ```
 
 
-##Reverse score items 
+Reverse score items 
 
 ```{r}
 ##checked using df_FU2 

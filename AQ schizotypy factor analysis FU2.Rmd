@@ -4,25 +4,22 @@ output: html_document
 date: "11/17/26"
 ---
 
-```{r setup, include=FALSE}
+AQ and Schizotypy Factor Analysis FU1
 
-knitr::opts_chunk$set(echo = TRUE)
-```
+These are the actual factor analyses we are most interested in. 
 
 ```{r}
 library(dplyr)
 library(psych)
 library(paran)
 library(lavaan)
+library(knitr)
 ```
 
 ```{r}
 data_FU2 = read.csv("complete scores winsorzied FU2.csv")
 
 ```
-
-
-
 
 
 ### Correlations
@@ -40,7 +37,7 @@ data_FU2 = read.csv("complete scores winsorzied FU2.csv")
 
 
 
-## including MSS
+including MSS Disorganized Schizotypy
 
 
 ```{r}
@@ -56,6 +53,7 @@ paran(new_data_FU2, cfa=FALSE, graph=TRUE,
       color=TRUE, col=c("black", "red", "blue"))
 ```
 
+
 ```{r}
 new_data_mod_3F_PA_FU2 = fa(new_data_FU2, nfactors = 3, fm = "pa")
 
@@ -70,8 +68,8 @@ new_data_mod_3F_PA_FU2$TLI
 
 new_data_mod_3F_PA_FU2$loadings
 summary(new_data_mod_3F_PA_FU2)
-#write.csv(new_data_mod_3F_PA_FU2$communality, "New Model FU2 3 factor PA Communality.csv")
-#write.csv(new_data_mod_3F_PA_FU2$loadings, "New Model FU2 3 factor PA Loadings.csv")
+write.csv(new_data_mod_3F_PA_FU2$communality, "New Model FU2 3 factor PA Communality.csv")
+write.csv(new_data_mod_3F_PA_FU2$loadings, "New Model FU2 3 factor PA Loadings.csv")
 ```
 
 ```{r}
@@ -88,8 +86,8 @@ new_data_mod_3F_EFA_FU2$TLI
 
 new_data_mod_3F_EFA_FU2$loadings
 summary(new_data_mod_3F_EFA_FU2)
-#write.csv(new_data_mod_3F_EFA_FU2$communality, "New Model FU2 3 factor EFA Communality.csv")
-#write.csv(new_data_mod_3F_EFA_FU2$loadings, "New Model FU2 3 factor EFA Loadings.csv")
+write.csv(new_data_mod_3F_EFA_FU2$communality, "New Model FU2 3 factor EFA Communality.csv")
+write.csv(new_data_mod_3F_EFA_FU2$loadings, "New Model FU2 3 factor EFA Loadings.csv")
 ```
 
 ```{r}
@@ -106,8 +104,8 @@ new_data_mod_4F_PA_FU2$TLI
 new_data_mod_4F_PA_FU2$loadings
 summary(new_data_mod_4F_PA_FU2)
 
-#write.csv(new_data_mod_4F_PA_FU2$communality, "New Model FU2 4 Factor PA Communality.csv")
-#write.csv(new_data_mod_4F_PA_FU2$loadings, "New Model FU2 4 Factor PA Loadings.csv")
+write.csv(new_data_mod_4F_PA_FU2$communality, "New Model FU2 4 Factor PA Communality.csv")
+write.csv(new_data_mod_4F_PA_FU2$loadings, "New Model FU2 4 Factor PA Loadings.csv")
 ```
 
 ```{r}
@@ -123,11 +121,11 @@ new_data_mod_4F_EFA_FU2$TLI
 new_data_mod_4F_EFA_FU2$loadings
 summary(new_data_mod_4F_EFA_FU2)
 
-#write.csv(new_data_mod_4F_EFA_FU2$communality, "New Model FU2 4 Factor EFA Communality.csv")
-#write.csv(new_data_mod_4F_EFA_FU2$loadings, "New Model FU2 4 Factor EFA Loadings.csv")
+write.csv(new_data_mod_4F_EFA_FU2$communality, "New Model FU2 4 Factor EFA Communality.csv")
+write.csv(new_data_mod_4F_EFA_FU2$loadings, "New Model FU2 4 Factor EFA Loadings.csv")
 ```
 
-## CFA for the three-factor model, based on EFA and PA 
+CFA for the three-factor model, based on EFA and PA 
 
 ```{r}
 cfa_3F_FU2 = "
@@ -144,7 +142,7 @@ summary(cfa_3f,fit.measures=T,standardized=TRUE)
 cfa_3f
 ```
 
-## CFA for the four-factor model, based on PAC factor loadings (the EFA using ML had 6 cross-loadings)
+CFA for the four-factor model, based on PAC factor loadings (the EFA using ML had 6 cross-loadings)
 ```{r}
 cfa_4F_PAC_FU2 = "
 aberrant_salience =~ wss_magical_ideation_scores_FU2 + wss_perceptual_aberration_score_FU2 + new_AQ_pattern_FU2
@@ -163,7 +161,7 @@ cfa_4f_PAC_model_FU2
 ```
 
 
-# correlations
+correlations using SEM
 
 ```{r}
 
@@ -220,4 +218,32 @@ summary(correlation_mod_FU2,fit.measures=T,standardized=TRUE)
 
 ```
 
+Finally, we look at the associations between all individual autism and schizotypy subscales and: (a) aberrant salience; (b) sensory sensitivity; (c) rational-experiential thinking style; and (d) processing style. AI was used to aid in the generation of correlation matrix. 
+
+```{r}
+
+subscales_FU2 <- complete_scores_FU2 %>% dplyr::select(-ID)
+
+correlation_matrix_FU2 <- corr.test(subscales_FU2, use = "pairwise", method = "pearson")
+
+p_matrix_FU2 <- correlation_matrix_FU2$p
+p_adj_matrix_FU2 <- matrix(NA, nrow =  ncol(subscales_FU2), ncol = ncol(subscales_FU2))
+p_adj_matrix_FU2[lower.tri(p_adj_matrix_FU2)] <- p.adjust(p_matrix_FU2[lower.tri(p_matrix_FU2)], method = "fdr")
+
+stars <- ifelse(p_adj_matrix_FU2 < .001, "***",
+         ifelse(p_adj_matrix_FU2 < .01, "**",
+         ifelse(p_adj_matrix_FU2 < .05, "*", "")))
+
+r_table <- matrix(
+  paste0(sprintf("%.2f", correlation_matrix_FU2$r), stars),
+  nrow = ncol(subscales_FU2),
+  dimnames = list(colnames(subscales_FU2), colnames(subscales_FU2))
+)
+
+r_table[upper.tri(r_table, diag = TRUE)] <- ""
+rownames(r_table) <- paste0(seq_len(nrow(r_table)), ". ", rownames(r_table))
+colnames(r_table) <- seq_len(ncol(r_table))
+
+kable(r_table, caption = "Correlation Matrix")
+```
 
