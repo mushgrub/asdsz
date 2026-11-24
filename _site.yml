@@ -12,7 +12,7 @@ navbar:
       - text: "Data Cleaning #1"
         href: Data-Cleaning-FU1.html
       - text: "AQ Factors"
-        href: AQ-Factors-FU1
+        href: AQ-Factors-FU1.html
       - text: "Data Cleaning #2"
         href: Data-Cleaning--2-FU1.html
       - text: "AQ & Schizotypy Factor Analysis"
