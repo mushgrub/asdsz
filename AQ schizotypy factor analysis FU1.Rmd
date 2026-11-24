@@ -4,11 +4,9 @@ output: html_document
 date: "2024-02-01"
 ---
 
-```{r setup, include=FALSE}
+### AQ and Schizotypy Factor Analysis FU1
 
-knitr::opts_chunk$set(echo = TRUE)
-```
-
+These are the actual factor analyses we are most interested in. 
 ```{r}
 library(dplyr)
 library(psych)
@@ -21,7 +19,7 @@ data = read.csv("complete scores winsorzied.csv")
 
 ```
 
-## pure replication
+Replicating analyses from Chirica
 
 ```{r}
 data_chirica = data %>% dplyr::select(
@@ -37,11 +35,12 @@ paran(data_chirica, cfa=FALSE, graph=TRUE,
 
 ```
 
+Above suggests four factors, but we will run three factors with the original model using maximum likelihood.
 
 ```{r}
 mod_original = fa(data_chirica, nfactors = 3,fm = "ml")
 
-#write.csv(round(mod_original$communality,2), "1.csv")
+write.csv(round(mod_original$communality,2), "Chirica Communality FU1.csv")
 
 round(mod_original$PVAL,5)
 mod_original$dof
@@ -54,9 +53,7 @@ mod_original$TLI
 ```
 
 
-
-
-### Correlations
+Correlations for Chirica replication 
 
 ```{r}
 
@@ -71,7 +68,7 @@ cbind(aberrant_salience, asociality, non_divergent) %>% corr.test()
 
 
 
-## excluding disorganized
+New FU1 data, but excluding disorganized schizotypy scores
 
 ```{r}
 data_excluding_disorganized = data %>% dplyr::select(starts_with("new_AQ"), starts_with("spq"), starts_with("wss"))
@@ -83,6 +80,7 @@ paran(data_excluding_disorganized, cfa=FALSE, graph=TRUE,
       color=TRUE, col=c("black", "red", "blue"))
 ```
 
+Suggests 4 factors, but we will use 3 using Principal Access Factoring
 
 ```{r}
 
@@ -98,8 +96,10 @@ data_excluding_disorganized_mod$TLI
 1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof
 
 
-#write.csv(data_excluding_disorganized_mod$communality, "1.csv")
+write.csv(data_excluding_disorganized_mod$communality, "Excluding Disorganized Communality 3F PAF FU1.csv")
 ```
+
+3 factors EFA
 
 ```{r}
 
@@ -115,8 +115,10 @@ data_excluding_disorganized_mod$TLI
 1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof
 
 
-#write.csv(data_excluding_disorganized_mod$communality, "1.csv")
+write.csv(data_excluding_disorganized_mod$communality, "Excluding Disorganized Communality 3F EFA FU1.csv")
 ```
+
+Now looking at 4 factors as the Parallel Analysis suggested 
 
 ```{r}
 data_excluding_disorganized_mod = fa(data_excluding_disorganized, nfactors = 4, fm = "pa")
@@ -131,11 +133,11 @@ data_excluding_disorganized_mod$TLI
 1 - (1 - data_excluding_disorganized_mod$TLI)* data_excluding_disorganized_mod$dof / data_excluding_disorganized_mod$null.dof
 
 
-write.csv(data_excluding_disorganized_mod$communality, "1.csv")
+write.csv(data_excluding_disorganized_mod$communality, "Excluding Disorganized Communality 4F PAF FU1.csv")
 ```
 
 
-## including MSS
+Adding MSS Disorganized Schizotypy
 
 
 ```{r}
@@ -151,7 +153,7 @@ paran(new_data, cfa=FALSE, graph=TRUE,
       color=TRUE, col=c("black", "red", "blue"))
 ```
 
-
+Suggests four factors, but we will start with running 3 factors 
 ```{r}
 new_data_mod = fa(new_data, nfactors = 3, fm = "pa")
 
@@ -165,7 +167,7 @@ new_data_mod$TLI
 1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof
 
 
-#write.csv(new_data_mod$communality, "1.csv")
+write.csv(new_data_mod$communality, "New Communality 3F PAF FU1.csv")
 ```
 
 ```{r}
@@ -181,7 +183,7 @@ new_data_mod$TLI
 1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof
 
 
-write.csv(new_data_mod$communality, "1.csv")
+write.csv(new_data_mod$communality, "New Communality 3F EFA FU1.csv")
 ```
 
 ```{r}
@@ -197,10 +199,10 @@ new_data_mod$TLI
 1 - (1 - new_data_mod$TLI)* new_data_mod$dof / new_data_mod$null.dof
 
 
-write.csv(new_data_mod$communality, "1.csv")
+write.csv(new_data_mod$communality, "New Communality 4F PAF FU1.csv")
 ```
 
-## CFA
+Original Chirica CFA
 
 ```{r}
 cfa_original = "
@@ -215,21 +217,23 @@ summary(mod_replication,fit.measures=T,standardized=TRUE)
 mod_replication
 ```
 
+CFA Excluding MSS Disorganized 
+
 ```{r}
 
-cfa_excluding_wss = "
+cfa_excluding_mss = "
 aberrant_salience =~ wss_magical_ideation_scores + spq_unusual_perception + spq_magical_thinking + spq_suspiciousness + spq_idea_of_reference + spq_odd_speech + new_AQ_social_discourse + wss_perceptual_aberration_score + new_AQ_pattern + spq_eccentric_behavior
 Asociality =~ new_AQ_social_anhedonia + spq_no_close_friends + spq_social_anxiety + spq_constricted_affect + wss_social_anhedonia_score
 non_divergent_thinking =~ new_AQ_imagination + wss_physical_anhedonia_score + new_AQ_social_cogition
 "
 
-mod_excluding_WSS = cfa(cfa_excluding_wss, data)
-summary(mod_excluding_WSS,fit.measures=T,standardized=TRUE)
+mod_excluding_MSS = cfa(cfa_excluding_mss, data)
+summary(mod_excluding_MSS,fit.measures=T,standardized=TRUE)
 ```
 
 
 
-# correlations
+Correlations with SeSS and ASI
 
 ```{r}
 
@@ -259,7 +263,8 @@ summary(correlation_mod,fit.measures=T,standardized=TRUE)
 
 ```
 
-## correlation replication
+correlation replication
+
 ```{r}
 
 correlation_syntax = "

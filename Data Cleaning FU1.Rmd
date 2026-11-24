@@ -4,37 +4,28 @@ output: html_document
 date: "10/30/26"
 ---
 
-Initial cleaning, modified from Iris' code
+Data Cleaning #1 for FU1
+
+Here we are getting the raw data file from FU1 into a useable form. 
 
 ```{r}
 library(dplyr)
-getwd()
+select <- dplyr::select
 
-```
-
-```{r}
-
-getwd()
-data_original = read.csv("C:/Users/laura/OneDrive/Documents/Autism and Schizotypy/Autism and Schizotypy/Schizotypy and Autism_FU1.csv")
-```
-
-```{r}
+data_original = read.csv("C:/r_projects/Autism and Schizotypy/asdsz/Schizotypy and Autism_FU1.csv")
 content = data_original %>% dplyr::select(MSS._1:SPQ_35)
 questions = sapply(sapply(content[1,], strsplit, "- "), "[[",2) 
 df=as.data.frame(questions)
 
 write.csv(df, "all questions.csv")
 
-?sapply
-```
-
-```{r}
 data = data_original %>% filter(id != "")
 data = data[-c(1,2),]
 data = data %>% dplyr::select(-LocationLatitude, -LocationLongitude, -DistributionChannel, -(RecordedDate:UserLanguage), -IPAddress)
 ```
 
-Attention Check Items
+Attention Check items; this only includes folks who passed the attention check items. Then, it removes the attention check questions from the data. 
+
 ```{r}
 question = data[1,] %>% as.vector() %>% unlist() %>% unname()
 name = colnames(data)
@@ -51,25 +42,27 @@ data_attention_checked = data %>% filter(MSS._7 == "TRUE") %>%
   filter(WSS_55 == "FALSE") %>% 
   filter(SPQ_8 == "Agree") %>% 
   filter(SPQ_33 == "Strongly Agree") %>%
-  select(-MSS._7,-AQ._11, -AQ._33, -SeSS_14, -SeSS_28, -ASI_4, -WSS_7, -WSS_36, -WSS_55, -SPQ_8, -SPQ_33)
+  dplyr::select(-MSS._7,-AQ._11, -AQ._33, -SeSS_14, -SeSS_28, -ASI_4, -WSS_7, -WSS_36, -WSS_55, -SPQ_8, -SPQ_33)
 
 data_attention_checked[data_attention_checked == "" | data_attention_checked == "Prefer Not to Answer"] = NA
-
 ```
+
+We also need to remove people who have been living in the US for two years or less and who answered less than 90% of the survey. 
 
 ```{r}
 data_attention_checked$US = as.numeric(data_attention_checked$US)
 data_attention_checked = data_attention_checked %>% filter(US >= 2 & US < 100)
 
-data_content = data_attention_checked %>% select(MSS._1:SPQ_35) 
+data_content = data_attention_checked %>% dplyr::select(MSS._1:SPQ_35) 
 check_empty_prop = function(x){sum(is.na(x)) /ncol(data_content)}
 data_attention_checked$empty_prop =apply(data_content, 1, check_empty_prop)
 
-data_attention_checked = data_attention_checked %>% filter(empty_prop < 0.1)
+data_attention_checked = data_attention_checked %>% dplyr::filter(empty_prop < 0.1)
 
-data_attention_checked = data_attention_checked %>% select(-empty_prop)
-
+data_attention_checked = data_attention_checked %>% dplyr::select(-empty_prop)
 ```
+
+Here we are changing responses to true/false (logical) or numeric (for Likert-style responses).
 
 ```{r}
 data_attention_checked[data_attention_checked == "TRUE"] = T
@@ -89,14 +82,13 @@ data_attention_checked[data_attention_checked == "Always"] = 5
 data_attention_checked[data_attention_checked == "YES"] = TRUE
 data_attention_checked[data_attention_checked == "NO"] = FALSE
 
-df_boolean = data_attention_checked %>% select(contains(c("MSS", "ASI", "WSS"))) %>% mutate_all(as.logical)
-df_numeric = data_attention_checked %>% select(contains(c("SeSS", "SPQ", "AQ"))) %>% mutate_all(as.integer)
+df_boolean = data_attention_checked %>% dplyr::select(contains(c("MSS", "ASI", "WSS"))) %>% mutate_all(as.logical)
+df_numeric = data_attention_checked %>% dplyr::select(contains(c("SeSS", "SPQ", "AQ"))) %>% mutate_all(as.integer)
 
 df_content = cbind(ID = data_attention_checked$ID, df_boolean, df_numeric)
 ```
 
-
-##Reverse score items 
+Reverse score the necessary items.
 
 ```{r}
 df_content$AQ._18 = 6 - df_content$AQ._18
@@ -135,10 +127,9 @@ df_content$WSS_60 = !df_content$WSS_60
 df_content$WSS_61 = !df_content$WSS_61
 df_content$WSS_62 = !df_content$WSS_62
 df_content$WSS_63 = !df_content$WSS_63
-
 ```
 
+And save the cleaned data as a cvs!
 ```{r}
 write.csv(df_content, "survey content.csv")
 ```
-

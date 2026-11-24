@@ -8,14 +8,9 @@ date: "2023-12-15"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+
 Cleaning after AQ factor scores are computed
-
-```{r}
-library(dplyr)
-library(tidyverse)
-library(psych)
-```
-
 
 ```{r}
 data = read.csv("survey content.csv")
@@ -23,9 +18,7 @@ AQ_scores = read.csv("AQ imputed.csv")
 ```
 
 
-
-
-## original AQ scores, again, these are referring to the AQ factors found in Zhu et al., (2022)
+original AQ scores, again, these are referring to the items loading onto AQ factors found in Zhu et al., (2022)
 
 ```{r}
 original_AQ_social_discourse = AQ_scores %>% dplyr::select(AQ._1:AQ._3) %>% rowMeans(na.rm = T)
@@ -42,11 +35,10 @@ AQ_scores %>% dplyr::select(AQ._9:AQ._14) %>% psych::alpha()
 AQ_scores %>% dplyr::select(AQ._18:AQ._22) %>% psych::alpha()
 AQ_scores %>% dplyr::select(AQ._27:AQ._30) %>% psych::alpha()
 AQ_scores %>% dplyr::select(AQ._36:AQ._41) %>% psych::alpha()
-
-
 ```
 
-## new AQ scores; Why were certain values dropped? 6 items total were dropped from the CFA; assuming she dropped them due to fit, sot this should be fine I am just going with it; can talk with AB and HB about writing this justification up later on. 
+
+New AQ scores; Iris dropped 6 items (AQ 5, 15, 16, 23, 24, and 35). These items were the only AQ items that were NOT administered in FU2! 
 
 ```{r}
 new_AQ_social_discourse = AQ_scores %>% dplyr::select(AQ._1:AQ._4, AQ._6:AQ._8) %>% rowMeans(na.rm = T) #AQ5
@@ -71,10 +63,7 @@ AQ_scores %>% dplyr::select(AQ._18:AQ._22) %>% corr.test()
 AQ_scores %>% dplyr::select(AQ._18:AQ._22, AQ._25:AQ._26) %>% corr.test()
 ```
 
-
-
-## MSS
-
+Calculate MSS Disorganized Schizotypy Subscale scores
 ```{r}
 MSS_scores = data %>% dplyr::select(starts_with("MSS")) %>% rowMeans(na.rm = T)
 MSS = data.frame(ID = data$ID, MSS = MSS_scores)
@@ -82,14 +71,14 @@ MSS = data.frame(ID = data$ID, MSS = MSS_scores)
 data %>% dplyr::select(starts_with("MSS")) %>% psych::alpha()
 ```
 
-##WSS
+Calculate WSS subscale scores
 
 ```{r}
 data %>% dplyr::select(starts_with("WSS")) %>% psych::alpha()
 WSS_survey = data %>% dplyr::select(starts_with("WSS"))
 ```
 
-# magical ideation
+magical ideation
 
 ```{r}
 magical_ideation_scale =  WSS_survey %>% dplyr::select(WSS_1:WSS_16)
@@ -98,14 +87,14 @@ wss_magical_ideation_scores = magical_ideation_scale %>% rowMeans(na.rm=T)
 magical_ideation_scale %>% psych::alpha()
 ```
 
-# perceptual aberration
+perceptual aberration
 
 ```{r}
 WSS_survey %>% dplyr::select(WSS_17:WSS_31) %>% psych::alpha()
 wss_perceptual_aberration_score = WSS_survey %>% dplyr::select(WSS_17:WSS_31) %>% rowMeans(na.rm=T)
 ```
 
-# social anhedonia
+social anhedonia
 
 ```{r}
 social_anhedonia_scale = WSS_survey %>% dplyr::select(WSS_32:WSS_47)
@@ -114,7 +103,8 @@ social_anhedonia_scale %>% psych::alpha()
 
 wss_social_anhedonia_score = social_anhedonia_scale%>% rowMeans(na.rm=T)
 ```
-# physical anhedonia
+
+physical anhedonia
 
 ```{r}
 physical_anhedonia_scale = WSS_survey %>% dplyr::select(WSS_48:WSS_63)
@@ -128,9 +118,9 @@ wss_physical_anhedonia_score = physical_anhedonia_scale%>% rowMeans(na.rm=T)
 WSS_scores = data.frame(ID = data$ID, wss_magical_ideation_scores, wss_perceptual_aberration_score, wss_social_anhedonia_score, wss_physical_anhedonia_score)
 ```
 
-## SPQ
+SPQ
 
-# Ideas of reference
+Ideas of reference
 
 ```{r}
 SPQ_scales = data %>% dplyr::select(starts_with("SPQ"))
@@ -175,27 +165,27 @@ schizotypy_df_organized = cbind(ID = data$ID, positive, negative, disorganized)
 ```
 
 
-## Sensory Sensitivity
+Sensory Sensitivity
 
 ```{r}
 SeSS = data %>% dplyr::select(starts_with("SeSS"))
 data %>% dplyr::select(starts_with("SeSS")) %>% psych::alpha()
 ```
 
-# visual
+visual
 
 ```{r}
 SeSS %>% dplyr::select(SeSS_1:SeSS_10) %>% psych::alpha()
 visual_score = SeSS %>% dplyr::select(SeSS_1:SeSS_10) %>% rowMeans(na.rm=T)
 ```
 
-# auditory
+auditory
 ```{r}
 SeSS %>% dplyr::select(SeSS_11:SeSS_21) %>% psych::alpha()
 auditory_score = SeSS %>% dplyr::select(SeSS_11:SeSS_21) %>% rowMeans(na.rm=T)
 ```
 
-# somatosensory
+somatosensory
 
 ```{r}
 SeSS %>% dplyr::select(SeSS_22:SeSS_37) %>% psych::alpha()
@@ -207,7 +197,7 @@ SeSS_score = data.frame(ID = data$ID,visual_score,auditory_score, somatosensory_
 SeSS_score$SeSS = SeSS_score %>% dplyr::select(-ID) %>% rowMeans(na.rm=T)
 ```
 
-## ASI
+ASI
 
 ```{r}
 data %>% dplyr::select(starts_with("ASI")) %>% psych::alpha()
@@ -224,9 +214,11 @@ data %>% dplyr::select(starts_with("ASI"))  %>% psych::alpha()
 
 score_list = list(original_AQ_scores, new_AQ_scores, schizotypy_df_organized, SeSS_score,ASI_df)
 
-
-complete_scores = score_list%>% reduce(full_join, by='ID')
+complete_scores = score_list %>% purrr::reduce(full_join, by='ID')
 ```
+
+
+Winsorize the scores to replace outliers
 
 ```{r}
 winsor = function(x){
@@ -244,7 +236,5 @@ complete_scores_winsorized = complete_scores %>% mutate(across(original_AQ_socia
 write.csv(complete_scores, "complete scores.csv")
 write.csv(complete_scores_winsorized, "complete scores winsorzied.csv")
 ```
-
-
 
 
