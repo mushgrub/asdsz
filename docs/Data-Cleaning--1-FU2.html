@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2026-10-30" />
+
+<title>ASD &amp; Sz Data Cleanup FU2</title>
+
+<script src="site_libs/header-attrs-2.32/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Autism and Schizotypy</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">ASD &amp; Sz Data Cleanup FU2</h1>
+<h4 class="date">10/30/26</h4>
+
+</div>
+
+
+<p>Initial cleaning, modified from Iris’ code</p>
+<pre class="r"><code>library(dplyr)
+getwd()</code></pre>
+<pre><code>## [1] &quot;C:/r_projects/Autism and Schizotypy/asdsz&quot;</code></pre>
+<pre class="r"><code>getwd()</code></pre>
+<pre><code>## [1] &quot;C:/r_projects/Autism and Schizotypy/asdsz&quot;</code></pre>
+<pre class="r"><code>data_originalFU2 = read.csv(&quot;C:/Users/laura/OneDrive/Documents/Autism and Schizotypy/Autism and Schizotypy/Schizotypy and Autism_FU2.csv&quot;)</code></pre>
+<pre class="r"><code>##create a data frame with all of the questions
+content_FU2 = data_originalFU2 %&gt;% dplyr::select(MSS._1:Q58)
+questions_FU2 &lt;- sapply(content_FU2[1, ], function(x) sub(&quot;^.*?- &quot;, &quot;&quot;, as.character(x)))
+
+df_FU2=as.data.frame(questions_FU2)
+
+write.csv(df_FU2, &quot;all questions_FU2.csv&quot;)</code></pre>
+<pre class="r"><code>##filter out folks without IDs, who did not consent, and who have been living in the US less than 2 years
+
+data_FU2 &lt;- data_originalFU2 %&gt;% dplyr::filter(ID != &quot;&quot;, consent1 != &quot;&quot;, US &gt;= 2)
+
+?filter
+
+##remove unnecessary rows (first row)
+data_FU2 = data_FU2[-1,]
+
+##and unnecessary columns so that only ID and survey questions remain ##need to add demos to a separate df
+data_FU2 = data_FU2 %&gt;% dplyr::select(-(StartDate:parent_edu), -PROLIFIC_PID)</code></pre>
+<p>Attention Check Items</p>
+<pre class="r"><code>question_FU2 = data_FU2[1,] %&gt;% as.vector() %&gt;% unlist() %&gt;% unname()
+name_FU2 = colnames(data_FU2)
+quest_df_FU2 = data.frame(question_FU2, name_FU2)
+
+##only retain participants who passed 5 attention check items and then remove the attention check columns so they are not counted in the data analysis
+data_attention_checked_FU2 = data_FU2 %&gt;% filter(AQ._24 == &quot;Agree&quot;) %&gt;%
+  filter(SeSS_14 == &quot;Prefer Not to Answer&quot;) %&gt;%
+  filter(WSS_32 == &quot;TRUE&quot;) %&gt;% 
+  filter(SPQ_6 == &quot;Strongly Agree&quot;) %&gt;% 
+  filter(REI._5 == &quot;somewhat false&quot;) %&gt;%
+  dplyr::select(-AQ._24,-SeSS_14, -WSS_32, -SPQ_6, -REI._5)
+
+##mark all missing and &quot;Prefer Not to Answer&quot; responses as NA
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;&quot; | data_attention_checked_FU2 == &quot;Prefer Not to Answer&quot; | data_attention_checked_FU2 == &quot;Prefer not to Answer&quot;] = NA</code></pre>
+<pre class="r"><code>##drop participants who answered less than 90% of questions by 
+data_content_FU2 = data_attention_checked_FU2 %&gt;% dplyr::select(MSS._1:Q58) 
+check_empty_prop_FU2 = function(x){sum(is.na(x)) /ncol(data_content_FU2)}
+data_attention_checked_FU2$empty_prop_FU2 =apply(data_content_FU2, 1, check_empty_prop_FU2)
+
+data_attention_checked_FU2 = data_attention_checked_FU2 %&gt;% filter(empty_prop_FU2 &lt; 0.1)
+
+##remove the empty_prop_FU2 column as it is no longer needed
+data_attention_checked_FU2 = data_attention_checked_FU2 %&gt;% dplyr::select(-empty_prop_FU2)</code></pre>
+<pre class="r"><code>##change character responses to numeric / true/false
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;TRUE&quot;] = T
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;FALSE&quot;] = F
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Strongly Disagree&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Disagree&quot;] = 2
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Neutral&quot;] = 3
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Agree&quot;] = 4
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Strongly Agree&quot;] = 5
+
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Never&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Rarely&quot;] = 2
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Occasionally&quot;] = 3
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Usually&quot;] = 4
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Always&quot;] = 5
+
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;completely false&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;somewhat false&quot;] = 2
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;neutral&quot;] = 3
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;somewhat true&quot;] = 4
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;completely true&quot;] = 5
+
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;YES&quot;] = TRUE
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;NO&quot;] = FALSE
+
+##Scoring for BIF is a little more involved &gt;.&lt;, although there is most definitely an easier way to do this 
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;getting organized&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;writing things down&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;gaining knowledge&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;following lines of print&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Removing odors from clothes&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Putting clothes into the machine&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Getting something to eat&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Pulling an apple off a branch&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Getting firewood&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Wielding an axe&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Showing one&#39;s cleanliness&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Vacuuming the floor&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Making the room look fresh&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Applying brush strokes&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Maintaining a place to live&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Writing a check&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Making the room look nice&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Watering plants&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Securing the house&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Putting a key in the lock&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Influencing the election&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Marking a ballot&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Getting a good view&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Holding on to branches&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Revealing what you&#39;re like&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Answering questions&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Preventing tooth decay&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Moving a brush around in one&#39;s mouth&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Showing one&#39;s knowledge&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Answering questions&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Showing friendliness&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Saying hello&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Showing moral courage&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &#39;Saying &quot;no&quot;&#39;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Getting nutrition&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Chewing and swallowing&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Getting fresh vegetables&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Planting seeds&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Seeing countryside&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Following a map&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Protecting your teeth&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Going to the dentist&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Teaching a child something&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Using simple words&quot;] = 0
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Seeing if someone&#39;s home&quot;] = 1
+data_attention_checked_FU2[data_attention_checked_FU2 == &quot;Moving a finger&quot;] = 0
+
+##Makes t/f logical and all numbers integers
+df_boolean_FU2 = data_attention_checked_FU2 %&gt;% dplyr::select(contains(c(&quot;MSS&quot;, &quot;ASI&quot;, &quot;WSS&quot;))) %&gt;% dplyr::mutate_all(as.logical)
+df_numeric_FU2 = data_attention_checked_FU2 %&gt;% dplyr::select(contains(c(&quot;SeSS&quot;, &quot;SPQ&quot;, &quot;AQ&quot;, &quot;Q&quot;, &quot;REI&quot;))) %&gt;% dplyr::mutate_all(as.integer)
+
+df_content_FU2 = cbind(ID = data_attention_checked_FU2$ID, df_boolean_FU2, df_numeric_FU2)</code></pre>
+<p>##Reverse score items</p>
+<pre class="r"><code>##checked using df_FU2 
+df_content_FU2$AQ._14 = 6 - df_content_FU2$AQ._14
+df_content_FU2$AQ._16 = 6 - df_content_FU2$AQ._16
+df_content_FU2$AQ._17 = 6 - df_content_FU2$AQ._17
+df_content_FU2$AQ._18 = 6 - df_content_FU2$AQ._18
+df_content_FU2$AQ._19 = 6 - df_content_FU2$AQ._19
+df_content_FU2$AQ._20 = 6 - df_content_FU2$AQ._20
+df_content_FU2$AQ._21 = 6 - df_content_FU2$AQ._21
+df_content_FU2$AQ._22 = 6 - df_content_FU2$AQ._22
+df_content_FU2$AQ._25 = 6 - df_content_FU2$AQ._25
+df_content_FU2$AQ._26 = 6 - df_content_FU2$AQ._26
+df_content_FU2$AQ._27 = 6 - df_content_FU2$AQ._27
+df_content_FU2$AQ._29 = 6 - df_content_FU2$AQ._29
+df_content_FU2$AQ._30 = 6 - df_content_FU2$AQ._30
+df_content_FU2$AQ._31 = 6 - df_content_FU2$AQ._31
+df_content_FU2$AQ._32 = 6 - df_content_FU2$AQ._32
+df_content_FU2$AQ._33 = 6 - df_content_FU2$AQ._33
+
+df_content_FU2$WSS_11 = !df_content_FU2$WSS_11
+df_content_FU2$WSS_31 = !df_content_FU2$WSS_31
+df_content_FU2$WSS_33 = !df_content_FU2$WSS_33
+df_content_FU2$WSS_34 = !df_content_FU2$WSS_34
+df_content_FU2$WSS_35 = !df_content_FU2$WSS_35
+df_content_FU2$WSS_38 = !df_content_FU2$WSS_38
+df_content_FU2$WSS_40 = !df_content_FU2$WSS_40
+df_content_FU2$WSS_42 = !df_content_FU2$WSS_42
+df_content_FU2$WSS_43 = !df_content_FU2$WSS_43
+df_content_FU2$WSS_44 = !df_content_FU2$WSS_44
+df_content_FU2$WSS_45 = !df_content_FU2$WSS_45
+df_content_FU2$WSS_46 = !df_content_FU2$WSS_46
+
+df_content_FU2$REI._1 = 6 - df_content_FU2$REI._1
+df_content_FU2$REI._2 = 6 - df_content_FU2$REI._2
+df_content_FU2$REI._6 = 6 - df_content_FU2$REI._6</code></pre>
+<pre class="r"><code>write.csv(df_content_FU2, &quot;survey content FU2.csv&quot;)</code></pre>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

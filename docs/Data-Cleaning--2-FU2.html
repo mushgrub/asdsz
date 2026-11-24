@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2026-11-12" />
+
+<title>Data Cleanup #2 FU2</title>
+
+<script src="site_libs/header-attrs-2.32/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Autism and Schizotypy</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Data Cleanup #2 FU2</h1>
+<h4 class="date">11/12/26</h4>
+
+</div>
+
+
+<p>Cleaning after AQ factor scores are computed</p>
+<pre class="r"><code>library(dplyr)
+library(tidyverse)
+library(psych)</code></pre>
+<pre class="r"><code>data_FU2 = read.csv(&quot;survey content FU2.csv&quot;)
+AQ_scores_FU2 = read.csv(&quot;AQ imputed FU2.csv&quot;)</code></pre>
+<div
+id="original-aq-scores-again-these-are-referring-to-the-aq-factors-found-in-zhu-et-al.-2022"
+class="section level2">
+<h2>original AQ scores, again, these are referring to the AQ factors
+found in Zhu et al., (2022)</h2>
+<pre class="r"><code>original_AQ_social_discourse_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._1:AQ._3) %&gt;% rowMeans(na.rm = T)
+original_AQ_pattern_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._8:AQ._12) %&gt;% rowMeans(na.rm=T)
+original_AQ_imagination_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._14:AQ._18) %&gt;% rowMeans(na.rm=T)
+original_AQ_social_cognition_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._21:AQ._25) %&gt;% rowMeans(na.rm=T)
+original_AQ_social_anhedonia_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._29:AQ._34) %&gt;% rowMeans(na.rm=T)
+
+original_AQ_scores_FU2 = data.frame(ID = AQ_scores_FU2$ID, original_AQ_social_anhedonia_FU2,original_AQ_pattern_FU2,original_AQ_social_cognition_FU2, original_AQ_social_discourse_FU2, original_AQ_imagination_FU2)
+
+
+AQ_scores_FU2 %&gt;% dplyr::select(AQ._1:AQ._3) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.71      0.71    0.62      0.45 2.4 0.033  2.4 0.94     0.45
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.63  0.71  0.77
+## Duhachek  0.64  0.71  0.77
+## 
+##  Reliability if an item is dropped:
+##       raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## AQ._1      0.61      0.62    0.45      0.45 1.6     0.05    NA  0.45
+## AQ._2      0.61      0.62    0.45      0.45 1.6     0.05    NA  0.45
+## AQ._3      0.62      0.62    0.45      0.45 1.7     0.05    NA  0.45
+## 
+##  Item statistics 
+##         n raw.r std.r r.cor r.drop mean  sd
+## AQ._1 231  0.81  0.80  0.63   0.53  2.6 1.3
+## AQ._2 231  0.80  0.80  0.63   0.53  2.2 1.2
+## AQ._3 231  0.77  0.79  0.62   0.52  2.3 1.1
+## 
+## Non missing response frequency for each item
+##          1    2    3    4    5 miss
+## AQ._1 0.19 0.39 0.16 0.15 0.11    0
+## AQ._2 0.33 0.36 0.11 0.13 0.06    0
+## AQ._3 0.21 0.45 0.18 0.13 0.03    0</code></pre>
+<pre class="r"><code>AQ_scores_FU2 %&gt;% dplyr::select(AQ._8:AQ._12) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.72      0.72     0.7      0.34 2.6 0.029    3 0.83     0.34
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.66  0.72  0.77
+## Duhachek  0.66  0.72  0.78
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## AQ._8       0.65      0.66    0.60      0.32 1.9    0.037 0.0062  0.31
+## AQ._9       0.67      0.67    0.62      0.33 2.0    0.036 0.0115  0.33
+## AQ._10      0.68      0.69    0.63      0.35 2.2    0.034 0.0051  0.36
+## AQ._11      0.66      0.66    0.61      0.33 1.9    0.037 0.0119  0.30
+## AQ._12      0.71      0.71    0.67      0.38 2.5    0.031 0.0087  0.37
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean  sd
+## AQ._8  231  0.73  0.73  0.64   0.53  2.7 1.3
+## AQ._9  231  0.68  0.70  0.59   0.51  3.7 1.1
+## AQ._10 231  0.66  0.67  0.56   0.46  2.5 1.1
+## AQ._11 231  0.73  0.72  0.62   0.52  3.2 1.3
+## AQ._12 231  0.64  0.62  0.46   0.39  3.0 1.3
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## AQ._8  0.18 0.32 0.19 0.21 0.11    0
+## AQ._9  0.02 0.14 0.22 0.38 0.24    0
+## AQ._10 0.20 0.32 0.26 0.16 0.05    0
+## AQ._11 0.10 0.26 0.16 0.32 0.16    0
+## AQ._12 0.14 0.26 0.17 0.30 0.13    0</code></pre>
+<pre class="r"><code>AQ_scores_FU2 %&gt;% dplyr::select(AQ._14:AQ._18) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean  sd median_r
+##       0.64      0.65    0.65      0.27 1.9 0.038  2.1 0.7     0.26
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.56  0.64  0.71
+## Duhachek  0.57  0.64  0.72
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## AQ._14      0.51      0.52    0.47      0.21 1.1    0.052 0.018  0.18
+## AQ._15      0.70      0.70    0.68      0.37 2.4    0.033 0.023  0.32
+## AQ._16      0.58      0.59    0.58      0.26 1.4    0.046 0.040  0.19
+## AQ._17      0.59      0.61    0.59      0.28 1.5    0.045 0.041  0.24
+## AQ._18      0.54      0.55    0.50      0.23 1.2    0.049 0.019  0.24
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean  sd
+## AQ._14 231  0.74  0.76  0.73   0.56  2.0 1.0
+## AQ._15 231  0.48  0.46  0.20   0.17  2.1 1.2
+## AQ._16 231  0.68  0.66  0.52   0.42  2.7 1.2
+## AQ._17 231  0.63  0.63  0.49   0.39  2.0 1.1
+## AQ._18 231  0.70  0.72  0.67   0.49  2.0 1.0
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## AQ._14 0.35 0.44 0.13 0.05 0.03    0
+## AQ._15 0.39 0.33 0.14 0.08 0.05    0
+## AQ._16 0.16 0.36 0.21 0.18 0.09    0
+## AQ._17 0.39 0.38 0.12 0.08 0.03    0
+## AQ._18 0.36 0.44 0.10 0.07 0.04    0</code></pre>
+<pre class="r"><code>AQ_scores_FU2 %&gt;% dplyr::select(AQ._21:AQ._25) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.75      0.75     0.7      0.43   3 0.027  2.3 0.76     0.43
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.69  0.75   0.8
+## Duhachek  0.69  0.75   0.8
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## AQ._21      0.67      0.68    0.59      0.41 2.1    0.038 0.0085  0.36
+## AQ._22      0.68      0.68    0.59      0.42 2.2    0.036 0.0031  0.42
+## AQ._23      0.73      0.73    0.65      0.48 2.8    0.031 0.0015  0.47
+## AQ._25      0.67      0.68    0.58      0.41 2.1    0.037 0.0020  0.42
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean   sd
+## AQ._21 231  0.78  0.77  0.66   0.57  2.2 1.02
+## AQ._22 231  0.76  0.77  0.66   0.56  2.3 0.98
+## AQ._23 231  0.73  0.71  0.54   0.47  2.6 1.12
+## AQ._25 231  0.76  0.78  0.67   0.57  2.0 0.91
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## AQ._21 0.23 0.48 0.18 0.06 0.05    0
+## AQ._22 0.21 0.45 0.22 0.08 0.03    0
+## AQ._23 0.12 0.46 0.18 0.16 0.08    0
+## AQ._25 0.32 0.47 0.13 0.08 0.01    0</code></pre>
+<pre class="r"><code>AQ_scores_FU2 %&gt;% dplyr::select(AQ._29:AQ._34) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.84      0.85    0.84      0.48 5.5 0.016    3 0.86     0.46
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.81  0.84  0.87
+## Duhachek  0.81  0.84  0.87
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## AQ._29      0.81      0.81    0.80      0.47 4.4    0.020 0.0141  0.46
+## AQ._30      0.79      0.79    0.76      0.43 3.8    0.022 0.0077  0.43
+## AQ._31      0.80      0.80    0.78      0.45 4.1    0.020 0.0068  0.43
+## AQ._32      0.83      0.83    0.82      0.50 5.0    0.018 0.0178  0.48
+## AQ._33      0.82      0.83    0.81      0.49 4.8    0.018 0.0182  0.46
+## AQ._34      0.85      0.85    0.83      0.53 5.6    0.016 0.0109  0.50
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean  sd
+## AQ._29 231  0.78  0.77  0.72   0.65  2.9 1.2
+## AQ._30 231  0.86  0.86  0.85   0.77  2.8 1.2
+## AQ._31 231  0.80  0.81  0.79   0.70  2.7 1.1
+## AQ._32 231  0.69  0.71  0.61   0.56  3.3 1.0
+## AQ._33 231  0.72  0.73  0.64   0.59  3.0 1.1
+## AQ._34 231  0.65  0.64  0.52   0.48  3.3 1.3
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## AQ._29 0.11 0.29 0.28 0.19 0.13    0
+## AQ._30 0.13 0.33 0.26 0.19 0.09    0
+## AQ._31 0.15 0.32 0.29 0.19 0.06    0
+## AQ._32 0.05 0.16 0.34 0.32 0.13    0
+## AQ._33 0.11 0.25 0.31 0.24 0.10    0
+## AQ._34 0.09 0.19 0.23 0.27 0.22    0</code></pre>
+</div>
+<div
+id="new-aq-scores-why-were-certain-values-dropped-6-items-total-were-dropped-from-the-cfa-assuming-she-dropped-them-due-to-fit-sot-this-should-be-fine-i-am-just-going-with-it-can-talk-with-ab-and-hb-about-writing-this-justification-up-later-on."
+class="section level2">
+<h2>new AQ scores; Why were certain values dropped? 6 items total were
+dropped from the CFA; assuming she dropped them due to fit, sot this
+should be fine I am just going with it; can talk with AB and HB about
+writing this justification up later on.</h2>
+<pre class="r"><code>new_AQ_social_discourse_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._1:AQ._7) %&gt;% rowMeans(na.rm = T) 
+new_AQ_pattern_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._8:AQ._13) %&gt;% rowMeans(na.rm = T) 
+new_AQ_imagination_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._14:AQ._20) %&gt;% rowMeans(na.rm = T) 
+new_AQ_social_cogition_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._21:AQ._28) %&gt;% rowMeans(na.rm = T) 
+new_AQ_social_anhedonia_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._29:AQ._34) %&gt;% rowMeans(na.rm = T)
+
+
+
+new_AQ_scores_FU2 = data.frame(ID = AQ_scores_FU2$ID,new_AQ_social_anhedonia_FU2, new_AQ_pattern_FU2, new_AQ_social_cogition_FU2, new_AQ_social_discourse_FU2,new_AQ_imagination_FU2)
+
+AQ_scores_FU2 %&gt;% dplyr::select(AQ._1:AQ._7) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.78      0.78    0.77      0.33 3.5 0.022  2.5 0.75     0.39
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.73  0.78  0.82
+## Duhachek  0.74  0.78  0.82
+## 
+##  Reliability if an item is dropped:
+##       raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## AQ._1      0.72      0.72    0.71      0.30 2.6    0.028 0.026  0.30
+## AQ._2      0.73      0.72    0.71      0.31 2.6    0.027 0.025  0.30
+## AQ._3      0.74      0.74    0.73      0.32 2.9    0.025 0.021  0.38
+## AQ._4      0.74      0.74    0.73      0.32 2.8    0.026 0.023  0.38
+## AQ._5      0.76      0.76    0.75      0.34 3.1    0.024 0.030  0.45
+## AQ._6      0.81      0.81    0.78      0.41 4.2    0.020 0.005  0.45
+## AQ._7      0.74      0.73    0.72      0.31 2.7    0.026 0.022  0.38
+## 
+##  Item statistics 
+##         n raw.r std.r r.cor r.drop mean  sd
+## AQ._1 231  0.76  0.75  0.71   0.63  2.6 1.3
+## AQ._2 231  0.74  0.74  0.69   0.61  2.2 1.2
+## AQ._3 231  0.67  0.68  0.61   0.54  2.3 1.1
+## AQ._4 231  0.69  0.69  0.62   0.54  2.6 1.2
+## AQ._5 231  0.62  0.62  0.51   0.46  3.2 1.2
+## AQ._6 231  0.38  0.39  0.21   0.18  2.6 1.1
+## AQ._7 231  0.70  0.71  0.66   0.58  2.3 1.0
+## 
+## Non missing response frequency for each item
+##          1    2    3    4    5 miss
+## AQ._1 0.19 0.39 0.16 0.15 0.11    0
+## AQ._2 0.33 0.36 0.11 0.13 0.06    0
+## AQ._3 0.21 0.45 0.18 0.13 0.03    0
+## AQ._4 0.20 0.35 0.17 0.23 0.05    0
+## AQ._5 0.05 0.30 0.23 0.29 0.14    0
+## AQ._6 0.16 0.35 0.25 0.20 0.03    0
+## AQ._7 0.23 0.42 0.19 0.13 0.03    0</code></pre>
+<pre class="r"><code>AQ_scores_FU2 %&gt;% dplyr::select(AQ._8:AQ._13) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.77      0.77    0.76      0.35 3.3 0.024    3 0.82     0.34
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.72  0.77  0.81
+## Duhachek  0.72  0.77  0.81
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## AQ._8       0.73      0.73    0.71      0.35 2.7    0.028 0.0106  0.32
+## AQ._9       0.73      0.74    0.72      0.36 2.8    0.028 0.0130  0.34
+## AQ._10      0.74      0.74    0.72      0.36 2.9    0.027 0.0093  0.34
+## AQ._11      0.73      0.73    0.72      0.35 2.7    0.028 0.0132  0.33
+## AQ._12      0.73      0.74    0.70      0.36 2.8    0.028 0.0061  0.34
+## AQ._13      0.72      0.72    0.70      0.34 2.6    0.029 0.0085  0.34
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean  sd
+## AQ._8  231  0.70  0.70  0.62   0.52  2.7 1.3
+## AQ._9  231  0.65  0.67  0.57   0.50  3.7 1.1
+## AQ._10 231  0.64  0.65  0.56   0.48  2.5 1.1
+## AQ._11 231  0.68  0.68  0.58   0.50  3.2 1.3
+## AQ._12 231  0.68  0.67  0.60   0.50  3.0 1.3
+## AQ._13 231  0.71  0.70  0.64   0.55  2.9 1.2
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## AQ._8  0.18 0.32 0.19 0.21 0.11    0
+## AQ._9  0.02 0.14 0.22 0.38 0.24    0
+## AQ._10 0.20 0.32 0.26 0.16 0.05    0
+## AQ._11 0.10 0.26 0.16 0.32 0.16    0
+## AQ._12 0.14 0.26 0.17 0.30 0.13    0
+## AQ._13 0.13 0.28 0.22 0.25 0.12    0</code></pre>
+<pre class="r"><code>AQ_scores_FU2 %&gt;% dplyr::select(AQ._14:AQ._20) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.73      0.75    0.76       0.3   3 0.027  2.1 0.67      0.3
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.68  0.73  0.78
+## Duhachek  0.68  0.73  0.79
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## AQ._14      0.65      0.67    0.66      0.25 2.0    0.036 0.017  0.27
+## AQ._15      0.77      0.78    0.77      0.37 3.5    0.024 0.019  0.32
+## AQ._16      0.71      0.73    0.73      0.31 2.7    0.029 0.033  0.27
+## AQ._17      0.71      0.73    0.73      0.32 2.8    0.030 0.033  0.31
+## AQ._18      0.67      0.69    0.69      0.27 2.2    0.034 0.023  0.27
+## AQ._19      0.68      0.69    0.69      0.27 2.2    0.033 0.027  0.27
+## AQ._20      0.71      0.73    0.74      0.31 2.7    0.030 0.030  0.30
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean   sd
+## AQ._14 231  0.78  0.80  0.81   0.68  2.0 1.00
+## AQ._15 231  0.41  0.41  0.23   0.18  2.1 1.15
+## AQ._16 231  0.61  0.59  0.48   0.41  2.7 1.20
+## AQ._17 231  0.58  0.58  0.46   0.40  2.0 1.05
+## AQ._18 231  0.71  0.72  0.69   0.57  2.0 1.04
+## AQ._19 231  0.70  0.73  0.69   0.59  1.8 0.85
+## AQ._20 231  0.62  0.60  0.49   0.41  2.3 1.22
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## AQ._14 0.35 0.44 0.13 0.05 0.03    0
+## AQ._15 0.39 0.33 0.14 0.08 0.05    0
+## AQ._16 0.16 0.36 0.21 0.18 0.09    0
+## AQ._17 0.39 0.38 0.12 0.08 0.03    0
+## AQ._18 0.36 0.44 0.10 0.07 0.04    0
+## AQ._19 0.40 0.46 0.08 0.05 0.01    0
+## AQ._20 0.28 0.38 0.14 0.13 0.07    0</code></pre>
+<pre class="r"><code>AQ_scores_FU2 %&gt;% dplyr::select(AQ._21:AQ._28) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.83      0.83    0.83      0.42   5 0.017  2.2 0.71     0.42
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt      0.8  0.83  0.86
+## Duhachek   0.8  0.83  0.87
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## AQ._21      0.81      0.81    0.79      0.41 4.2    0.020 0.0055  0.41
+## AQ._22      0.81      0.81    0.80      0.42 4.4    0.019 0.0053  0.42
+## AQ._23      0.81      0.81    0.80      0.42 4.3    0.019 0.0078  0.42
+## AQ._25      0.81      0.81    0.80      0.42 4.4    0.019 0.0073  0.42
+## AQ._26      0.79      0.79    0.78      0.39 3.9    0.021 0.0047  0.36
+## AQ._27      0.82      0.82    0.81      0.43 4.5    0.019 0.0079  0.42
+## AQ._28      0.82      0.82    0.80      0.43 4.6    0.018 0.0057  0.42
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean   sd
+## AQ._21 231  0.73  0.73  0.68   0.61  2.2 1.02
+## AQ._22 231  0.69  0.70  0.63   0.56  2.3 0.98
+## AQ._23 231  0.72  0.71  0.64   0.58  2.6 1.12
+## AQ._25 231  0.69  0.70  0.63   0.57  2.0 0.91
+## AQ._26 231  0.79  0.79  0.76   0.69  2.2 1.04
+## AQ._27 231  0.67  0.68  0.59   0.54  2.0 0.92
+## AQ._28 231  0.66  0.66  0.57   0.52  2.3 1.05
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## AQ._21 0.23 0.48 0.18 0.06 0.05    0
+## AQ._22 0.21 0.45 0.22 0.08 0.03    0
+## AQ._23 0.12 0.46 0.18 0.16 0.08    0
+## AQ._25 0.32 0.47 0.13 0.08 0.01    0
+## AQ._26 0.23 0.45 0.20 0.06 0.05    0
+## AQ._27 0.33 0.47 0.12 0.06 0.02    0
+## AQ._28 0.18 0.50 0.15 0.12 0.04    0</code></pre>
+<pre class="r"><code>AQ_scores_FU2 %&gt;% dplyr::select(AQ._29:AQ._34) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.84      0.85    0.84      0.48 5.5 0.016    3 0.86     0.46
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.81  0.84  0.87
+## Duhachek  0.81  0.84  0.87
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## AQ._29      0.81      0.81    0.80      0.47 4.4    0.020 0.0141  0.46
+## AQ._30      0.79      0.79    0.76      0.43 3.8    0.022 0.0077  0.43
+## AQ._31      0.80      0.80    0.78      0.45 4.1    0.020 0.0068  0.43
+## AQ._32      0.83      0.83    0.82      0.50 5.0    0.018 0.0178  0.48
+## AQ._33      0.82      0.83    0.81      0.49 4.8    0.018 0.0182  0.46
+## AQ._34      0.85      0.85    0.83      0.53 5.6    0.016 0.0109  0.50
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean  sd
+## AQ._29 231  0.78  0.77  0.72   0.65  2.9 1.2
+## AQ._30 231  0.86  0.86  0.85   0.77  2.8 1.2
+## AQ._31 231  0.80  0.81  0.79   0.70  2.7 1.1
+## AQ._32 231  0.69  0.71  0.61   0.56  3.3 1.0
+## AQ._33 231  0.72  0.73  0.64   0.59  3.0 1.1
+## AQ._34 231  0.65  0.64  0.52   0.48  3.3 1.3
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## AQ._29 0.11 0.29 0.28 0.19 0.13    0
+## AQ._30 0.13 0.33 0.26 0.19 0.09    0
+## AQ._31 0.15 0.32 0.29 0.19 0.06    0
+## AQ._32 0.05 0.16 0.34 0.32 0.13    0
+## AQ._33 0.11 0.25 0.31 0.24 0.10    0
+## AQ._34 0.09 0.19 0.23 0.27 0.22    0</code></pre>
+</div>
+<div id="mss-disorganized-schizotypy-scores" class="section level2">
+<h2>MSS disorganized schizotypy scores</h2>
+<pre class="r"><code>MSS_scores_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;MSS&quot;)) %&gt;% rowMeans(na.rm = T)
+MSS_FU2 = data.frame(ID = data_FU2$ID, MSS = MSS_scores_FU2)
+
+data_FU2 %&gt;% dplyr::select(starts_with(&quot;MSS&quot;)) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N    ase mean  sd median_r
+##       0.92      0.92    0.93      0.48  11 0.0082 0.23 0.3     0.46
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt      0.9  0.92  0.93
+## Duhachek   0.9  0.92  0.93
+## 
+##  Reliability if an item is dropped:
+##         raw_alpha std.alpha G6(smc) average_r  S/N alpha se  var.r med.r
+## MSS._1       0.91      0.91    0.92      0.47  9.8   0.0090 0.0092  0.46
+## MSS._2       0.90      0.91    0.92      0.47  9.6   0.0093 0.0084  0.46
+## MSS._3       0.91      0.91    0.91      0.48 10.0   0.0088 0.0077  0.47
+## MSS._4       0.91      0.91    0.92      0.48 10.0   0.0089 0.0091  0.46
+## MSS._5       0.91      0.91    0.92      0.47  9.8   0.0091 0.0089  0.46
+## MSS._6       0.91      0.91    0.92      0.47  9.7   0.0092 0.0086  0.46
+## MSS._7       0.91      0.91    0.92      0.47  9.8   0.0091 0.0085  0.46
+## MSS._8       0.91      0.91    0.92      0.49 10.4   0.0087 0.0089  0.47
+## MSS._9       0.91      0.91    0.92      0.48 10.0   0.0089 0.0099  0.46
+## MSS._10      0.91      0.91    0.92      0.47  9.8   0.0091 0.0089  0.46
+## MSS._11      0.91      0.91    0.92      0.49 10.5   0.0085 0.0088  0.47
+## MSS._12      0.91      0.91    0.92      0.48 10.3   0.0086 0.0071  0.49
+## 
+##  Item statistics 
+##           n raw.r std.r r.cor r.drop mean   sd
+## MSS._1  230  0.74  0.74  0.72   0.68 0.23 0.42
+## MSS._2  230  0.79  0.79  0.77   0.74 0.28 0.45
+## MSS._3  231  0.70  0.71  0.70   0.64 0.22 0.41
+## MSS._4  230  0.72  0.72  0.69   0.66 0.20 0.40
+## MSS._5  231  0.74  0.74  0.72   0.68 0.21 0.41
+## MSS._6  228  0.77  0.77  0.75   0.72 0.29 0.45
+## MSS._7  229  0.75  0.75  0.72   0.70 0.21 0.40
+## MSS._8  231  0.64  0.66  0.61   0.58 0.12 0.32
+## MSS._9  230  0.71  0.71  0.67   0.64 0.22 0.41
+## MSS._10 231  0.75  0.75  0.73   0.70 0.20 0.40
+## MSS._11 230  0.65  0.64  0.59   0.57 0.33 0.47
+## MSS._12 231  0.67  0.67  0.65   0.60 0.21 0.41
+## 
+## Non missing response frequency for each item
+##         FALSE TRUE miss
+## MSS._1   0.77 0.23 0.00
+## MSS._2   0.72 0.28 0.00
+## MSS._3   0.78 0.22 0.00
+## MSS._4   0.80 0.20 0.00
+## MSS._5   0.79 0.21 0.00
+## MSS._6   0.71 0.29 0.01
+## MSS._7   0.79 0.21 0.01
+## MSS._8   0.88 0.12 0.00
+## MSS._9   0.78 0.22 0.00
+## MSS._10  0.80 0.20 0.00
+## MSS._11  0.67 0.33 0.00
+## MSS._12  0.79 0.21 0.00</code></pre>
+<p>##WSS</p>
+<pre class="r"><code>data_FU2 %&gt;% dplyr::select(starts_with(&quot;WSS&quot;)) %&gt;% psych::alpha()</code></pre>
+<pre><code>## Warning in psych::alpha(.): Some items were negatively correlated with the first principal component and probably 
+## should be reversed.  
+## To do this, run the function again with the &#39;check.keys=TRUE&#39; option</code></pre>
+<pre><code>## Some items ( WSS_42 WSS_46 ) were negatively correlated with the first principal component and 
+## probably should be reversed.  
+## To do this, run the function again with the &#39;check.keys=TRUE&#39; option</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.87      0.88    0.92      0.14 7.4 0.012 0.16 0.14     0.12
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.84  0.87  0.89
+## Duhachek  0.84  0.87  0.89
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## WSS_1       0.86      0.88    0.92      0.14 7.2    0.013 0.020  0.12
+## WSS_2       0.86      0.88    0.92      0.14 7.1    0.013 0.020  0.12
+## WSS_3       0.86      0.88    0.92      0.14 7.0    0.013 0.019  0.12
+## WSS_4       0.86      0.88    0.92      0.14 7.1    0.013 0.020  0.12
+## WSS_5       0.87      0.88    0.92      0.14 7.4    0.012 0.020  0.13
+## WSS_6       0.86      0.88    0.92      0.14 7.2    0.013 0.020  0.12
+## WSS_7       0.86      0.88    0.92      0.14 7.3    0.013 0.020  0.12
+## WSS_8       0.86      0.88    0.92      0.14 7.3    0.013 0.020  0.13
+## WSS_9       0.86      0.88    0.92      0.14 7.3    0.013 0.020  0.13
+## WSS_10      0.87      0.88    0.92      0.14 7.4    0.012 0.020  0.13
+## WSS_11      0.87      0.88    0.92      0.14 7.4    0.012 0.020  0.13
+## WSS_12      0.86      0.88    0.92      0.14 7.1    0.013 0.020  0.12
+## WSS_13      0.87      0.88    0.92      0.14 7.4    0.012 0.020  0.13
+## WSS_14      0.87      0.88    0.92      0.14 7.4    0.012 0.020  0.13
+## WSS_15      0.86      0.88    0.92      0.14 7.2    0.013 0.020  0.12
+## WSS_16      0.86      0.88    0.92      0.14 7.1    0.013 0.019  0.12
+## WSS_17      0.86      0.88    0.92      0.14 7.0    0.013 0.019  0.12
+## WSS_18      0.86      0.88    0.92      0.14 7.0    0.013 0.019  0.12
+## WSS_19      0.86      0.87    0.92      0.14 7.0    0.013 0.019  0.12
+## WSS_20      0.86      0.88    0.92      0.14 7.1    0.013 0.020  0.12
+## WSS_21      0.86      0.88    0.92      0.14 7.1    0.013 0.019  0.12
+## WSS_22      0.86      0.87    0.92      0.14 6.9    0.013 0.018  0.12
+## WSS_23      0.86      0.87    0.92      0.14 6.9    0.013 0.018  0.12
+## WSS_24      0.86      0.88    0.92      0.14 7.0    0.013 0.019  0.12
+## WSS_25      0.86      0.88    0.92      0.14 7.0    0.013 0.019  0.12
+## WSS_26      0.86      0.88    0.92      0.14 7.0    0.013 0.019  0.12
+## WSS_27      0.86      0.88    0.92      0.14 7.2    0.013 0.020  0.12
+## WSS_28      0.86      0.88    0.92      0.14 7.2    0.013 0.020  0.12
+## WSS_29      0.86      0.87    0.92      0.14 7.0    0.013 0.019  0.12
+## WSS_30      0.86      0.88    0.92      0.14 7.1    0.013 0.019  0.12
+## WSS_31      0.86      0.88    0.92      0.14 7.4    0.012 0.020  0.13
+## WSS_33      0.86      0.88    0.92      0.14 7.4    0.012 0.020  0.13
+## WSS_34      0.87      0.88    0.92      0.15 7.5    0.012 0.020  0.13
+## WSS_35      0.87      0.88    0.92      0.14 7.4    0.012 0.020  0.13
+## WSS_36      0.86      0.88    0.92      0.14 7.2    0.013 0.020  0.12
+## WSS_37      0.86      0.88    0.92      0.14 7.3    0.013 0.020  0.13
+## WSS_38      0.86      0.88    0.92      0.14 7.3    0.013 0.020  0.13
+## WSS_39      0.86      0.88    0.92      0.14 7.2    0.013 0.020  0.12
+## WSS_40      0.87      0.88    0.92      0.15 7.5    0.012 0.020  0.13
+## WSS_41      0.86      0.88    0.92      0.14 7.2    0.013 0.020  0.12
+## WSS_42      0.87      0.88    0.92      0.15 7.7    0.012 0.019  0.13
+## WSS_43      0.86      0.88    0.92      0.14 7.3    0.013 0.020  0.13
+## WSS_44      0.87      0.88    0.92      0.15 7.5    0.012 0.020  0.13
+## WSS_45      0.87      0.88    0.92      0.15 7.5    0.012 0.020  0.13
+## WSS_46      0.87      0.88    0.92      0.15 7.6    0.012 0.019  0.13
+## 
+##  Item statistics 
+##          n raw.r std.r  r.cor r.drop  mean   sd
+## WSS_1  229 0.442 0.410  0.397  0.386 0.214 0.41
+## WSS_2  231 0.525 0.520  0.508  0.484 0.130 0.34
+## WSS_3  228 0.557 0.574  0.568  0.515 0.114 0.32
+## WSS_4  230 0.531 0.533  0.529  0.492 0.117 0.32
+## WSS_5  226 0.323 0.285  0.256  0.254 0.341 0.47
+## WSS_6  229 0.399 0.384  0.361  0.341 0.205 0.40
+## WSS_7  222 0.386 0.356  0.334  0.320 0.392 0.49
+## WSS_8  231 0.321 0.310  0.280  0.259 0.208 0.41
+## WSS_9  230 0.361 0.352  0.329  0.293 0.183 0.39
+## WSS_10 231 0.307 0.283  0.254  0.243 0.281 0.45
+## WSS_11 223 0.309 0.264  0.241  0.231 0.327 0.47
+## WSS_12 230 0.508 0.512  0.500  0.464 0.157 0.36
+## WSS_13 230 0.256 0.246  0.216  0.198 0.157 0.36
+## WSS_14 227 0.298 0.270  0.246  0.228 0.225 0.42
+## WSS_15 229 0.468 0.466  0.452  0.412 0.144 0.35
+## WSS_16 230 0.520 0.547  0.546  0.479 0.096 0.29
+## WSS_17 230 0.562 0.566  0.562  0.524 0.130 0.34
+## WSS_18 231 0.557 0.562  0.560  0.512 0.156 0.36
+## WSS_19 231 0.575 0.610  0.615  0.544 0.043 0.20
+## WSS_20 230 0.501 0.538  0.533  0.466 0.043 0.20
+## WSS_21 229 0.517 0.516  0.512  0.475 0.131 0.34
+## WSS_22 231 0.675 0.692  0.704  0.645 0.121 0.33
+## WSS_23 230 0.709 0.718  0.733  0.684 0.104 0.31
+## WSS_24 230 0.541 0.565  0.561  0.504 0.078 0.27
+## WSS_25 230 0.594 0.588  0.584  0.550 0.135 0.34
+## WSS_26 231 0.563 0.560  0.554  0.520 0.130 0.34
+## WSS_27 230 0.430 0.432  0.420  0.388 0.117 0.32
+## WSS_28 230 0.444 0.429  0.412  0.379 0.209 0.41
+## WSS_29 230 0.633 0.637  0.645  0.604 0.100 0.30
+## WSS_30 230 0.530 0.526  0.522  0.484 0.170 0.38
+## WSS_31 230 0.274 0.280  0.264  0.231 0.104 0.31
+## WSS_33 227 0.284 0.278  0.260  0.230 0.167 0.37
+## WSS_34 230 0.148 0.160  0.130  0.098 0.109 0.31
+## WSS_35 227 0.243 0.225  0.207  0.178 0.211 0.41
+## WSS_36 230 0.431 0.443  0.424  0.386 0.126 0.33
+## WSS_37 227 0.337 0.336  0.311  0.273 0.233 0.42
+## WSS_38 229 0.273 0.299  0.273  0.232 0.074 0.26
+## WSS_39 230 0.400 0.420  0.403  0.357 0.122 0.33
+## WSS_40 229 0.140 0.184  0.151  0.103 0.061 0.24
+## WSS_41 230 0.365 0.401  0.383  0.326 0.070 0.25
+## WSS_42 230 0.027 0.018 -0.022 -0.048 0.283 0.45
+## WSS_43 231 0.319 0.340  0.321  0.285 0.048 0.21
+## WSS_44 224 0.174 0.185  0.152  0.122 0.112 0.32
+## WSS_45 227 0.139 0.155  0.116  0.089 0.101 0.30
+## WSS_46 231 0.058 0.036 -0.011 -0.023 0.359 0.48
+## 
+## Non missing response frequency for each item
+##        FALSE TRUE miss
+## WSS_1   0.79 0.21 0.01
+## WSS_2   0.87 0.13 0.00
+## WSS_3   0.89 0.11 0.01
+## WSS_4   0.88 0.12 0.00
+## WSS_5   0.66 0.34 0.02
+## WSS_6   0.79 0.21 0.01
+## WSS_7   0.61 0.39 0.04
+## WSS_8   0.79 0.21 0.00
+## WSS_9   0.82 0.18 0.00
+## WSS_10  0.72 0.28 0.00
+## WSS_11  0.67 0.33 0.03
+## WSS_12  0.84 0.16 0.00
+## WSS_13  0.84 0.16 0.00
+## WSS_14  0.78 0.22 0.02
+## WSS_15  0.86 0.14 0.01
+## WSS_16  0.90 0.10 0.00
+## WSS_17  0.87 0.13 0.00
+## WSS_18  0.84 0.16 0.00
+## WSS_19  0.96 0.04 0.00
+## WSS_20  0.96 0.04 0.00
+## WSS_21  0.87 0.13 0.01
+## WSS_22  0.88 0.12 0.00
+## WSS_23  0.90 0.10 0.00
+## WSS_24  0.92 0.08 0.00
+## WSS_25  0.87 0.13 0.00
+## WSS_26  0.87 0.13 0.00
+## WSS_27  0.88 0.12 0.00
+## WSS_28  0.79 0.21 0.00
+## WSS_29  0.90 0.10 0.00
+## WSS_30  0.83 0.17 0.00
+## WSS_31  0.90 0.10 0.00
+## WSS_33  0.83 0.17 0.02
+## WSS_34  0.89 0.11 0.00
+## WSS_35  0.79 0.21 0.02
+## WSS_36  0.87 0.13 0.00
+## WSS_37  0.77 0.23 0.02
+## WSS_38  0.93 0.07 0.01
+## WSS_39  0.88 0.12 0.00
+## WSS_40  0.94 0.06 0.01
+## WSS_41  0.93 0.07 0.00
+## WSS_42  0.72 0.28 0.00
+## WSS_43  0.95 0.05 0.00
+## WSS_44  0.89 0.11 0.03
+## WSS_45  0.90 0.10 0.02
+## WSS_46  0.64 0.36 0.00</code></pre>
+<pre class="r"><code>WSS_survey_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;WSS&quot;))</code></pre>
+</div>
+<div id="magical-ideation" class="section level1">
+<h1>magical ideation</h1>
+<pre class="r"><code>magical_ideation_scale_FU2 =  WSS_survey_FU2 %&gt;% dplyr::select(WSS_1:WSS_15)
+
+wss_magical_ideation_scores_FU2 = magical_ideation_scale_FU2 %&gt;% rowMeans(na.rm=T)
+magical_ideation_scale_FU2 %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.74      0.75    0.76      0.17   3 0.025 0.21 0.19     0.16
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.69  0.74  0.79
+## Duhachek  0.69  0.74  0.79
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## WSS_1       0.70      0.72    0.73      0.15 2.5    0.028 0.0066  0.15
+## WSS_2       0.72      0.73    0.75      0.16 2.7    0.027 0.0076  0.16
+## WSS_3       0.72      0.73    0.74      0.16 2.7    0.027 0.0076  0.15
+## WSS_4       0.72      0.73    0.74      0.16 2.7    0.027 0.0072  0.15
+## WSS_5       0.73      0.74    0.75      0.17 2.9    0.026 0.0078  0.17
+## WSS_6       0.72      0.73    0.75      0.16 2.8    0.026 0.0078  0.16
+## WSS_7       0.72      0.73    0.75      0.17 2.8    0.027 0.0077  0.17
+## WSS_8       0.74      0.74    0.76      0.17 2.9    0.025 0.0068  0.17
+## WSS_9       0.73      0.74    0.75      0.17 2.8    0.026 0.0073  0.16
+## WSS_10      0.73      0.74    0.76      0.17 2.9    0.026 0.0078  0.17
+## WSS_11      0.73      0.74    0.75      0.17 2.9    0.026 0.0070  0.17
+## WSS_12      0.73      0.73    0.75      0.16 2.8    0.026 0.0075  0.16
+## WSS_13      0.74      0.75    0.76      0.17 3.0    0.025 0.0074  0.18
+## WSS_14      0.73      0.74    0.75      0.17 2.9    0.026 0.0071  0.16
+## WSS_15      0.73      0.74    0.75      0.17 2.8    0.026 0.0078  0.16
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean   sd
+## WSS_1  229  0.65  0.64  0.63   0.55 0.21 0.41
+## WSS_2  231  0.49  0.52  0.47   0.40 0.13 0.34
+## WSS_3  228  0.50  0.53  0.48   0.40 0.11 0.32
+## WSS_4  230  0.53  0.56  0.52   0.44 0.12 0.32
+## WSS_5  226  0.45  0.43  0.36   0.31 0.34 0.47
+## WSS_6  229  0.49  0.49  0.43   0.37 0.21 0.40
+## WSS_7  222  0.51  0.49  0.43   0.37 0.39 0.49
+## WSS_8  231  0.39  0.39  0.32   0.25 0.21 0.41
+## WSS_9  230  0.43  0.44  0.38   0.30 0.18 0.39
+## WSS_10 231  0.42  0.40  0.32   0.28 0.28 0.45
+## WSS_11 223  0.47  0.42  0.36   0.30 0.33 0.47
+## WSS_12 230  0.48  0.49  0.43   0.36 0.16 0.36
+## WSS_13 230  0.36  0.36  0.27   0.23 0.16 0.36
+## WSS_14 227  0.45  0.43  0.36   0.31 0.22 0.42
+## WSS_15 229  0.46  0.48  0.41   0.35 0.14 0.35
+## 
+## Non missing response frequency for each item
+##        FALSE TRUE miss
+## WSS_1   0.79 0.21 0.01
+## WSS_2   0.87 0.13 0.00
+## WSS_3   0.89 0.11 0.01
+## WSS_4   0.88 0.12 0.00
+## WSS_5   0.66 0.34 0.02
+## WSS_6   0.79 0.21 0.01
+## WSS_7   0.61 0.39 0.04
+## WSS_8   0.79 0.21 0.00
+## WSS_9   0.82 0.18 0.00
+## WSS_10  0.72 0.28 0.00
+## WSS_11  0.67 0.33 0.03
+## WSS_12  0.84 0.16 0.00
+## WSS_13  0.84 0.16 0.00
+## WSS_14  0.78 0.22 0.02
+## WSS_15  0.86 0.14 0.01</code></pre>
+</div>
+<div id="perceptual-aberration" class="section level1">
+<h1>perceptual aberration</h1>
+<pre class="r"><code>WSS_survey_FU2 %&gt;% dplyr::select(WSS_16:WSS_30) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N  ase mean  sd median_r
+##       0.89       0.9    0.91      0.37 8.7 0.01 0.12 0.2     0.38
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.87  0.89  0.91
+## Duhachek  0.87  0.89  0.91
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## WSS_16      0.88      0.89    0.90      0.36 8.0   0.0111 0.0120  0.37
+## WSS_17      0.88      0.89    0.90      0.37 8.2   0.0110 0.0122  0.38
+## WSS_18      0.88      0.89    0.90      0.37 8.1   0.0111 0.0119  0.37
+## WSS_19      0.89      0.89    0.90      0.37 8.1   0.0108 0.0118  0.38
+## WSS_20      0.89      0.90    0.91      0.38 8.5   0.0106 0.0108  0.39
+## WSS_21      0.89      0.89    0.91      0.38 8.4   0.0106 0.0120  0.39
+## WSS_22      0.88      0.88    0.90      0.35 7.7   0.0116 0.0108  0.36
+## WSS_23      0.88      0.88    0.90      0.35 7.7   0.0116 0.0105  0.36
+## WSS_24      0.88      0.89    0.90      0.37 8.1   0.0109 0.0123  0.38
+## WSS_25      0.88      0.89    0.90      0.36 8.0   0.0112 0.0125  0.36
+## WSS_26      0.88      0.89    0.91      0.37 8.1   0.0111 0.0128  0.38
+## WSS_27      0.89      0.90    0.91      0.38 8.6   0.0106 0.0111  0.39
+## WSS_28      0.90      0.90    0.91      0.39 8.8   0.0099 0.0098  0.39
+## WSS_29      0.88      0.89    0.90      0.36 7.9   0.0112 0.0123  0.37
+## WSS_30      0.88      0.89    0.90      0.37 8.2   0.0109 0.0117  0.38
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop  mean   sd
+## WSS_16 230  0.67  0.68  0.66   0.61 0.096 0.29
+## WSS_17 230  0.64  0.63  0.60   0.57 0.130 0.34
+## WSS_18 231  0.68  0.67  0.64   0.60 0.156 0.36
+## WSS_19 231  0.62  0.65  0.63   0.57 0.043 0.20
+## WSS_20 230  0.50  0.54  0.50   0.43 0.043 0.20
+## WSS_21 229  0.56  0.56  0.52   0.48 0.131 0.34
+## WSS_22 231  0.78  0.78  0.77   0.73 0.121 0.33
+## WSS_23 230  0.77  0.77  0.77   0.73 0.104 0.31
+## WSS_24 230  0.63  0.65  0.62   0.57 0.078 0.27
+## WSS_25 230  0.70  0.69  0.66   0.63 0.135 0.34
+## WSS_26 231  0.67  0.66  0.63   0.60 0.130 0.34
+## WSS_27 230  0.54  0.53  0.49   0.46 0.117 0.32
+## WSS_28 230  0.50  0.46  0.40   0.37 0.209 0.41
+## WSS_29 230  0.70  0.70  0.69   0.65 0.100 0.30
+## WSS_30 230  0.64  0.63  0.60   0.56 0.170 0.38
+## 
+## Non missing response frequency for each item
+##        FALSE TRUE miss
+## WSS_16  0.90 0.10 0.00
+## WSS_17  0.87 0.13 0.00
+## WSS_18  0.84 0.16 0.00
+## WSS_19  0.96 0.04 0.00
+## WSS_20  0.96 0.04 0.00
+## WSS_21  0.87 0.13 0.01
+## WSS_22  0.88 0.12 0.00
+## WSS_23  0.90 0.10 0.00
+## WSS_24  0.92 0.08 0.00
+## WSS_25  0.87 0.13 0.00
+## WSS_26  0.87 0.13 0.00
+## WSS_27  0.88 0.12 0.00
+## WSS_28  0.79 0.21 0.00
+## WSS_29  0.90 0.10 0.00
+## WSS_30  0.83 0.17 0.00</code></pre>
+<pre class="r"><code>wss_perceptual_aberration_score_FU2 = WSS_survey_FU2 %&gt;% dplyr::select(WSS_16:WSS_30) %&gt;% rowMeans(na.rm=T)</code></pre>
+</div>
+<div id="physical-anhedonia" class="section level1">
+<h1>physical anhedonia</h1>
+<pre class="r"><code>physical_anhedonia_scale_FU2 = WSS_survey_FU2 %&gt;% dplyr::select(WSS_31, WSS_33:WSS_46)
+
+physical_anhedonia_scale_FU2 %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.66      0.69    0.72      0.13 2.2 0.033 0.15 0.14     0.12
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.59  0.66  0.72
+## Duhachek  0.59  0.66  0.72
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## WSS_31      0.62      0.65    0.68      0.12 1.9    0.037 0.010  0.12
+## WSS_33      0.62      0.66    0.69      0.12 1.9    0.036 0.011  0.12
+## WSS_34      0.64      0.68    0.71      0.13 2.1    0.034 0.012  0.13
+## WSS_35      0.63      0.67    0.70      0.13 2.0    0.036 0.010  0.12
+## WSS_36      0.65      0.68    0.71      0.13 2.1    0.034 0.013  0.13
+## WSS_37      0.65      0.68    0.71      0.13 2.1    0.034 0.013  0.12
+## WSS_38      0.64      0.67    0.71      0.13 2.0    0.035 0.013  0.12
+## WSS_39      0.63      0.66    0.69      0.12 1.9    0.036 0.012  0.11
+## WSS_40      0.65      0.68    0.71      0.13 2.1    0.034 0.013  0.13
+## WSS_41      0.65      0.67    0.71      0.13 2.1    0.034 0.013  0.12
+## WSS_42      0.65      0.68    0.72      0.13 2.1    0.034 0.012  0.13
+## WSS_43      0.63      0.66    0.69      0.12 1.9    0.035 0.012  0.12
+## WSS_44      0.64      0.67    0.71      0.13 2.0    0.035 0.014  0.12
+## WSS_45      0.66      0.69    0.72      0.14 2.2    0.033 0.013  0.13
+## WSS_46      0.69      0.70    0.73      0.14 2.3    0.030 0.012  0.13
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop  mean   sd
+## WSS_31 230  0.58  0.59 0.586  0.480 0.104 0.31
+## WSS_33 227  0.53  0.52 0.486  0.392 0.167 0.37
+## WSS_34 230  0.40  0.41 0.346  0.270 0.109 0.31
+## WSS_35 227  0.51  0.45 0.421  0.335 0.211 0.41
+## WSS_36 230  0.39  0.40 0.329  0.247 0.126 0.33
+## WSS_37 227  0.44  0.42 0.345  0.261 0.233 0.42
+## WSS_38 229  0.43  0.46 0.390  0.314 0.074 0.26
+## WSS_39 230  0.50  0.53 0.490  0.376 0.122 0.33
+## WSS_40 229  0.34  0.40 0.322  0.239 0.061 0.24
+## WSS_41 230  0.36  0.42 0.352  0.255 0.070 0.25
+## WSS_42 230  0.43  0.39 0.300  0.238 0.283 0.45
+## WSS_43 231  0.49  0.53 0.501  0.409 0.048 0.21
+## WSS_44 224  0.43  0.44 0.361  0.293 0.112 0.32
+## WSS_45 227  0.30  0.31 0.201  0.157 0.101 0.30
+## WSS_46 231  0.29  0.21 0.081  0.061 0.359 0.48
+## 
+## Non missing response frequency for each item
+##        FALSE TRUE miss
+## WSS_31  0.90 0.10 0.00
+## WSS_33  0.83 0.17 0.02
+## WSS_34  0.89 0.11 0.00
+## WSS_35  0.79 0.21 0.02
+## WSS_36  0.87 0.13 0.00
+## WSS_37  0.77 0.23 0.02
+## WSS_38  0.93 0.07 0.01
+## WSS_39  0.88 0.12 0.00
+## WSS_40  0.94 0.06 0.01
+## WSS_41  0.93 0.07 0.00
+## WSS_42  0.72 0.28 0.00
+## WSS_43  0.95 0.05 0.00
+## WSS_44  0.89 0.11 0.03
+## WSS_45  0.90 0.10 0.02
+## WSS_46  0.64 0.36 0.00</code></pre>
+<pre class="r"><code>wss_physical_anhedonia_score_FU2 = physical_anhedonia_scale_FU2 %&gt;% rowMeans(na.rm=T)</code></pre>
+<pre class="r"><code>WSS_scores_FU2 = data.frame(ID = data_FU2$ID, wss_magical_ideation_scores_FU2, wss_perceptual_aberration_score_FU2, wss_physical_anhedonia_score_FU2)</code></pre>
+<div
+id="spq-only-no-close-friends-constricted-affect-and-eccentric-behavior-subscales-of-the-spq-were-included"
+class="section level2">
+<h2>SPQ, only No Close Friends, Constricted Affect, and Eccentric
+Behavior subscales of the SPQ were included</h2>
+<pre class="r"><code>SPQ_scales_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;SPQ&quot;))</code></pre>
+<pre class="r"><code>spq_no_close_friends_FU2 = SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_1:SPQ_3) %&gt;% rowMeans(na.rm = T)
+spq_constricted_affect_FU2 = SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_4, SPQ_5, SPQ_7) %&gt;% rowMeans(na.rm=T)
+spq_eccentric_behavior_FU2 = SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_8:SPQ_11) %&gt;% rowMeans(na.rm=T)
+
+
+
+SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_1:SPQ_3) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean  sd median_r
+##       0.84      0.84    0.81      0.64 5.4 0.019  2.9 1.1     0.65
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt      0.8  0.84  0.87
+## Duhachek   0.8  0.84  0.88
+## 
+##  Reliability if an item is dropped:
+##       raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## SPQ_1      0.69      0.69    0.52      0.52 2.2    0.041    NA  0.52
+## SPQ_2      0.78      0.79    0.65      0.65 3.7    0.028    NA  0.65
+## SPQ_3      0.86      0.86    0.76      0.76 6.4    0.018    NA  0.76
+## 
+##  Item statistics 
+##         n raw.r std.r r.cor r.drop mean  sd
+## SPQ_1 231  0.91  0.92  0.88   0.81  2.8 1.2
+## SPQ_2 231  0.87  0.87  0.79   0.70  3.0 1.3
+## SPQ_3 230  0.84  0.83  0.68   0.62  2.8 1.4
+## 
+## Non missing response frequency for each item
+##          1    2    3    4    5 miss
+## SPQ_1 0.16 0.28 0.19 0.28 0.08    0
+## SPQ_2 0.15 0.25 0.15 0.30 0.15    0
+## SPQ_3 0.21 0.29 0.13 0.20 0.16    0</code></pre>
+<pre class="r"><code>SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_4, SPQ_5, SPQ_7) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean  sd median_r
+##       0.65      0.65    0.56      0.39 1.9 0.038  2.8 0.9     0.36
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.56  0.65  0.72
+## Duhachek  0.58  0.65  0.72
+## 
+##  Reliability if an item is dropped:
+##       raw_alpha std.alpha G6(smc) average_r  S/N alpha se var.r med.r
+## SPQ_4      0.50      0.53    0.36      0.36 1.11    0.061    NA  0.36
+## SPQ_5      0.64      0.64    0.47      0.47 1.80    0.047    NA  0.47
+## SPQ_7      0.48      0.50    0.33      0.33 0.98    0.065    NA  0.33
+## 
+##  Item statistics 
+##         n raw.r std.r r.cor r.drop mean   sd
+## SPQ_4 231  0.80  0.78  0.61   0.50  3.6 1.20
+## SPQ_5 231  0.67  0.73  0.49   0.40  1.8 0.92
+## SPQ_7 231  0.83  0.79  0.63   0.52  3.1 1.35
+## 
+## Non missing response frequency for each item
+##          1    2    3    4    5 miss
+## SPQ_4 0.06 0.16 0.17 0.36 0.25    0
+## SPQ_5 0.46 0.38 0.09 0.06 0.01    0
+## SPQ_7 0.16 0.21 0.21 0.24 0.18    0</code></pre>
+<pre class="r"><code>SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_8:SPQ_11) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean sd median_r
+##       0.88      0.88    0.85      0.64 7.2 0.013    3  1     0.64
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.85  0.88   0.9
+## Duhachek  0.85  0.88   0.9
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## SPQ_8       0.82      0.82    0.76      0.61 4.6    0.020 0.0016  0.60
+## SPQ_9       0.84      0.84    0.78      0.63 5.2    0.019 0.0043  0.62
+## SPQ_10      0.84      0.84    0.79      0.64 5.4    0.018 0.0036  0.62
+## SPQ_11      0.87      0.87    0.82      0.69 6.6    0.015 0.0011  0.70
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean  sd
+## SPQ_8  231  0.89  0.89  0.85   0.79  3.1 1.2
+## SPQ_9  231  0.86  0.86  0.80   0.75  3.1 1.2
+## SPQ_10 231  0.85  0.86  0.79   0.74  3.2 1.2
+## SPQ_11 231  0.82  0.82  0.71   0.67  2.7 1.2
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## SPQ_8  0.13 0.23 0.20 0.32 0.12    0
+## SPQ_9  0.13 0.20 0.25 0.31 0.11    0
+## SPQ_10 0.09 0.23 0.17 0.41 0.11    0
+## SPQ_11 0.21 0.31 0.14 0.29 0.05    0</code></pre>
+<pre class="r"><code>SPQ_scores_FU2 = data.frame(ID = data_FU2$ID, spq_no_close_friends_FU2, spq_constricted_affect_FU2, spq_eccentric_behavior_FU2)</code></pre>
+<p>##Combining all of the schizotypy scores into one data frame</p>
+<pre class="r"><code>df_schizotypy_FU2 = cbind(MSS_scores_FU2, WSS_scores_FU2, SPQ_scores_FU2)
+
+positive_FU2 = df_schizotypy_FU2 %&gt;% dplyr::select(wss_magical_ideation_scores_FU2, wss_perceptual_aberration_score_FU2)
+
+negative_FU2 = df_schizotypy_FU2 %&gt;% dplyr::select(wss_physical_anhedonia_score_FU2, spq_no_close_friends_FU2, spq_constricted_affect_FU2)
+
+disorganized_FU2 = df_schizotypy_FU2 %&gt;% dplyr::select(MSS_scores_FU2, spq_eccentric_behavior_FU2)
+
+schizotypy_df_organized_FU2 = cbind(ID = data_FU2$ID, positive_FU2, negative_FU2, disorganized_FU2)</code></pre>
+</div>
+<div
+id="sensory-sensitivity-only-visual-and-auditory-sensory-sensitivity-were-included"
+class="section level2">
+<h2>Sensory Sensitivity, only visual and auditory sensory sensitivity
+were included</h2>
+<pre class="r"><code>SeSS_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;SeSS&quot;))
+data_FU2 %&gt;% dplyr::select(starts_with(&quot;SeSS&quot;)) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N    ase mean   sd median_r
+##        0.9       0.9    0.92      0.32 9.2 0.0093  2.6 0.71     0.32
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.88   0.9  0.92
+## Duhachek  0.88   0.9  0.92
+## 
+##  Reliability if an item is dropped:
+##         raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## SeSS_1       0.89      0.89    0.91      0.30 8.3   0.0102 0.015  0.31
+## SeSS_2       0.89      0.89    0.91      0.31 8.3   0.0102 0.015  0.31
+## SeSS_3       0.90      0.90    0.91      0.32 9.1   0.0094 0.015  0.33
+## SeSS_4       0.90      0.90    0.91      0.32 8.8   0.0097 0.016  0.32
+## SeSS_5       0.89      0.89    0.91      0.31 8.5   0.0100 0.015  0.31
+## SeSS_6       0.90      0.90    0.91      0.32 8.8   0.0096 0.016  0.32
+## SeSS_7       0.89      0.89    0.91      0.31 8.4   0.0102 0.015  0.31
+## SeSS_8       0.90      0.90    0.91      0.31 8.7   0.0098 0.016  0.32
+## SeSS_9       0.90      0.90    0.91      0.31 8.7   0.0097 0.017  0.33
+## SeSS_10      0.90      0.90    0.91      0.32 9.1   0.0094 0.016  0.33
+## SeSS_11      0.91      0.91    0.92      0.34 9.8   0.0087 0.011  0.33
+## SeSS_12      0.90      0.90    0.91      0.32 8.9   0.0095 0.016  0.33
+## SeSS_13      0.89      0.89    0.91      0.31 8.4   0.0101 0.016  0.31
+## SeSS_15      0.89      0.89    0.91      0.31 8.5   0.0100 0.016  0.31
+## SeSS_16      0.90      0.90    0.91      0.32 8.9   0.0096 0.017  0.33
+## SeSS_17      0.89      0.89    0.91      0.31 8.5   0.0100 0.016  0.31
+## SeSS_18      0.90      0.90    0.91      0.32 8.8   0.0096 0.017  0.32
+## SeSS_19      0.90      0.90    0.91      0.32 8.8   0.0097 0.016  0.32
+## SeSS_20      0.90      0.90    0.91      0.32 8.9   0.0096 0.017  0.33
+## SeSS_21      0.90      0.90    0.91      0.32 9.1   0.0094 0.016  0.33
+## 
+##  Item statistics 
+##           n raw.r std.r r.cor r.drop mean   sd
+## SeSS_1  231  0.76  0.76  0.76   0.72  2.6 1.19
+## SeSS_2  231  0.75  0.74  0.74   0.70  2.6 1.30
+## SeSS_3  231  0.48  0.48  0.44   0.41  3.3 1.13
+## SeSS_4  231  0.58  0.58  0.55   0.51  2.6 1.33
+## SeSS_5  231  0.68  0.68  0.67   0.63  2.2 1.16
+## SeSS_6  231  0.56  0.57  0.54   0.50  1.8 1.09
+## SeSS_7  230  0.73  0.73  0.73   0.69  2.4 1.32
+## SeSS_8  230  0.62  0.63  0.61   0.57  1.9 0.99
+## SeSS_9  230  0.60  0.60  0.58   0.54  2.1 1.10
+## SeSS_10 230  0.46  0.46  0.42   0.40  4.0 1.04
+## SeSS_11 231  0.25  0.24  0.18   0.16  2.8 1.32
+## SeSS_12 231  0.53  0.52  0.49   0.46  3.3 1.27
+## SeSS_13 231  0.71  0.71  0.70   0.66  2.5 1.21
+## SeSS_15 231  0.70  0.69  0.68   0.65  2.9 1.24
+## SeSS_16 230  0.55  0.56  0.53   0.49  2.0 1.11
+## SeSS_17 231  0.69  0.69  0.68   0.64  2.2 1.22
+## SeSS_18 229  0.57  0.57  0.54   0.51  2.7 1.27
+## SeSS_19 230  0.59  0.58  0.55   0.53  2.8 1.28
+## SeSS_20 230  0.53  0.55  0.51   0.48  1.7 0.97
+## SeSS_21 229  0.50  0.49  0.44   0.42  2.9 1.36
+## 
+## Non missing response frequency for each item
+##            1    2    3    4    5 miss
+## SeSS_1  0.21 0.32 0.23 0.16 0.07 0.00
+## SeSS_2  0.23 0.29 0.23 0.11 0.13 0.00
+## SeSS_3  0.07 0.15 0.34 0.27 0.17 0.00
+## SeSS_4  0.27 0.26 0.19 0.17 0.11 0.00
+## SeSS_5  0.32 0.34 0.17 0.11 0.05 0.00
+## SeSS_6  0.52 0.27 0.10 0.07 0.03 0.00
+## SeSS_7  0.33 0.26 0.20 0.10 0.10 0.00
+## SeSS_8  0.42 0.36 0.14 0.07 0.02 0.00
+## SeSS_9  0.34 0.36 0.20 0.06 0.05 0.00
+## SeSS_10 0.03 0.07 0.17 0.35 0.38 0.00
+## SeSS_11 0.20 0.25 0.22 0.20 0.13 0.00
+## SeSS_12 0.10 0.19 0.23 0.27 0.19 0.00
+## SeSS_13 0.26 0.31 0.22 0.15 0.07 0.00
+## SeSS_15 0.16 0.21 0.31 0.19 0.13 0.00
+## SeSS_16 0.43 0.27 0.17 0.09 0.03 0.00
+## SeSS_17 0.37 0.29 0.17 0.11 0.06 0.00
+## SeSS_18 0.24 0.24 0.24 0.19 0.09 0.01
+## SeSS_19 0.19 0.28 0.22 0.20 0.11 0.00
+## SeSS_20 0.51 0.31 0.11 0.03 0.03 0.00
+## SeSS_21 0.21 0.22 0.23 0.19 0.16 0.01</code></pre>
+</div>
+</div>
+<div id="visual" class="section level1">
+<h1>visual</h1>
+<pre class="r"><code>SeSS_FU2 %&gt;% dplyr::select(SeSS_1:SeSS_10) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.86      0.86    0.86      0.38 6.1 0.013  2.6 0.78     0.37
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.83  0.86  0.89
+## Duhachek  0.83  0.86  0.89
+## 
+##  Reliability if an item is dropped:
+##         raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## SeSS_1       0.83      0.83    0.83      0.36 5.0    0.016 0.012  0.35
+## SeSS_2       0.84      0.84    0.84      0.37 5.2    0.016 0.012  0.36
+## SeSS_3       0.86      0.86    0.86      0.40 6.1    0.014 0.014  0.39
+## SeSS_4       0.85      0.85    0.85      0.39 5.7    0.014 0.016  0.37
+## SeSS_5       0.84      0.84    0.84      0.37 5.3    0.015 0.013  0.36
+## SeSS_6       0.86      0.85    0.85      0.39 5.9    0.014 0.014  0.38
+## SeSS_7       0.84      0.84    0.84      0.36 5.1    0.016 0.012  0.36
+## SeSS_8       0.85      0.84    0.85      0.38 5.4    0.015 0.014  0.36
+## SeSS_9       0.85      0.85    0.85      0.38 5.5    0.015 0.015  0.37
+## SeSS_10      0.86      0.86    0.86      0.41 6.3    0.013 0.012  0.39
+## 
+##  Item statistics 
+##           n raw.r std.r r.cor r.drop mean   sd
+## SeSS_1  231  0.79  0.79  0.78   0.73  2.6 1.19
+## SeSS_2  231  0.76  0.75  0.73   0.67  2.6 1.30
+## SeSS_3  231  0.54  0.55  0.46   0.43  3.3 1.13
+## SeSS_4  231  0.65  0.64  0.57   0.53  2.6 1.33
+## SeSS_5  231  0.73  0.72  0.70   0.64  2.2 1.16
+## SeSS_6  231  0.58  0.59  0.52   0.47  1.8 1.09
+## SeSS_7  230  0.77  0.76  0.74   0.69  2.4 1.32
+## SeSS_8  230  0.67  0.69  0.64   0.60  1.9 0.99
+## SeSS_9  230  0.66  0.67  0.62   0.56  2.1 1.10
+## SeSS_10 230  0.49  0.50  0.41   0.38  4.0 1.04
+## 
+## Non missing response frequency for each item
+##            1    2    3    4    5 miss
+## SeSS_1  0.21 0.32 0.23 0.16 0.07    0
+## SeSS_2  0.23 0.29 0.23 0.11 0.13    0
+## SeSS_3  0.07 0.15 0.34 0.27 0.17    0
+## SeSS_4  0.27 0.26 0.19 0.17 0.11    0
+## SeSS_5  0.32 0.34 0.17 0.11 0.05    0
+## SeSS_6  0.52 0.27 0.10 0.07 0.03    0
+## SeSS_7  0.33 0.26 0.20 0.10 0.10    0
+## SeSS_8  0.42 0.36 0.14 0.07 0.02    0
+## SeSS_9  0.34 0.36 0.20 0.06 0.05    0
+## SeSS_10 0.03 0.07 0.17 0.35 0.38    0</code></pre>
+<pre class="r"><code>visual_score_FU2 = SeSS_FU2 %&gt;% dplyr::select(SeSS_1:SeSS_10) %&gt;% rowMeans(na.rm=T)</code></pre>
+</div>
+<div id="auditory" class="section level1">
+<h1>auditory</h1>
+<pre class="r"><code>SeSS_FU2 %&gt;% dplyr::select(SeSS_11:SeSS_21) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##        0.8      0.81    0.81       0.3 4.2 0.019  2.6 0.74     0.28
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.76   0.8  0.84
+## Duhachek  0.76   0.8  0.84
+## 
+##  Reliability if an item is dropped:
+##         raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## SeSS_11      0.82      0.82    0.82      0.33 4.5    0.018 0.0099  0.34
+## SeSS_12      0.79      0.80    0.80      0.31 4.0    0.020 0.0156  0.32
+## SeSS_13      0.76      0.77    0.77      0.27 3.4    0.023 0.0123  0.26
+## SeSS_15      0.77      0.78    0.78      0.28 3.5    0.023 0.0154  0.26
+## SeSS_16      0.78      0.79    0.78      0.29 3.7    0.021 0.0171  0.27
+## SeSS_17      0.76      0.77    0.77      0.27 3.4    0.023 0.0122  0.27
+## SeSS_18      0.79      0.79    0.79      0.30 3.8    0.021 0.0151  0.28
+## SeSS_19      0.78      0.79    0.79      0.29 3.7    0.021 0.0153  0.30
+## SeSS_20      0.79      0.79    0.79      0.30 3.8    0.021 0.0166  0.30
+## SeSS_21      0.80      0.80    0.80      0.31 4.1    0.020 0.0165  0.34
+## 
+##  Item statistics 
+##           n raw.r std.r r.cor r.drop mean   sd
+## SeSS_11 231  0.39  0.37  0.25   0.22  2.8 1.32
+## SeSS_12 231  0.53  0.53  0.45   0.39  3.3 1.27
+## SeSS_13 231  0.74  0.74  0.73   0.65  2.5 1.21
+## SeSS_15 231  0.70  0.70  0.66   0.60  2.9 1.24
+## SeSS_16 230  0.62  0.64  0.59   0.52  2.0 1.11
+## SeSS_17 231  0.75  0.75  0.74   0.66  2.2 1.22
+## SeSS_18 229  0.59  0.58  0.52   0.45  2.7 1.27
+## SeSS_19 230  0.63  0.62  0.56   0.50  2.8 1.28
+## SeSS_20 230  0.58  0.60  0.54   0.48  1.7 0.97
+## SeSS_21 229  0.53  0.51  0.41   0.37  2.9 1.36
+## 
+## Non missing response frequency for each item
+##            1    2    3    4    5 miss
+## SeSS_11 0.20 0.25 0.22 0.20 0.13 0.00
+## SeSS_12 0.10 0.19 0.23 0.27 0.19 0.00
+## SeSS_13 0.26 0.31 0.22 0.15 0.07 0.00
+## SeSS_15 0.16 0.21 0.31 0.19 0.13 0.00
+## SeSS_16 0.43 0.27 0.17 0.09 0.03 0.00
+## SeSS_17 0.37 0.29 0.17 0.11 0.06 0.00
+## SeSS_18 0.24 0.24 0.24 0.19 0.09 0.01
+## SeSS_19 0.19 0.28 0.22 0.20 0.11 0.00
+## SeSS_20 0.51 0.31 0.11 0.03 0.03 0.00
+## SeSS_21 0.21 0.22 0.23 0.19 0.16 0.01</code></pre>
+<pre class="r"><code>auditory_score_FU2 = SeSS_FU2 %&gt;% dplyr::select(SeSS_11:SeSS_21) %&gt;% rowMeans(na.rm=T)</code></pre>
+<pre class="r"><code>SeSS_score_FU2 = data.frame(ID = data_FU2$ID,visual_score_FU2,auditory_score_FU2)
+##Create a new column of overall sensory sensitivity 
+SeSS_score_FU2$SeSS_FU2 = SeSS_score_FU2 %&gt;% dplyr::select(-ID) %&gt;% rowMeans(na.rm=T)</code></pre>
+<div
+id="asi-abberrant-salience-inventory---increased-significance-subscale"
+class="section level2">
+<h2>ASI (abberrant salience inventory - increased significance
+subscale)</h2>
+<pre class="r"><code>data_FU2 %&gt;% dplyr::select(starts_with(&quot;ASI&quot;)) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.78      0.78    0.76      0.33 3.5 0.022 0.75 0.28     0.33
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.73  0.78  0.82
+## Duhachek  0.74  0.78  0.82
+## 
+##  Reliability if an item is dropped:
+##       raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## ASI_1      0.74      0.74    0.72      0.32 2.9    0.025 0.0087  0.32
+## ASI_2      0.73      0.73    0.70      0.31 2.6    0.027 0.0095  0.28
+## ASI_3      0.74      0.74    0.72      0.32 2.9    0.026 0.0085  0.32
+## ASI_4      0.73      0.73    0.71      0.31 2.8    0.027 0.0102  0.32
+## ASI_5      0.77      0.77    0.74      0.35 3.3    0.023 0.0100  0.34
+## ASI_6      0.76      0.76    0.74      0.34 3.2    0.024 0.0091  0.36
+## ASI_7      0.78      0.78    0.76      0.37 3.5    0.023 0.0072  0.40
+## 
+##  Item statistics 
+##         n raw.r std.r r.cor r.drop mean   sd
+## ASI_1 229  0.70  0.68  0.62   0.55 0.72 0.45
+## ASI_2 230  0.74  0.75  0.70   0.62 0.81 0.39
+## ASI_3 230  0.70  0.69  0.62   0.55 0.74 0.44
+## ASI_4 228  0.74  0.72  0.66   0.59 0.61 0.49
+## ASI_5 228  0.59  0.59  0.48   0.42 0.76 0.43
+## ASI_6 230  0.63  0.62  0.52   0.46 0.74 0.44
+## ASI_7 230  0.49  0.54  0.40   0.35 0.89 0.32
+## 
+## Non missing response frequency for each item
+##       FALSE TRUE miss
+## ASI_1  0.28 0.72 0.01
+## ASI_2  0.19 0.81 0.00
+## ASI_3  0.26 0.74 0.00
+## ASI_4  0.39 0.61 0.01
+## ASI_5  0.24 0.76 0.01
+## ASI_6  0.26 0.74 0.00
+## ASI_7  0.11 0.89 0.00</code></pre>
+<pre class="r"><code>ASI_score_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;ASI&quot;))  %&gt;% rowMeans(na.rm = T)
+ASI_df_FU2 = data.frame(ID = data_FU2$ID, ASI_score_FU2)</code></pre>
+<p>##REI (Rational/Experiential Inventory )</p>
+<pre class="r"><code>REI_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;REI&quot;))
+data_FU2 %&gt;% dplyr::select(starts_with(&quot;REI&quot;)) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.74      0.75    0.82      0.24 3.1 0.026  3.7 0.57     0.17
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.69  0.74  0.79
+## Duhachek  0.69  0.74  0.79
+## 
+##  Reliability if an item is dropped:
+##         raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## REI._1       0.72      0.74    0.80      0.24 2.8    0.029 0.052 0.179
+## REI._2       0.72      0.74    0.80      0.24 2.8    0.029 0.052 0.179
+## REI._3       0.70      0.72    0.79      0.22 2.6    0.031 0.059 0.098
+## REI._4       0.72      0.74    0.80      0.24 2.9    0.028 0.056 0.179
+## REI._6       0.76      0.77    0.83      0.27 3.3    0.025 0.056 0.192
+## REI._7       0.72      0.72    0.79      0.22 2.6    0.028 0.047 0.179
+## REI._8       0.73      0.73    0.80      0.23 2.8    0.027 0.049 0.179
+## REI._9       0.72      0.72    0.79      0.22 2.6    0.029 0.052 0.164
+## REI._10      0.72      0.73    0.79      0.23 2.6    0.028 0.047 0.164
+## REI._11      0.72      0.73    0.81      0.23 2.7    0.028 0.058 0.164
+## 
+##  Item statistics 
+##           n raw.r std.r r.cor r.drop mean   sd
+## REI._1  231  0.59  0.53  0.49   0.43  3.5 1.19
+## REI._2  231  0.59  0.53  0.48   0.43  3.6 1.19
+## REI._3  231  0.68  0.65  0.61   0.56  3.7 1.01
+## REI._4  231  0.57  0.52  0.46   0.41  3.3 1.16
+## REI._6  230  0.40  0.35  0.22   0.21  3.1 1.19
+## REI._7  231  0.57  0.63  0.61   0.45  4.0 0.86
+## REI._8  231  0.50  0.56  0.51   0.38  4.0 0.82
+## REI._9  231  0.58  0.63  0.60   0.46  3.8 0.92
+## REI._10 231  0.55  0.61  0.58   0.41  3.9 0.98
+## REI._11 231  0.53  0.57  0.49   0.39  3.7 0.99
+## 
+## Non missing response frequency for each item
+##            1    2    3    4    5 miss
+## REI._1  0.06 0.18 0.18 0.37 0.21    0
+## REI._2  0.06 0.15 0.17 0.37 0.24    0
+## REI._3  0.03 0.10 0.23 0.43 0.21    0
+## REI._4  0.08 0.21 0.23 0.36 0.13    0
+## REI._6  0.11 0.22 0.23 0.33 0.11    0
+## REI._7  0.02 0.04 0.15 0.52 0.28    0
+## REI._8  0.00 0.06 0.12 0.52 0.30    0
+## REI._9  0.02 0.07 0.23 0.47 0.22    0
+## REI._10 0.02 0.09 0.13 0.48 0.27    0
+## REI._11 0.03 0.10 0.23 0.43 0.22    0</code></pre>
+<p>##REI Need for Cognition (Rational)</p>
+<pre class="r"><code>REI_FU2 %&gt;% dplyr::select(REI._1:REI._6) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.76      0.77    0.77       0.4 3.3 0.025  3.4 0.82     0.39
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.71  0.76  0.81
+## Duhachek  0.72  0.76  0.81
+## 
+##  Reliability if an item is dropped:
+##        raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+## REI._1      0.68      0.69    0.66      0.36 2.2    0.034 0.024  0.34
+## REI._2      0.69      0.69    0.67      0.36 2.3    0.034 0.026  0.33
+## REI._3      0.71      0.71    0.68      0.38 2.4    0.031 0.026  0.33
+## REI._4      0.72      0.72    0.70      0.39 2.6    0.030 0.033  0.36
+## REI._6      0.80      0.80    0.78      0.50 4.0    0.022 0.015  0.46
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean  sd
+## REI._1 231  0.79  0.79  0.74   0.64  3.5 1.2
+## REI._2 231  0.79  0.78  0.73   0.62  3.6 1.2
+## REI._3 231  0.73  0.75  0.68   0.58  3.7 1.0
+## REI._4 231  0.72  0.73  0.64   0.54  3.3 1.2
+## REI._6 230  0.56  0.55  0.35   0.31  3.1 1.2
+## 
+## Non missing response frequency for each item
+##           1    2    3    4    5 miss
+## REI._1 0.06 0.18 0.18 0.37 0.21    0
+## REI._2 0.06 0.15 0.17 0.37 0.24    0
+## REI._3 0.03 0.10 0.23 0.43 0.21    0
+## REI._4 0.08 0.21 0.23 0.36 0.13    0
+## REI._6 0.11 0.22 0.23 0.33 0.11    0</code></pre>
+<pre class="r"><code>REI_NFC_score_FU2 = REI_FU2 %&gt;% dplyr::select(REI._1:REI._6) %&gt;% rowMeans(na.rm=T)</code></pre>
+<p>##REI Faith in Intuition (Experiential)</p>
+<pre class="r"><code>REI_FU2 %&gt;% dplyr::select(REI._7:REI._11) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.84      0.84    0.83      0.52 5.4 0.017  3.9 0.72     0.49
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.80  0.84  0.87
+## Duhachek  0.81  0.84  0.87
+## 
+##  Reliability if an item is dropped:
+##         raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## REI._7       0.79      0.79    0.75      0.49 3.8    0.023 0.0047  0.46
+## REI._8       0.81      0.81    0.78      0.52 4.3    0.021 0.0121  0.49
+## REI._9       0.81      0.81    0.77      0.52 4.3    0.021 0.0080  0.50
+## REI._10      0.79      0.80    0.76      0.50 3.9    0.023 0.0101  0.45
+## REI._11      0.84      0.84    0.81      0.57 5.4    0.017 0.0065  0.58
+## 
+##  Item statistics 
+##           n raw.r std.r r.cor r.drop mean   sd
+## REI._7  231  0.83  0.83  0.80   0.72  4.0 0.86
+## REI._8  231  0.77  0.78  0.70   0.64  4.0 0.82
+## REI._9  231  0.78  0.79  0.72   0.65  3.8 0.92
+## REI._10 231  0.82  0.82  0.77   0.70  3.9 0.98
+## REI._11 231  0.71  0.70  0.57   0.53  3.7 0.99
+## 
+## Non missing response frequency for each item
+##            1    2    3    4    5 miss
+## REI._7  0.02 0.04 0.15 0.52 0.28    0
+## REI._8  0.00 0.06 0.12 0.52 0.30    0
+## REI._9  0.02 0.07 0.23 0.47 0.22    0
+## REI._10 0.02 0.09 0.13 0.48 0.27    0
+## REI._11 0.03 0.10 0.23 0.43 0.22    0</code></pre>
+<pre class="r"><code>REI_FI_score_FU2 = REI_FU2 %&gt;% dplyr::select(REI._7:REI._11) %&gt;% rowMeans(na.rm=T)</code></pre>
+<pre class="r"><code>REI_score_FU2 = data.frame(ID = data_FU2$ID, REI_NFC_score_FU2, REI_FI_score_FU2)</code></pre>
+<p>##Behavior Identification Form</p>
+<pre class="r"><code>BIF_scores_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;Q&quot;)) %&gt;% rowMeans(na.rm = T)
+BIF_FU2 = data.frame(ID = data_FU2$ID, BIF = BIF_scores_FU2)
+
+data_FU2 %&gt;% dplyr::select(starts_with(&quot;Q&quot;)) %&gt;% psych::alpha()</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: psych::alpha(x = .)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+##       0.86      0.86    0.87      0.21 5.9 0.014 0.54 0.23      0.2
+## 
+##     95% confidence boundaries 
+##          lower alpha upper
+## Feldt     0.83  0.86  0.88
+## Duhachek  0.83  0.86  0.88
+## 
+##  Reliability if an item is dropped:
+##     raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## Q27      0.85      0.85    0.87      0.20 5.6    0.014 0.0074  0.20
+## Q30      0.85      0.85    0.87      0.20 5.7    0.014 0.0074  0.20
+## Q37      0.85      0.85    0.87      0.20 5.6    0.014 0.0073  0.20
+## Q38      0.85      0.85    0.87      0.21 5.7    0.014 0.0074  0.20
+## Q39      0.85      0.85    0.87      0.21 5.8    0.014 0.0073  0.20
+## Q41      0.85      0.85    0.87      0.21 5.8    0.014 0.0076  0.20
+## Q42      0.85      0.85    0.86      0.20 5.5    0.015 0.0070  0.20
+## Q43      0.85      0.85    0.87      0.21 5.7    0.014 0.0074  0.20
+## Q44      0.85      0.85    0.87      0.21 5.7    0.014 0.0076  0.20
+## Q45      0.85      0.85    0.87      0.20 5.6    0.014 0.0074  0.20
+## Q46      0.85      0.85    0.87      0.20 5.6    0.014 0.0075  0.20
+## Q47      0.85      0.85    0.87      0.21 5.7    0.014 0.0074  0.20
+## Q48      0.85      0.85    0.87      0.20 5.7    0.014 0.0076  0.20
+## Q49      0.84      0.84    0.86      0.20 5.4    0.015 0.0066  0.20
+## Q50      0.85      0.85    0.87      0.20 5.6    0.014 0.0075  0.20
+## Q51      0.84      0.85    0.86      0.20 5.5    0.015 0.0073  0.19
+## Q52      0.85      0.86    0.87      0.21 5.9    0.014 0.0073  0.20
+## Q53      0.85      0.85    0.87      0.20 5.6    0.014 0.0074  0.20
+## Q54      0.85      0.85    0.87      0.20 5.7    0.014 0.0074  0.20
+## Q55      0.86      0.86    0.87      0.21 6.0    0.014 0.0069  0.20
+## Q56      0.85      0.86    0.87      0.21 6.0    0.014 0.0069  0.20
+## Q57      0.85      0.85    0.87      0.21 5.8    0.014 0.0075  0.20
+## Q58      0.85      0.85    0.87      0.20 5.7    0.014 0.0076  0.20
+## 
+##  Item statistics 
+##       n raw.r std.r r.cor r.drop mean   sd
+## Q27 231  0.53  0.52  0.50   0.46 0.59 0.49
+## Q30 231  0.50  0.50  0.47   0.43 0.74 0.44
+## Q37 231  0.52  0.52  0.49   0.45 0.47 0.50
+## Q38 231  0.48  0.48  0.45   0.41 0.37 0.48
+## Q39 231  0.42  0.42  0.37   0.34 0.48 0.50
+## Q41 230  0.44  0.44  0.40   0.36 0.40 0.49
+## Q42 231  0.60  0.60  0.59   0.54 0.59 0.49
+## Q43 231  0.46  0.46  0.43   0.39 0.71 0.45
+## Q44 231  0.48  0.48  0.44   0.41 0.24 0.43
+## Q45 231  0.53  0.54  0.51   0.47 0.78 0.41
+## Q46 231  0.51  0.51  0.48   0.44 0.54 0.50
+## Q47 231  0.48  0.48  0.44   0.40 0.44 0.50
+## Q48 231  0.51  0.51  0.48   0.44 0.65 0.48
+## Q49 230  0.65  0.65  0.65   0.60 0.64 0.48
+## Q50 231  0.53  0.52  0.49   0.45 0.44 0.50
+## Q51 231  0.62  0.61  0.60   0.55 0.48 0.50
+## Q52 231  0.36  0.36  0.31   0.28 0.45 0.50
+## Q53 231  0.53  0.53  0.50   0.47 0.63 0.48
+## Q54 231  0.51  0.51  0.48   0.44 0.50 0.50
+## Q55 231  0.34  0.33  0.28   0.25 0.53 0.50
+## Q56 231  0.33  0.34  0.28   0.25 0.24 0.43
+## Q57 231  0.44  0.44  0.40   0.36 0.59 0.49
+## Q58 231  0.49  0.51  0.47   0.43 0.83 0.38
+## 
+## Non missing response frequency for each item
+##        0    1 miss
+## Q27 0.41 0.59    0
+## Q30 0.26 0.74    0
+## Q37 0.53 0.47    0
+## Q38 0.63 0.37    0
+## Q39 0.52 0.48    0
+## Q41 0.60 0.40    0
+## Q42 0.41 0.59    0
+## Q43 0.29 0.71    0
+## Q44 0.76 0.24    0
+## Q45 0.22 0.78    0
+## Q46 0.46 0.54    0
+## Q47 0.56 0.44    0
+## Q48 0.35 0.65    0
+## Q49 0.36 0.64    0
+## Q50 0.56 0.44    0
+## Q51 0.52 0.48    0
+## Q52 0.55 0.45    0
+## Q53 0.37 0.63    0
+## Q54 0.50 0.50    0
+## Q55 0.47 0.53    0
+## Q56 0.76 0.24    0
+## Q57 0.41 0.59    0
+## Q58 0.17 0.83    0</code></pre>
+<pre class="r"><code>score_list_FU2 = list(original_AQ_scores_FU2, new_AQ_scores_FU2, schizotypy_df_organized_FU2, SeSS_score_FU2, ASI_df_FU2, REI_score_FU2, BIF_FU2)
+
+
+complete_scores_FU2 = score_list_FU2%&gt;% reduce(full_join, by=&#39;ID&#39;)</code></pre>
+<pre class="r"><code>winsor = function(x){
+  upper = mean(x, na.rm=T) + 3 * sd(x, na.rm=T)
+  lower = mean(x, na.rm=T) - 3 * sd(x, na.rm=T)
+  x[x &gt; upper] = upper
+  x[x&lt;lower] = lower
+  return(x)
+}
+
+complete_scores_winsorized_FU2 = complete_scores_FU2 %&gt;% mutate(across(original_AQ_social_anhedonia_FU2:BIF, winsor))</code></pre>
+<pre class="r"><code>write.csv(complete_scores_FU2, &quot;complete scores FU2.csv&quot;)
+write.csv(complete_scores_winsorized_FU2, &quot;complete scores winsorzied FU2.csv&quot;)</code></pre>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

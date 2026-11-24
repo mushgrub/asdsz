@@ -1,6 +1,6 @@
 ---
 title: 'Data Cleanup #2 FU2'
-output: html_notebook
+output: html_document
 date: "11/12/26"
 ---
 

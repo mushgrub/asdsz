@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2026-11-17" />
+
+<title>AQ schizotypy factor analysis FU2</title>
+
+<script src="site_libs/header-attrs-2.32/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Autism and Schizotypy</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">AQ schizotypy factor analysis FU2</h1>
+<h4 class="date">11/17/26</h4>
+
+</div>
+
+
+<pre class="r"><code>library(dplyr)
+library(psych)
+library(paran)
+library(lavaan)</code></pre>
+<pre class="r"><code>data_FU2 = read.csv(&quot;complete scores winsorzied FU2.csv&quot;)</code></pre>
+<div id="correlations" class="section level3">
+<h3>Correlations</h3>
+<pre class="r"><code>#aberrant_salience = data_chirica %&gt;% dplyr::select(wss_magical_ideation_scores, spq_unusual_perception, spq_magical_thinking, spq_suspiciousness, spq_idea_of_reference, spq_odd_speech, original_AQ_social_discourse, wss_perceptual_aberration_score, original_AQ_pattern, spq_eccentric_behavior) %&gt;% rowMeans(na.rm=T)
+
+#asociality = data_chirica %&gt;% dplyr::select(original_AQ_social_anhedonia, spq_no_close_friends, spq_social_anxiety, spq_constricted_affect, wss_social_anhedonia_score) %&gt;% rowMeans(na.rm=T)
+
+#non_divergent = data_chirica %&gt;% dplyr::select(original_AQ_imagination, wss_physical_anhedonia_score, original_AQ_social_anhedonia)%&gt;% rowMeans(na.rm=T)
+
+#cbind(aberrant_salience, asociality, non_divergent) %&gt;% corr.test()</code></pre>
+</div>
+<div id="including-mss" class="section level2">
+<h2>including MSS</h2>
+<pre class="r"><code>new_data_FU2 = data_FU2 %&gt;% dplyr::select(
+  starts_with(&quot;new_AQ&quot;),
+  starts_with(&quot;wss&quot;),
+  starts_with(&quot;spq&quot;),
+  starts_with(&quot;MSS&quot;))</code></pre>
+<pre class="r"><code>paran(new_data_FU2, cfa=FALSE, graph=TRUE,
+      color=TRUE, col=c(&quot;black&quot;, &quot;red&quot;, &quot;blue&quot;))</code></pre>
+<pre><code>## Using eigendecomposition of correlation matrix.</code></pre>
+<pre><code>## 
+## Computing: 10%  20%  30%  40%  50%  60%  70%  80%  90%  100%</code></pre>
+<pre><code>## 
+## Results of Horn&#39;s Parallel Analysis for component retention
+## 360 iterations, using the mean estimate
+## 
+## ──────────────────────────────────────────────────
+## Component   Adjusted    Unadjusted    Estimated
+##             Eigenvalue  Eigenvalue    Bias
+## ──────────────────────────────────────────────────
+## 1           3.482915    3.873138      0.390223
+## 2           1.528471    1.813093      0.284621
+## 3           1.000618    1.204582      0.203964
+## ──────────────────────────────────────────────────
+## Criterion: retain adjusted eigenvalues &gt; 1.
+## (3 components retained)</code></pre>
+<p><img src="AQ-schizotypy-factor-analysis-FU2_files/figure-html/unnamed-chunk-5-1.png" alt="" width="672" /></p>
+<pre class="r"><code>new_data_mod_3F_PA_FU2 = fa(new_data_FU2, nfactors = 3, fm = &quot;pa&quot;)
+
+new_data_mod_3F_PA_FU2$PVAL</code></pre>
+<pre><code>## [1] 1.404846e-05</code></pre>
+<pre class="r"><code>new_data_mod_3F_PA_FU2$dof</code></pre>
+<pre><code>## [1] 33</code></pre>
+<pre class="r"><code>new_data_mod_3F_PA_FU2$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.07715723 0.05550040 0.09965306 0.90000000</code></pre>
+<pre class="r"><code>new_data_mod_3F_PA_FU2$chi</code></pre>
+<pre><code>## [1] 26.89775</code></pre>
+<pre class="r"><code>new_data_mod_3F_PA_FU2$TLI</code></pre>
+<pre><code>## [1] 0.8810157</code></pre>
+<pre class="r"><code>1 - (1 - new_data_mod_3F_PA_FU2$TLI)* new_data_mod_3F_PA_FU2$dof / new_data_mod_3F_PA_FU2$null.dof</code></pre>
+<pre><code>## [1] 0.9405078</code></pre>
+<pre class="r"><code>new_data_mod_3F_PA_FU2$loadings</code></pre>
+<pre><code>## 
+## Loadings:
+##                                     PA1    PA2    PA3   
+## new_AQ_social_anhedonia_FU2         -0.224  0.524  0.231
+## new_AQ_pattern_FU2                   0.465         0.121
+## new_AQ_social_cogition_FU2          -0.120         0.693
+## new_AQ_social_discourse_FU2          0.365         0.560
+## new_AQ_imagination_FU2              -0.113         0.469
+## wss_magical_ideation_scores_FU2      0.798              
+## wss_perceptual_aberration_score_FU2  0.741              
+## wss_physical_anhedonia_score_FU2            0.215  0.139
+## spq_no_close_friends_FU2                    0.842       
+## spq_constricted_affect_FU2                  0.819       
+## spq_eccentric_behavior_FU2           0.304  0.160  0.379
+## MSS_scores_FU2                       0.326  0.158  0.414
+## 
+##                  PA1   PA2   PA3
+## SS loadings    1.826 1.766 1.428
+## Proportion Var 0.152 0.147 0.119
+## Cumulative Var 0.152 0.299 0.418</code></pre>
+<pre class="r"><code>summary(new_data_mod_3F_PA_FU2)</code></pre>
+<pre><code>## 
+## Factor analysis with Call: fa(r = new_data_FU2, nfactors = 3, fm = &quot;pa&quot;)
+## 
+## Test of the hypothesis that 3 factors are sufficient.
+## The degrees of freedom for the model is 33  and the objective function was  0.35 
+## The number of observations was  231  with Chi Square =  78.53  with prob &lt;  1.4e-05 
+## 
+## The root mean square of the residuals (RMSA) is  0.04 
+## The df corrected root mean square of the residuals is  0.06 
+## 
+## Tucker Lewis Index of factoring reliability =  0.881
+## RMSEA index =  0.077  and the 90 % confidence intervals are  0.056 0.1
+## BIC =  -101.07
+##  With factor correlations of 
+##      PA1  PA2 PA3
+## PA1 1.00 0.24 0.3
+## PA2 0.24 1.00 0.4
+## PA3 0.30 0.40 1.0</code></pre>
+<pre class="r"><code>#write.csv(new_data_mod_3F_PA_FU2$communality, &quot;New Model FU2 3 factor PA Communality.csv&quot;)
+#write.csv(new_data_mod_3F_PA_FU2$loadings, &quot;New Model FU2 3 factor PA Loadings.csv&quot;)</code></pre>
+<pre class="r"><code>new_data_mod_3F_EFA_FU2 = fa(new_data_FU2, nfactors = 3, fm = &quot;ml&quot;)
+
+new_data_mod_3F_EFA_FU2$PVAL</code></pre>
+<pre><code>## [1] 3.256867e-05</code></pre>
+<pre class="r"><code>new_data_mod_3F_EFA_FU2$dof</code></pre>
+<pre><code>## [1] 33</code></pre>
+<pre class="r"><code>new_data_mod_3F_EFA_FU2$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.07479100 0.05287881 0.09743929 0.90000000</code></pre>
+<pre class="r"><code>new_data_mod_3F_EFA_FU2$chi</code></pre>
+<pre><code>## [1] 29.24923</code></pre>
+<pre class="r"><code>new_data_mod_3F_EFA_FU2$TLI</code></pre>
+<pre><code>## [1] 0.8881791</code></pre>
+<pre class="r"><code>1 - (1 - new_data_mod_3F_EFA_FU2$TLI)* new_data_mod_3F_EFA_FU2$dof / new_data_mod_3F_EFA_FU2$null.dof</code></pre>
+<pre><code>## [1] 0.9440895</code></pre>
+<pre class="r"><code>new_data_mod_3F_EFA_FU2$loadings</code></pre>
+<pre><code>## 
+## Loadings:
+##                                     ML2    ML3    ML1   
+## new_AQ_social_anhedonia_FU2          0.497  0.214 -0.219
+## new_AQ_pattern_FU2                          0.143  0.440
+## new_AQ_social_cogition_FU2                  0.661 -0.168
+## new_AQ_social_discourse_FU2                 0.641  0.247
+## new_AQ_imagination_FU2                      0.446 -0.140
+## wss_magical_ideation_scores_FU2                    0.792
+## wss_perceptual_aberration_score_FU2                0.747
+## wss_physical_anhedonia_score_FU2     0.210  0.101  0.101
+## spq_no_close_friends_FU2             0.841              
+## spq_constricted_affect_FU2           0.840         0.107
+## spq_eccentric_behavior_FU2           0.129  0.467  0.225
+## MSS_scores_FU2                       0.140  0.474  0.264
+## 
+##                  ML2   ML3   ML1
+## SS loadings    1.753 1.584 1.679
+## Proportion Var 0.146 0.132 0.140
+## Cumulative Var 0.146 0.278 0.418</code></pre>
+<pre class="r"><code>summary(new_data_mod_3F_EFA_FU2)</code></pre>
+<pre><code>## 
+## Factor analysis with Call: fa(r = new_data_FU2, nfactors = 3, fm = &quot;ml&quot;)
+## 
+## Test of the hypothesis that 3 factors are sufficient.
+## The degrees of freedom for the model is 33  and the objective function was  0.34 
+## The number of observations was  231  with Chi Square =  75.78  with prob &lt;  3.3e-05 
+## 
+## The root mean square of the residuals (RMSA) is  0.04 
+## The df corrected root mean square of the residuals is  0.06 
+## 
+## Tucker Lewis Index of factoring reliability =  0.888
+## RMSEA index =  0.075  and the 90 % confidence intervals are  0.053 0.097
+## BIC =  -103.82
+##  With factor correlations of 
+##      ML2  ML3  ML1
+## ML2 1.00 0.42 0.21
+## ML3 0.42 1.00 0.35
+## ML1 0.21 0.35 1.00</code></pre>
+<pre class="r"><code>#write.csv(new_data_mod_3F_EFA_FU2$communality, &quot;New Model FU2 3 factor EFA Communality.csv&quot;)
+#write.csv(new_data_mod_3F_EFA_FU2$loadings, &quot;New Model FU2 3 factor EFA Loadings.csv&quot;)</code></pre>
+<pre class="r"><code>new_data_mod_4F_PA_FU2 = fa(new_data_FU2, nfactors = 4, fm = &quot;pa&quot;)
+
+new_data_mod_4F_PA_FU2$PVAL</code></pre>
+<pre><code>## [1] 0.004193583</code></pre>
+<pre class="r"><code>new_data_mod_4F_PA_FU2$dof</code></pre>
+<pre><code>## [1] 24</code></pre>
+<pre class="r"><code>new_data_mod_4F_PA_FU2$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.06312446 0.03494039 0.09073197 0.90000000</code></pre>
+<pre class="r"><code>new_data_mod_4F_PA_FU2$chi</code></pre>
+<pre><code>## [1] 13.19062</code></pre>
+<pre class="r"><code>new_data_mod_4F_PA_FU2$TLI</code></pre>
+<pre><code>## [1] 0.9199762</code></pre>
+<pre class="r"><code>1 - (1 - new_data_mod_4F_PA_FU2$TLI)* new_data_mod_4F_PA_FU2$dof / new_data_mod_4F_PA_FU2$null.dof</code></pre>
+<pre><code>## [1] 0.9709004</code></pre>
+<pre class="r"><code>new_data_mod_4F_PA_FU2$loadings</code></pre>
+<pre><code>## 
+## Loadings:
+##                                     PA2    PA4    PA1    PA3   
+## new_AQ_social_anhedonia_FU2          0.485 -0.143         0.268
+## new_AQ_pattern_FU2                          0.326  0.289 -0.114
+## new_AQ_social_cogition_FU2                 -0.121  0.455  0.426
+## new_AQ_social_discourse_FU2                 0.119  0.743       
+## new_AQ_imagination_FU2                             0.213  0.447
+## wss_magical_ideation_scores_FU2             0.722  0.110       
+## wss_perceptual_aberration_score_FU2         0.810              
+## wss_physical_anhedonia_score_FU2     0.132  0.283 -0.179  0.448
+## spq_no_close_friends_FU2             0.900                     
+## spq_constricted_affect_FU2           0.770  0.142              
+## spq_eccentric_behavior_FU2           0.201  0.130  0.504       
+## MSS_scores_FU2                       0.174  0.217  0.436       
+## 
+##                  PA2   PA4   PA1   PA3
+## SS loadings    1.735 1.504 1.394 0.691
+## Proportion Var 0.145 0.125 0.116 0.058
+## Cumulative Var 0.145 0.270 0.386 0.444</code></pre>
+<pre class="r"><code>summary(new_data_mod_4F_PA_FU2)</code></pre>
+<pre><code>## 
+## Factor analysis with Call: fa(r = new_data_FU2, nfactors = 4, fm = &quot;pa&quot;)
+## 
+## Test of the hypothesis that 4 factors are sufficient.
+## The degrees of freedom for the model is 24  and the objective function was  0.21 
+## The number of observations was  231  with Chi Square =  46.2  with prob &lt;  0.0042 
+## 
+## The root mean square of the residuals (RMSA) is  0.03 
+## The df corrected root mean square of the residuals is  0.05 
+## 
+## Tucker Lewis Index of factoring reliability =  0.92
+## RMSEA index =  0.063  and the 90 % confidence intervals are  0.035 0.091
+## BIC =  -84.42
+##  With factor correlations of 
+##      PA2  PA4  PA1  PA3
+## PA2 1.00 0.21 0.34 0.29
+## PA4 0.21 1.00 0.41 0.01
+## PA1 0.34 0.41 1.00 0.25
+## PA3 0.29 0.01 0.25 1.00</code></pre>
+<pre class="r"><code>#write.csv(new_data_mod_4F_PA_FU2$communality, &quot;New Model FU2 4 Factor PA Communality.csv&quot;)
+#write.csv(new_data_mod_4F_PA_FU2$loadings, &quot;New Model FU2 4 Factor PA Loadings.csv&quot;)</code></pre>
+<pre class="r"><code>new_data_mod_4F_EFA_FU2 = fa(new_data_FU2, nfactors = 4, fm = &quot;ml&quot;)
+new_data_mod_4F_EFA_FU2$PVAL</code></pre>
+<pre><code>## [1] 0.01179356</code></pre>
+<pre class="r"><code>new_data_mod_4F_EFA_FU2$dof</code></pre>
+<pre><code>## [1] 24</code></pre>
+<pre class="r"><code>new_data_mod_4F_EFA_FU2$RMSEA</code></pre>
+<pre><code>##      RMSEA      lower      upper confidence 
+## 0.05736477 0.02700353 0.08566416 0.90000000</code></pre>
+<pre class="r"><code>new_data_mod_4F_EFA_FU2$chi</code></pre>
+<pre><code>## [1] 15.37422</code></pre>
+<pre class="r"><code>new_data_mod_4F_EFA_FU2$TLI</code></pre>
+<pre><code>## [1] 0.9338478</code></pre>
+<pre class="r"><code>1 - (1 - new_data_mod_4F_EFA_FU2$TLI)* new_data_mod_4F_EFA_FU2$dof / new_data_mod_4F_EFA_FU2$null.dof</code></pre>
+<pre><code>## [1] 0.9759446</code></pre>
+<pre class="r"><code>new_data_mod_4F_EFA_FU2$loadings</code></pre>
+<pre><code>## 
+## Loadings:
+##                                     ML4    ML3    ML1    ML2   
+## new_AQ_social_anhedonia_FU2          0.400        -0.146  0.413
+## new_AQ_pattern_FU2                          0.365  0.244       
+## new_AQ_social_cogition_FU2                         0.248  0.592
+## new_AQ_social_discourse_FU2                        0.848       
+## new_AQ_imagination_FU2                                    0.503
+## wss_magical_ideation_scores_FU2             0.764              
+## wss_perceptual_aberration_score_FU2         0.802              
+## wss_physical_anhedonia_score_FU2            0.237 -0.147  0.319
+## spq_no_close_friends_FU2             0.961                     
+## spq_constricted_affect_FU2           0.707  0.183 -0.125       
+## spq_eccentric_behavior_FU2           0.152  0.219  0.342  0.167
+## MSS_scores_FU2                       0.146  0.314  0.248  0.252
+## 
+##                  ML4   ML3   ML1   ML2
+## SS loadings    1.651 1.610 1.092 0.990
+## Proportion Var 0.138 0.134 0.091 0.082
+## Cumulative Var 0.138 0.272 0.363 0.445</code></pre>
+<pre class="r"><code>summary(new_data_mod_4F_EFA_FU2)</code></pre>
+<pre><code>## 
+## Factor analysis with Call: fa(r = new_data_FU2, nfactors = 4, fm = &quot;ml&quot;)
+## 
+## Test of the hypothesis that 4 factors are sufficient.
+## The degrees of freedom for the model is 24  and the objective function was  0.19 
+## The number of observations was  231  with Chi Square =  42.35  with prob &lt;  0.012 
+## 
+## The root mean square of the residuals (RMSA) is  0.03 
+## The df corrected root mean square of the residuals is  0.05 
+## 
+## Tucker Lewis Index of factoring reliability =  0.934
+## RMSEA index =  0.057  and the 90 % confidence intervals are  0.027 0.086
+## BIC =  -88.27
+##  With factor correlations of 
+##      ML4  ML3  ML1  ML2
+## ML4 1.00 0.22 0.24 0.40
+## ML3 0.22 1.00 0.44 0.14
+## ML1 0.24 0.44 1.00 0.36
+## ML2 0.40 0.14 0.36 1.00</code></pre>
+<pre class="r"><code>#write.csv(new_data_mod_4F_EFA_FU2$communality, &quot;New Model FU2 4 Factor EFA Communality.csv&quot;)
+#write.csv(new_data_mod_4F_EFA_FU2$loadings, &quot;New Model FU2 4 Factor EFA Loadings.csv&quot;)</code></pre>
+</div>
+<div id="cfa-for-the-three-factor-model-based-on-efa-and-pa"
+class="section level2">
+<h2>CFA for the three-factor model, based on EFA and PA</h2>
+<pre class="r"><code>cfa_3F_FU2 = &quot;
+aberrant_salience =~ wss_magical_ideation_scores_FU2 + wss_perceptual_aberration_score_FU2 + new_AQ_pattern_FU2
+
+Asociality =~ new_AQ_social_anhedonia_FU2 + wss_physical_anhedonia_score_FU2+ spq_no_close_friends_FU2 +  spq_constricted_affect_FU2 
+
+non_divergent_thinking =~ new_AQ_social_cogition_FU2 + new_AQ_social_discourse_FU2 + new_AQ_imagination_FU2+ spq_eccentric_behavior_FU2 +  MSS_scores_FU2
+&quot;
+
+cfa_3f = cfa(cfa_3F_FU2, data_FU2)
+summary(cfa_3f,fit.measures=T,standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 71 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        27
+## 
+##   Number of observations                           231
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               137.070
+##   Degrees of freedom                                51
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                               131.915
+##   Degrees of freedom                                51
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               860.404
+##   Degrees of freedom                                66
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.892
+##   Tucker-Lewis Index (TLI)                       0.860
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -1745.858
+##   Loglikelihood unrestricted model (H1)      -1677.323
+##                                                       
+##   Akaike (AIC)                                3545.715
+##   Bayesian (BIC)                              3638.661
+##   Sample-size adjusted Bayesian (SABIC)       3553.086
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.085
+##   90 Percent confidence interval - lower         0.068
+##   90 Percent confidence interval - upper         0.103
+##   P-value H_0: RMSEA &lt;= 0.050                    0.001
+##   P-value H_0: RMSEA &gt;= 0.080                    0.714
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.071
+## 
+## Goodness of Fit Index:
+## 
+##   Goodness of Fit Index (GFI)                    0.945
+##   90 Percent confidence interval - lower         0.921
+##   90 Percent confidence interval - upper         0.965
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                             Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv
+##   aberrant_salience =~                                                  
+##     wss_mgcl___FU2             1.000                               0.151
+##     wss_prcp___FU2             0.916    0.104    8.806    0.000    0.138
+##     nw_AQ_pttr_FU2             2.733    0.408    6.702    0.000    0.412
+##   Asociality =~                                                         
+##     nw_AQ_scl__FU2             1.000                               0.462
+##     wss_phys___FU2             0.082    0.023    3.652    0.000    0.038
+##     spq_n_cls__FU2             2.221    0.286    7.780    0.000    1.026
+##     spq_cnstr__FU2             1.516    0.194    7.813    0.000    0.701
+##   non_divergent_thinking =~                                             
+##     nw_AQ_scl__FU2             1.000                               0.333
+##     nw_AQ_scl__FU2             1.639    0.258    6.340    0.000    0.546
+##     nw_AQ_mgnt_FU2             0.631    0.162    3.896    0.000    0.210
+##     spq_ccntr__FU2             2.112    0.342    6.169    0.000    0.704
+##     MSS_scores_FU2             0.639    0.101    6.299    0.000    0.213
+##   Std.all
+##          
+##     0.818
+##     0.745
+##     0.502
+##          
+##     0.536
+##     0.273
+##     0.895
+##     0.781
+##          
+##     0.472
+##     0.729
+##     0.322
+##     0.678
+##     0.716
+## 
+## Covariances:
+##                        Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##   aberrant_salience ~~                                                      
+##     Asociality            0.017    0.006    2.788    0.005    0.243    0.243
+##     nn_dvrgnt_thnk        0.031    0.006    4.834    0.000    0.621    0.621
+##   Asociality ~~                                                             
+##     nn_dvrgnt_thnk        0.081    0.020    4.143    0.000    0.528    0.528
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .wss_mgcl___FU2    0.011    0.002    4.735    0.000    0.011    0.331
+##    .wss_prcp___FU2    0.015    0.002    6.635    0.000    0.015    0.446
+##    .nw_AQ_pttr_FU2    0.503    0.051    9.805    0.000    0.503    0.748
+##    .nw_AQ_scl__FU2    0.529    0.053    9.981    0.000    0.529    0.713
+##    .wss_phys___FU2    0.018    0.002   10.608    0.000    0.018    0.925
+##    .spq_n_cls__FU2    0.261    0.082    3.197    0.001    0.261    0.198
+##    .spq_cnstr__FU2    0.313    0.047    6.661    0.000    0.313    0.390
+##    .nw_AQ_scl__FU2    0.389    0.039   10.019    0.000    0.389    0.778
+##    .nw_AQ_scl__FU2    0.263    0.034    7.781    0.000    0.263    0.468
+##    .nw_AQ_mgnt_FU2    0.382    0.037   10.454    0.000    0.382    0.896
+##    .spq_ccntr__FU2    0.582    0.068    8.532    0.000    0.582    0.540
+##    .MSS_scores_FU2    0.043    0.005    8.003    0.000    0.043    0.488
+##     aberrant_salnc    0.023    0.004    6.204    0.000    1.000    1.000
+##     Asociality        0.213    0.052    4.080    0.000    1.000    1.000
+##     nn_dvrgnt_thnk    0.111    0.032    3.427    0.001    1.000    1.000</code></pre>
+<pre class="r"><code>cfa_3f</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 71 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        27
+## 
+##   Number of observations                           231
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               137.070
+##   Degrees of freedom                                51
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                               131.915
+##   Degrees of freedom                                51
+##   P-value (Chi-square)                           0.000</code></pre>
+</div>
+<div
+id="cfa-for-the-four-factor-model-based-on-pac-factor-loadings-the-efa-using-ml-had-6-cross-loadings"
+class="section level2">
+<h2>CFA for the four-factor model, based on PAC factor loadings (the EFA
+using ML had 6 cross-loadings)</h2>
+<pre class="r"><code>cfa_4F_PAC_FU2 = &quot;
+aberrant_salience =~ wss_magical_ideation_scores_FU2 + wss_perceptual_aberration_score_FU2 + new_AQ_pattern_FU2
+
+Asociality =~ new_AQ_social_anhedonia_FU2 +  spq_no_close_friends_FU2 +  spq_constricted_affect_FU2 
+
+non_divergent_thinking =~ new_AQ_social_cogition_FU2 + new_AQ_social_discourse_FU2 + spq_eccentric_behavior_FU2 +  MSS_scores_FU2
+
+hyposensitivity =~ new_AQ_imagination_FU2 + wss_physical_anhedonia_score_FU2
+&quot;
+
+cfa_4f_PAC_model_FU2 = cfa(cfa_4F_PAC_FU2, data_FU2)
+summary(cfa_4f_PAC_model_FU2,fit.measures=T,standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 85 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        30
+## 
+##   Number of observations                           231
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               128.527
+##   Degrees of freedom                                48
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                               123.682
+##   Degrees of freedom                                48
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                               860.404
+##   Degrees of freedom                                66
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.899
+##   Tucker-Lewis Index (TLI)                       0.861
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -1741.586
+##   Loglikelihood unrestricted model (H1)      -1677.323
+##                                                       
+##   Akaike (AIC)                                3543.173
+##   Bayesian (BIC)                              3646.445
+##   Sample-size adjusted Bayesian (SABIC)       3551.362
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.085
+##   90 Percent confidence interval - lower         0.068
+##   90 Percent confidence interval - upper         0.103
+##   P-value H_0: RMSEA &lt;= 0.050                    0.001
+##   P-value H_0: RMSEA &gt;= 0.080                    0.701
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.065
+## 
+## Goodness of Fit Index:
+## 
+##   Goodness of Fit Index (GFI)                    0.948
+##   90 Percent confidence interval - lower         0.925
+##   90 Percent confidence interval - upper         0.967
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                             Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv
+##   aberrant_salience =~                                                  
+##     wss_mgcl___FU2             1.000                               0.150
+##     wss_prcp___FU2             0.925    0.104    8.899    0.000    0.139
+##     nw_AQ_pttr_FU2             2.741    0.409    6.707    0.000    0.411
+##   Asociality =~                                                         
+##     nw_AQ_scl__FU2             1.000                               0.460
+##     spq_n_cls__FU2             2.261    0.294    7.698    0.000    1.040
+##     spq_cnstr__FU2             1.505    0.193    7.796    0.000    0.692
+##   non_divergent_thinking =~                                             
+##     nw_AQ_scl__FU2             1.000                               0.330
+##     nw_AQ_scl__FU2             1.658    0.264    6.279    0.000    0.547
+##     spq_ccntr__FU2             2.134    0.349    6.110    0.000    0.704
+##     MSS_scores_FU2             0.643    0.103    6.228    0.000    0.212
+##   hyposensitivity =~                                                    
+##     nw_AQ_mgnt_FU2             1.000                               0.342
+##     wss_phys___FU2             0.179    0.054    3.328    0.001    0.061
+##   Std.all
+##          
+##     0.814
+##     0.749
+##     0.501
+##          
+##     0.534
+##     0.907
+##     0.772
+##          
+##     0.466
+##     0.730
+##     0.678
+##     0.713
+##          
+##     0.524
+##     0.439
+## 
+## Covariances:
+##                             Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv
+##   aberrant_salience ~~                                                  
+##     Asociality                 0.016    0.006    2.653    0.008    0.229
+##     nn_dvrgnt_thnk             0.031    0.006    4.843    0.000    0.636
+##     hyposensitivty             0.015    0.007    2.299    0.021    0.293
+##   Asociality ~~                                                         
+##     nn_dvrgnt_thnk             0.078    0.019    4.073    0.000    0.517
+##     hyposensitivty             0.077    0.023    3.402    0.001    0.486
+##   non_divergent_thinking ~~                                             
+##     hyposensitivty             0.065    0.019    3.536    0.000    0.580
+##   Std.all
+##          
+##     0.229
+##     0.636
+##     0.293
+##          
+##     0.517
+##     0.486
+##          
+##     0.580
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .wss_mgcl___FU2    0.011    0.002    4.900    0.000    0.011    0.337
+##    .wss_prcp___FU2    0.015    0.002    6.588    0.000    0.015    0.439
+##    .nw_AQ_pttr_FU2    0.504    0.051    9.814    0.000    0.504    0.749
+##    .nw_AQ_scl__FU2    0.531    0.053   10.002    0.000    0.531    0.715
+##    .spq_n_cls__FU2    0.232    0.085    2.720    0.007    0.232    0.177
+##    .spq_cnstr__FU2    0.325    0.048    6.781    0.000    0.325    0.404
+##    .nw_AQ_scl__FU2    0.391    0.039   10.042    0.000    0.391    0.782
+##    .nw_AQ_scl__FU2    0.262    0.034    7.771    0.000    0.262    0.467
+##    .spq_ccntr__FU2    0.582    0.068    8.539    0.000    0.582    0.540
+##    .MSS_scores_FU2    0.044    0.005    8.054    0.000    0.044    0.492
+##    .nw_AQ_mgnt_FU2    0.309    0.048    6.423    0.000    0.309    0.725
+##    .wss_phys___FU2    0.016    0.002    8.214    0.000    0.016    0.808
+##     aberrant_salnc    0.023    0.004    6.200    0.000    1.000    1.000
+##     Asociality        0.212    0.052    4.063    0.000    1.000    1.000
+##     nn_dvrgnt_thnk    0.109    0.032    3.386    0.001    1.000    1.000
+##     hyposensitivty    0.117    0.047    2.476    0.013    1.000    1.000</code></pre>
+<pre class="r"><code>cfa_4f_PAC_model_FU2</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 85 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        30
+## 
+##   Number of observations                           231
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               128.527
+##   Degrees of freedom                                48
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                               123.682
+##   Degrees of freedom                                48
+##   P-value (Chi-square)                           0.000</code></pre>
+</div>
+<div id="correlations-1" class="section level1">
+<h1>correlations</h1>
+<pre class="r"><code>sem_correlation_syntax_FU2 = &quot;
+aberrant_salience =~ wss_magical_ideation_scores_FU2 + wss_perceptual_aberration_score_FU2 + new_AQ_pattern_FU2
+
+asociality =~ new_AQ_social_anhedonia_FU2 + wss_physical_anhedonia_score_FU2+ spq_no_close_friends_FU2 +  spq_constricted_affect_FU2 
+
+non_divergent_thinking =~ new_AQ_social_cogition_FU2 + new_AQ_social_discourse_FU2 + new_AQ_imagination_FU2+ spq_eccentric_behavior_FU2 +  MSS_scores_FU2
+
+aberrant_salience ~~ asociality
+aberrant_salience ~~ non_divergent_thinking
+asociality ~~ non_divergent_thinking
+
+SeSS_FU2 ~~ aberrant_salience
+SeSS_FU2 ~~ asociality
+SeSS_FU2 ~~ non_divergent_thinking
+
+ASI_score_FU2 ~~ aberrant_salience
+ASI_score_FU2 ~~ asociality
+ASI_score_FU2 ~~ non_divergent_thinking
+
+REI_NFC_score_FU2 ~~ aberrant_salience
+REI_NFC_score_FU2 ~~ asociality
+REI_NFC_score_FU2 ~~ non_divergent_thinking
+
+REI_FI_score_FU2 ~~ aberrant_salience
+REI_FI_score_FU2 ~~ asociality
+REI_FI_score_FU2 ~~ non_divergent_thinking
+
+BIF ~~ aberrant_salience
+BIF ~~ asociality
+BIF ~~ non_divergent_thinking
+
+
+SeSS_FU2 ~~ ASI_score_FU2
+SeSS_FU2 ~~ REI_NFC_score_FU2
+SeSS_FU2 ~~ REI_FI_score_FU2
+SeSS_FU2 ~~ BIF
+
+ASI_score_FU2 ~~ REI_NFC_score_FU2
+ASI_score_FU2 ~~ REI_FI_score_FU2
+ASI_score_FU2 ~~ BIF
+
+REI_NFC_score_FU2 ~~ REI_FI_score_FU2
+REI_NFC_score_FU2 ~~ BIF
+
+REI_FI_score_FU2 ~~ BIF
+
+&quot;
+
+correlation_mod_FU2 = sem(sem_correlation_syntax_FU2, data_FU2)
+summary(correlation_mod_FU2,fit.measures=T,standardized=TRUE)</code></pre>
+<pre><code>## lavaan 0.7-3 ended normally after 135 iterations
+## 
+##   Estimator                                         ML
+##   Optimization method                           NLMINB
+##   Number of model parameters                        57
+## 
+##   Number of observations                           231
+## 
+## Model Test User Model:
+##                                                       
+##   Test statistic                               285.296
+##   Degrees of freedom                                96
+##   P-value (Chi-square)                           0.000
+##                                                       
+##   Browne&#39;s residual (NT model-based) test             
+##   Test statistic                               272.279
+##   Degrees of freedom                                96
+##   P-value (Chi-square)                           0.000
+## 
+## Model Test Baseline Model:
+## 
+##   Test statistic                              1237.509
+##   Degrees of freedom                               136
+##   P-value                                        0.000
+## 
+## User Model versus Baseline Model:
+## 
+##   Comparative Fit Index (CFI)                    0.828
+##   Tucker-Lewis Index (TLI)                       0.757
+## 
+## Loglikelihood and Information Criteria:
+## 
+##   Loglikelihood user model (H0)              -2434.159
+##   Loglikelihood unrestricted model (H1)      -2291.511
+##                                                       
+##   Akaike (AIC)                                4982.319
+##   Bayesian (BIC)                              5178.536
+##   Sample-size adjusted Bayesian (SABIC)       4997.879
+## 
+## Root Mean Square Error of Approximation:
+## 
+##   RMSEA                                          0.092
+##   90 Percent confidence interval - lower         0.080
+##   90 Percent confidence interval - upper         0.105
+##   P-value H_0: RMSEA &lt;= 0.050                    0.000
+##   P-value H_0: RMSEA &gt;= 0.080                    0.952
+## 
+## Standardized Root Mean Square Residual:
+## 
+##   SRMR                                           0.076
+## 
+## Goodness of Fit Index:
+## 
+##   Goodness of Fit Index (GFI)                    0.918
+##   90 Percent confidence interval - lower         0.895
+##   90 Percent confidence interval - upper         0.938
+## 
+## Parameter Estimates:
+## 
+##   Standard errors                             Standard
+##   Information                                 Expected
+##   Information saturated (h1) model          Structured
+## 
+## Latent Variables:
+##                             Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv
+##   aberrant_salience =~                                                  
+##     wss_mgcl___FU2             1.000                               0.158
+##     wss_prcp___FU2             0.811    0.085    9.523    0.000    0.128
+##     nw_AQ_pttr_FU2             2.729    0.370    7.384    0.000    0.431
+##   asociality =~                                                         
+##     nw_AQ_scl__FU2             1.000                               0.469
+##     wss_phys___FU2             0.084    0.022    3.772    0.000    0.040
+##     spq_n_cls__FU2             2.152    0.271    7.943    0.000    1.008
+##     spq_cnstr__FU2             1.514    0.191    7.913    0.000    0.710
+##   non_divergent_thinking =~                                             
+##     nw_AQ_scl__FU2             1.000                               0.362
+##     nw_AQ_scl__FU2             1.515    0.213    7.123    0.000    0.549
+##     nw_AQ_mgnt_FU2             0.591    0.142    4.160    0.000    0.214
+##     spq_ccntr__FU2             1.891    0.279    6.767    0.000    0.685
+##     MSS_scores_FU2             0.581    0.083    7.005    0.000    0.210
+##   Std.all
+##          
+##     0.857
+##     0.691
+##     0.526
+##          
+##     0.544
+##     0.284
+##     0.880
+##     0.791
+##          
+##     0.512
+##     0.732
+##     0.328
+##     0.660
+##     0.707
+## 
+## Covariances:
+##                             Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv
+##   aberrant_salience ~~                                                  
+##     asociality                 0.019    0.006    2.939    0.003    0.254
+##     nn_dvrgnt_thnk             0.034    0.007    5.131    0.000    0.599
+##   asociality ~~                                                         
+##     nn_dvrgnt_thnk             0.090    0.021    4.336    0.000    0.529
+##   aberrant_salience ~~                                                  
+##     SeSS_FU2                   0.054    0.009    5.942    0.000    0.341
+##   asociality ~~                                                         
+##     SeSS_FU2                   0.079    0.026    3.067    0.002    0.168
+##   non_divergent_thinking ~~                                             
+##     SeSS_FU2                   0.140    0.027    5.246    0.000    0.386
+##   aberrant_salience ~~                                                  
+##     ASI_score_FU2              0.020    0.004    5.717    0.000    0.128
+##   asociality ~~                                                         
+##     ASI_score_FU2              0.022    0.010    2.252    0.024    0.047
+##   non_divergent_thinking ~~                                             
+##     ASI_score_FU2              0.041    0.009    4.388    0.000    0.112
+##   aberrant_salience ~~                                                  
+##     REI_NFC_sc_FU2            -0.005    0.010   -0.560    0.576   -0.034
+##   asociality ~~                                                         
+##     REI_NFC_sc_FU2            -0.054    0.028   -1.897    0.058   -0.115
+##   non_divergent_thinking ~~                                             
+##     REI_NFC_sc_FU2            -0.037    0.023   -1.636    0.102   -0.103
+##   aberrant_salience ~~                                                  
+##     REI_FI_scr_FU2             0.025    0.009    2.974    0.003    0.160
+##   asociality ~~                                                         
+##     REI_FI_scr_FU2             0.004    0.024    0.150    0.881    0.008
+##   non_divergent_thinking ~~                                             
+##     REI_FI_scr_FU2            -0.051    0.021   -2.478    0.013   -0.140
+##   aberrant_salience ~~                                                  
+##     BIF                       -0.002    0.003   -0.583    0.560   -0.010
+##   asociality ~~                                                         
+##     BIF                       -0.031    0.009   -3.527    0.000   -0.066
+##   non_divergent_thinking ~~                                             
+##     BIF                       -0.030    0.007   -3.996    0.000   -0.082
+##   SeSS_FU2 ~~                                                           
+##     ASI_score_FU2              0.057    0.013    4.266    0.000    0.057
+##     REI_NFC_sc_FU2            -0.012    0.038   -0.324    0.746   -0.012
+##     REI_FI_scr_FU2             0.045    0.033    1.350    0.177    0.045
+##     BIF                       -0.030    0.011   -2.726    0.006   -0.030
+##   ASI_score_FU2 ~~                                                      
+##     REI_NFC_sc_FU2             0.016    0.015    1.082    0.279    0.016
+##     REI_FI_scr_FU2             0.037    0.013    2.758    0.006    0.037
+##     BIF                        0.002    0.004    0.534    0.593    0.002
+##   REI_NFC_score_FU2 ~~                                                  
+##     REI_FI_scr_FU2             0.057    0.039    1.466    0.143    0.057
+##     BIF                        0.013    0.013    1.036    0.300    0.013
+##   REI_FI_score_FU2 ~~                                                   
+##     BIF                        0.038    0.011    3.376    0.001    0.038
+##   Std.all
+##          
+##     0.254
+##     0.599
+##          
+##     0.529
+##          
+##     0.483
+##          
+##     0.238
+##          
+##     0.547
+##          
+##     0.461
+##          
+##     0.168
+##          
+##     0.404
+##          
+##    -0.041
+##          
+##    -0.140
+##          
+##    -0.125
+##          
+##     0.224
+##          
+##     0.011
+##          
+##    -0.196
+##          
+##    -0.043
+##          
+##    -0.282
+##          
+##    -0.353
+##          
+##     0.292
+##    -0.021
+##     0.089
+##    -0.182
+##          
+##     0.071
+##     0.185
+##     0.035
+##          
+##     0.097
+##     0.068
+##          
+##     0.228
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+##    .wss_mgcl___FU2    0.009    0.002    4.306    0.000    0.009    0.265
+##    .wss_prcp___FU2    0.018    0.002    8.370    0.000    0.018    0.522
+##    .nw_AQ_pttr_FU2    0.487    0.049    9.856    0.000    0.487    0.724
+##    .nw_AQ_scl__FU2    0.523    0.053    9.933    0.000    0.523    0.704
+##    .wss_phys___FU2    0.018    0.002   10.587    0.000    0.018    0.919
+##    .spq_n_cls__FU2    0.297    0.077    3.850    0.000    0.297    0.226
+##    .spq_cnstr__FU2    0.301    0.046    6.560    0.000    0.301    0.374
+##    .nw_AQ_scl__FU2    0.368    0.037   10.027    0.000    0.368    0.738
+##    .nw_AQ_scl__FU2    0.260    0.031    8.318    0.000    0.260    0.464
+##    .nw_AQ_mgnt_FU2    0.381    0.036   10.506    0.000    0.381    0.893
+##    .spq_ccntr__FU2    0.608    0.066    9.156    0.000    0.608    0.565
+##    .MSS_scores_FU2    0.044    0.005    8.668    0.000    0.044    0.501
+##     SeSS_FU2          0.498    0.046   10.747    0.000    0.498    1.000
+##     ASI_score_FU2     0.077    0.007   10.747    0.000    0.077    1.000
+##     REI_NFC_sc_FU2    0.678    0.063   10.747    0.000    0.678    1.000
+##     REI_FI_scr_FU2    0.512    0.048   10.747    0.000    0.512    1.000
+##     BIF               0.054    0.005   10.747    0.000    0.054    1.000
+##     aberrant_salnc    0.025    0.004    6.939    0.000    1.000    1.000
+##     asociality        0.220    0.053    4.143    0.000    1.000    1.000
+##     nn_dvrgnt_thnk    0.131    0.034    3.849    0.000    1.000    1.000</code></pre>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

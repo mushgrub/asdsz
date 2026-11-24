@@ -17,27 +17,16 @@ Here we are getting the raw data file from FU1 into a useable form.
 
 
 ``` r
-library(dplyr)
+file.create(".nojekyll")
 ```
 
 ```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
+## [1] TRUE
 ```
 
 ``` r
+library(dplyr)
+select <- dplyr::select
 data_original = read.csv("C:/r_projects/Autism and Schizotypy/asdsz/Schizotypy and Autism_FU1.csv")
 content = data_original %>% dplyr::select(MSS._1:SPQ_35)
 questions = sapply(sapply(content[1,], strsplit, "- "), "[[",2) 
@@ -69,7 +58,7 @@ data_attention_checked = data %>% filter(MSS._7 == "TRUE") %>%
   filter(WSS_55 == "FALSE") %>% 
   filter(SPQ_8 == "Agree") %>% 
   filter(SPQ_33 == "Strongly Agree") %>%
-  select(-MSS._7,-AQ._11, -AQ._33, -SeSS_14, -SeSS_28, -ASI_4, -WSS_7, -WSS_36, -WSS_55, -SPQ_8, -SPQ_33)
+  dplyr::select(-MSS._7,-AQ._11, -AQ._33, -SeSS_14, -SeSS_28, -ASI_4, -WSS_7, -WSS_36, -WSS_55, -SPQ_8, -SPQ_33)
 
 data_attention_checked[data_attention_checked == "" | data_attention_checked == "Prefer Not to Answer"] = NA
 ```
@@ -81,13 +70,13 @@ We also need to remove people who have been living in the US for two years or le
 data_attention_checked$US = as.numeric(data_attention_checked$US)
 data_attention_checked = data_attention_checked %>% filter(US >= 2 & US < 100)
 
-data_content = data_attention_checked %>% select(MSS._1:SPQ_35) 
+data_content = data_attention_checked %>% dplyr::select(MSS._1:SPQ_35) 
 check_empty_prop = function(x){sum(is.na(x)) /ncol(data_content)}
 data_attention_checked$empty_prop =apply(data_content, 1, check_empty_prop)
 
-data_attention_checked = data_attention_checked %>% filter(empty_prop < 0.1)
+data_attention_checked = data_attention_checked %>% dplyr::filter(empty_prop < 0.1)
 
-data_attention_checked = data_attention_checked %>% select(-empty_prop)
+data_attention_checked = data_attention_checked %>% dplyr::select(-empty_prop)
 ```
 
 Here we are changing responses to true/false (logical) or numeric (for Likert-style responses).
@@ -111,8 +100,8 @@ data_attention_checked[data_attention_checked == "Always"] = 5
 data_attention_checked[data_attention_checked == "YES"] = TRUE
 data_attention_checked[data_attention_checked == "NO"] = FALSE
 
-df_boolean = data_attention_checked %>% select(contains(c("MSS", "ASI", "WSS"))) %>% mutate_all(as.logical)
-df_numeric = data_attention_checked %>% select(contains(c("SeSS", "SPQ", "AQ"))) %>% mutate_all(as.integer)
+df_boolean = data_attention_checked %>% dplyr::select(contains(c("MSS", "ASI", "WSS"))) %>% mutate_all(as.logical)
+df_numeric = data_attention_checked %>% dplyr::select(contains(c("SeSS", "SPQ", "AQ"))) %>% mutate_all(as.integer)
 
 df_content = cbind(ID = data_attention_checked$ID, df_boolean, df_numeric)
 ```
@@ -174,62 +163,8 @@ Now that our data are useable, we need to look at the factor structure of the Au
 library(dplyr)
 library(psych)
 library(paran)
-```
-
-```
-## Loading required package: MASS
-```
-
-```
-## 
-## Attaching package: 'MASS'
-```
-
-```
-## The following object is masked from 'package:dplyr':
-## 
-##     select
-```
-
-``` r
 library(lavaan)
-```
-
-```
-## This is lavaan 0.7-3
-## lavaan is FREE software! Please report any bugs.
-```
-
-```
-## 
-## Attaching package: 'lavaan'
-```
-
-```
-## The following object is masked from 'package:psych':
-## 
-##     cor2cov
-```
-
-``` r
 library(mice)
-```
-
-```
-## 
-## Attaching package: 'mice'
-```
-
-```
-## The following object is masked from 'package:stats':
-## 
-##     filter
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     cbind, rbind
 ```
 
 Impute missing values 
@@ -1174,13 +1109,7 @@ Now we run Principal Axis Factoring using five factors and extract the factor lo
 
 ``` r
 mod_original_PAF = fa(AQ_original, nfactors = 5, fm = "pa") ##Principal Axis Factoring
-```
 
-```
-## Loading required namespace: GPArotation
-```
-
-``` r
 write.csv(mod_original_PAF$loadings, "original PAF loading.csv")
 write.csv(mod_original_PAF$communality, "original PAF commu.csv")
 

@@ -6,5 +6,4 @@ navbar:
       href: index.html
     - text: "About"
       href: about.html
-name: "asdsz"
 output_dir: docs

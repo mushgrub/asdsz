@@ -1,6 +1,6 @@
 ---
 title: "ASD & Sz Data Cleanup FU1"
-output: html_notebook
+output: html_document
 date: "10/30/26"
 ---
 
