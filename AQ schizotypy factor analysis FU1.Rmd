@@ -4,7 +4,7 @@ output: html_document
 date: "2024-02-01"
 ---
 
-### AQ and Schizotypy Factor Analysis FU1
+AQ and Schizotypy Factor Analysis FU1
 
 These are the actual factor analyses we are most interested in. 
 ```{r}

@@ -9,21 +9,21 @@ navbar:
       href: about.html
     - text: "Follow Up 1"
       menu: 
-      - text: "Data Cleaning #1"
-        href: Data-Cleaning-FU1.html
-      - text: "AQ Factors"
-        href: AQ-Factors-FU1.html
-      - text: "Data Cleaning #2"
-        href: Data-Cleaning--2-FU1.html
-      - text: "AQ & Schizotypy Factor Analysis"
-        href: AQ-schizotypy-factor-analysis-FU1.html
-     - text: "Follow Up 2"
+    - text: "Data Cleaning #1"
+      href: Data-Cleaning-FU1.html
+    - text: "AQ Factors"
+      href: AQ-Factors-FU1.html
+    - text: "Data Cleaning #2"
+      href: Data-Cleaning--2-FU1.html
+    - text: "AQ & Schizotypy Factor Analysis"
+      href: AQ-schizotypy-factor-analysis-FU1.html
+    - text: "Follow Up 2"
       menu: 
-      - text: "Data Cleaning #1"
-        href: Data-Cleaning--1-FU2.html
-      - text: "AQ Factors"
-        href: AQ-Factors-FU2.html
-      - text: "Data Cleaning #2"
-        href: Data-Cleaning--2-FU2.html
-      - text: "AQ & Schizotypy Factor Analysis"
-        href: AQ-schizotypy-factor-analysis-FU2.html
+    - text: "Data Cleaning #1"
+      href: Data-Cleaning--1-FU2.html
+    - text: "AQ Factors"
+      href: AQ-Factors-FU2.html
+    - text: "Data Cleaning #2"
+      href: Data-Cleaning--2-FU2.html
+    - text: "AQ & Schizotypy Factor Analysis"
+      href: AQ-schizotypy-factor-analysis-FU2.html

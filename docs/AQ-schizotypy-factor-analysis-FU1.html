@@ -249,26 +249,31 @@ $(document).ready(function () {
 <li>
   <a href="about.html">About</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Follow Up 1
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="Data-Cleaning-FU1.html">Data Cleaning #1</a>
-    </li>
-    <li>
-      <a href="AQ-Factors-FU1.html">AQ Factors</a>
-    </li>
-    <li>
-      <a href="Data-Cleaning--2-FU1.html">Data Cleaning #2</a>
-    </li>
-    <li>
-      <a href="AQ-schizotypy-factor-analysis-FU1.html">AQ &amp; Schizotypy Factor Analysis</a>
-    </li>
-  </ul>
+<li class="dropdown-header">Follow Up 1</li>
+<li>
+  <a href="Data-Cleaning-FU1.html">Data Cleaning #1</a>
+</li>
+<li>
+  <a href="AQ-Factors-FU1.html">AQ Factors</a>
+</li>
+<li>
+  <a href="Data-Cleaning--2-FU1.html">Data Cleaning #2</a>
+</li>
+<li>
+  <a href="AQ-schizotypy-factor-analysis-FU1.html">AQ &amp; Schizotypy Factor Analysis</a>
+</li>
+<li class="dropdown-header">Follow Up 2</li>
+<li>
+  <a href="Data-Cleaning--1-FU2.html">Data Cleaning #1</a>
+</li>
+<li>
+  <a href="AQ-Factors-FU2.html">AQ Factors</a>
+</li>
+<li>
+  <a href="Data-Cleaning--2-FU2.html">Data Cleaning #2</a>
+</li>
+<li>
+  <a href="AQ-schizotypy-factor-analysis-FU2.html">AQ &amp; Schizotypy Factor Analysis</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -288,8 +293,7 @@ $(document).ready(function () {
 </div>
 
 
-<div id="aq-and-schizotypy-factor-analysis-fu1" class="section level3">
-<h3>AQ and Schizotypy Factor Analysis FU1</h3>
+<p>AQ and Schizotypy Factor Analysis FU1</p>
 <p>These are the actual factor analyses we are most interested in.</p>
 <pre class="r"><code>library(dplyr)
 library(psych)
@@ -1191,7 +1195,6 @@ summary(correlation_mod,fit.measures=T,standardized=TRUE)</code></pre>
 ##     aberrant_salnc    0.017    0.002    7.761    0.000    1.000    1.000
 ##     asociality        0.202    0.030    6.619    0.000    1.000    1.000
 ##     disorganized      0.005    0.005    1.062    0.288    1.000    1.000</code></pre>
-</div>
 
 
 

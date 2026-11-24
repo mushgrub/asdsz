@@ -222,6 +222,8 @@ Finally, we look at the associations between all individual autism and schizotyp
 
 ```{r}
 
+complete_scores_FU2 <- read.csv("complete scores FU2.csv")
+
 subscales_FU2 <- complete_scores_FU2 %>% dplyr::select(-ID)
 
 correlation_matrix_FU2 <- corr.test(subscales_FU2, use = "pairwise", method = "pearson")

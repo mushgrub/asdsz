@@ -249,26 +249,31 @@ $(document).ready(function () {
 <li>
   <a href="about.html">About</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Follow Up 1
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="Data-Cleaning-FU1.html">Data Cleaning #1</a>
-    </li>
-    <li>
-      <a href="AQ-Factors-FU1.html">AQ Factors</a>
-    </li>
-    <li>
-      <a href="Data-Cleaning--2-FU1.html">Data Cleaning #2</a>
-    </li>
-    <li>
-      <a href="AQ-schizotypy-factor-analysis-FU1.html">AQ &amp; Schizotypy Factor Analysis</a>
-    </li>
-  </ul>
+<li class="dropdown-header">Follow Up 1</li>
+<li>
+  <a href="Data-Cleaning-FU1.html">Data Cleaning #1</a>
+</li>
+<li>
+  <a href="AQ-Factors-FU1.html">AQ Factors</a>
+</li>
+<li>
+  <a href="Data-Cleaning--2-FU1.html">Data Cleaning #2</a>
+</li>
+<li>
+  <a href="AQ-schizotypy-factor-analysis-FU1.html">AQ &amp; Schizotypy Factor Analysis</a>
+</li>
+<li class="dropdown-header">Follow Up 2</li>
+<li>
+  <a href="Data-Cleaning--1-FU2.html">Data Cleaning #1</a>
+</li>
+<li>
+  <a href="AQ-Factors-FU2.html">AQ Factors</a>
+</li>
+<li>
+  <a href="Data-Cleaning--2-FU2.html">Data Cleaning #2</a>
+</li>
+<li>
+  <a href="AQ-schizotypy-factor-analysis-FU2.html">AQ &amp; Schizotypy Factor Analysis</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -307,11 +312,8 @@ library(tidyverse)</code></pre>
 <pre class="r"><code>library(psych)</code></pre>
 <pre class="r"><code>data_FU2 = read.csv(&quot;survey content FU2.csv&quot;)
 AQ_scores_FU2 = read.csv(&quot;AQ imputed FU2.csv&quot;)</code></pre>
-<div
-id="original-aq-scores-again-these-are-referring-to-the-aq-factors-found-in-zhu-et-al.-2022"
-class="section level2">
-<h2>original AQ scores, again, these are referring to the AQ factors
-found in Zhu et al., (2022)</h2>
+<p>original AQ scores, again, these are referring to the AQ factors
+found in Zhu et al., (2022)</p>
 <pre class="r"><code>original_AQ_social_discourse_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._1:AQ._3) %&gt;% rowMeans(na.rm = T)
 original_AQ_pattern_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._8:AQ._12) %&gt;% rowMeans(na.rm=T)
 original_AQ_imagination_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._14:AQ._18) %&gt;% rowMeans(na.rm=T)
@@ -495,14 +497,8 @@ AQ_scores_FU2 %&gt;% dplyr::select(AQ._1:AQ._3) %&gt;% psych::alpha()</code></pr
 ## AQ._32 0.05 0.16 0.34 0.32 0.13    0
 ## AQ._33 0.11 0.25 0.31 0.24 0.10    0
 ## AQ._34 0.09 0.19 0.23 0.27 0.22    0</code></pre>
-</div>
-<div
-id="new-aq-scores-why-were-certain-values-dropped-6-items-total-were-dropped-from-the-cfa-assuming-she-dropped-them-due-to-fit-sot-this-should-be-fine-i-am-just-going-with-it-can-talk-with-ab-and-hb-about-writing-this-justification-up-later-on."
-class="section level2">
-<h2>new AQ scores; Why were certain values dropped? 6 items total were
-dropped from the CFA; assuming she dropped them due to fit, sot this
-should be fine I am just going with it; can talk with AB and HB about
-writing this justification up later on.</h2>
+<p>New AQ scores. Remember, 6 items were dropped from the FU1. New AQ
+scores include all AQ items administered in FU2.</p>
 <pre class="r"><code>new_AQ_social_discourse_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._1:AQ._7) %&gt;% rowMeans(na.rm = T) 
 new_AQ_pattern_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._8:AQ._13) %&gt;% rowMeans(na.rm = T) 
 new_AQ_imagination_FU2 = AQ_scores_FU2 %&gt;% dplyr::select(AQ._14:AQ._20) %&gt;% rowMeans(na.rm = T) 
@@ -717,9 +713,7 @@ AQ_scores_FU2 %&gt;% dplyr::select(AQ._1:AQ._7) %&gt;% psych::alpha()</code></pr
 ## AQ._32 0.05 0.16 0.34 0.32 0.13    0
 ## AQ._33 0.11 0.25 0.31 0.24 0.10    0
 ## AQ._34 0.09 0.19 0.23 0.27 0.22    0</code></pre>
-</div>
-<div id="mss-disorganized-schizotypy-scores" class="section level2">
-<h2>MSS disorganized schizotypy scores</h2>
+<p>Calculate MSS Disorganized Schizotypy Subscale scores</p>
 <pre class="r"><code>MSS_scores_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;MSS&quot;)) %&gt;% rowMeans(na.rm = T)
 MSS_FU2 = data.frame(ID = data_FU2$ID, MSS = MSS_scores_FU2)
 
@@ -780,7 +774,7 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;MSS&quot;)) %&gt;% psych::alpha(
 ## MSS._10  0.80 0.20 0.00
 ## MSS._11  0.67 0.33 0.00
 ## MSS._12  0.79 0.21 0.00</code></pre>
-<p>##WSS</p>
+<p>Calculate WSS subscale scores</p>
 <pre class="r"><code>data_FU2 %&gt;% dplyr::select(starts_with(&quot;WSS&quot;)) %&gt;% psych::alpha()</code></pre>
 <pre><code>## Warning in psych::alpha(.): Some items were negatively correlated with the first principal component and probably 
 ## should be reversed.  
@@ -944,9 +938,7 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;MSS&quot;)) %&gt;% psych::alpha(
 ## WSS_45  0.90 0.10 0.02
 ## WSS_46  0.64 0.36 0.00</code></pre>
 <pre class="r"><code>WSS_survey_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;WSS&quot;))</code></pre>
-</div>
-<div id="magical-ideation" class="section level1">
-<h1>magical ideation</h1>
+<p>magical ideation</p>
 <pre class="r"><code>magical_ideation_scale_FU2 =  WSS_survey_FU2 %&gt;% dplyr::select(WSS_1:WSS_15)
 
 wss_magical_ideation_scores_FU2 = magical_ideation_scale_FU2 %&gt;% rowMeans(na.rm=T)
@@ -1016,9 +1008,7 @@ magical_ideation_scale_FU2 %&gt;% psych::alpha()</code></pre>
 ## WSS_13  0.84 0.16 0.00
 ## WSS_14  0.78 0.22 0.02
 ## WSS_15  0.86 0.14 0.01</code></pre>
-</div>
-<div id="perceptual-aberration" class="section level1">
-<h1>perceptual aberration</h1>
+<p>perceptual aberration</p>
 <pre class="r"><code>WSS_survey_FU2 %&gt;% dplyr::select(WSS_16:WSS_30) %&gt;% psych::alpha()</code></pre>
 <pre><code>## 
 ## Reliability analysis   
@@ -1086,9 +1076,7 @@ magical_ideation_scale_FU2 %&gt;% psych::alpha()</code></pre>
 ## WSS_29  0.90 0.10 0.00
 ## WSS_30  0.83 0.17 0.00</code></pre>
 <pre class="r"><code>wss_perceptual_aberration_score_FU2 = WSS_survey_FU2 %&gt;% dplyr::select(WSS_16:WSS_30) %&gt;% rowMeans(na.rm=T)</code></pre>
-</div>
-<div id="physical-anhedonia" class="section level1">
-<h1>physical anhedonia</h1>
+<p>physical anhedonia</p>
 <pre class="r"><code>physical_anhedonia_scale_FU2 = WSS_survey_FU2 %&gt;% dplyr::select(WSS_31, WSS_33:WSS_46)
 
 physical_anhedonia_scale_FU2 %&gt;% psych::alpha()</code></pre>
@@ -1159,11 +1147,8 @@ physical_anhedonia_scale_FU2 %&gt;% psych::alpha()</code></pre>
 ## WSS_46  0.64 0.36 0.00</code></pre>
 <pre class="r"><code>wss_physical_anhedonia_score_FU2 = physical_anhedonia_scale_FU2 %&gt;% rowMeans(na.rm=T)</code></pre>
 <pre class="r"><code>WSS_scores_FU2 = data.frame(ID = data_FU2$ID, wss_magical_ideation_scores_FU2, wss_perceptual_aberration_score_FU2, wss_physical_anhedonia_score_FU2)</code></pre>
-<div
-id="spq-only-no-close-friends-constricted-affect-and-eccentric-behavior-subscales-of-the-spq-were-included"
-class="section level2">
-<h2>SPQ, only No Close Friends, Constricted Affect, and Eccentric
-Behavior subscales of the SPQ were included</h2>
+<p>SPQ next. Only No Close Friends, Constricted Affect, and Eccentric
+Behavior subscales of the SPQ were included in FU2.</p>
 <pre class="r"><code>SPQ_scales_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;SPQ&quot;))</code></pre>
 <pre class="r"><code>spq_no_close_friends_FU2 = SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_1:SPQ_3) %&gt;% rowMeans(na.rm = T)
 spq_constricted_affect_FU2 = SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_4, SPQ_5, SPQ_7) %&gt;% rowMeans(na.rm=T)
@@ -1265,7 +1250,7 @@ SPQ_scales_FU2 %&gt;% dplyr::select(SPQ_1:SPQ_3) %&gt;% psych::alpha()</code></p
 ## SPQ_10 0.09 0.23 0.17 0.41 0.11    0
 ## SPQ_11 0.21 0.31 0.14 0.29 0.05    0</code></pre>
 <pre class="r"><code>SPQ_scores_FU2 = data.frame(ID = data_FU2$ID, spq_no_close_friends_FU2, spq_constricted_affect_FU2, spq_eccentric_behavior_FU2)</code></pre>
-<p>##Combining all of the schizotypy scores into one data frame</p>
+<p>Combining all of the schizotypy scores into one data frame</p>
 <pre class="r"><code>df_schizotypy_FU2 = cbind(MSS_scores_FU2, WSS_scores_FU2, SPQ_scores_FU2)
 
 positive_FU2 = df_schizotypy_FU2 %&gt;% dplyr::select(wss_magical_ideation_scores_FU2, wss_perceptual_aberration_score_FU2)
@@ -1275,12 +1260,8 @@ negative_FU2 = df_schizotypy_FU2 %&gt;% dplyr::select(wss_physical_anhedonia_sco
 disorganized_FU2 = df_schizotypy_FU2 %&gt;% dplyr::select(MSS_scores_FU2, spq_eccentric_behavior_FU2)
 
 schizotypy_df_organized_FU2 = cbind(ID = data_FU2$ID, positive_FU2, negative_FU2, disorganized_FU2)</code></pre>
-</div>
-<div
-id="sensory-sensitivity-only-visual-and-auditory-sensory-sensitivity-were-included"
-class="section level2">
-<h2>Sensory Sensitivity, only visual and auditory sensory sensitivity
-were included</h2>
+<p>Sensory Sensitivity, only visual and auditory sensory sensitivity
+were included in FU2.</p>
 <pre class="r"><code>SeSS_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;SeSS&quot;))
 data_FU2 %&gt;% dplyr::select(starts_with(&quot;SeSS&quot;)) %&gt;% psych::alpha()</code></pre>
 <pre><code>## 
@@ -1363,10 +1344,7 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;SeSS&quot;)) %&gt;% psych::alpha
 ## SeSS_19 0.19 0.28 0.22 0.20 0.11 0.00
 ## SeSS_20 0.51 0.31 0.11 0.03 0.03 0.00
 ## SeSS_21 0.21 0.22 0.23 0.19 0.16 0.01</code></pre>
-</div>
-</div>
-<div id="visual" class="section level1">
-<h1>visual</h1>
+<p>visual</p>
 <pre class="r"><code>SeSS_FU2 %&gt;% dplyr::select(SeSS_1:SeSS_10) %&gt;% psych::alpha()</code></pre>
 <pre><code>## 
 ## Reliability analysis   
@@ -1419,9 +1397,7 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;SeSS&quot;)) %&gt;% psych::alpha
 ## SeSS_9  0.34 0.36 0.20 0.06 0.05    0
 ## SeSS_10 0.03 0.07 0.17 0.35 0.38    0</code></pre>
 <pre class="r"><code>visual_score_FU2 = SeSS_FU2 %&gt;% dplyr::select(SeSS_1:SeSS_10) %&gt;% rowMeans(na.rm=T)</code></pre>
-</div>
-<div id="auditory" class="section level1">
-<h1>auditory</h1>
+<p>auditory</p>
 <pre class="r"><code>SeSS_FU2 %&gt;% dplyr::select(SeSS_11:SeSS_21) %&gt;% psych::alpha()</code></pre>
 <pre><code>## 
 ## Reliability analysis   
@@ -1477,11 +1453,8 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;SeSS&quot;)) %&gt;% psych::alpha
 <pre class="r"><code>SeSS_score_FU2 = data.frame(ID = data_FU2$ID,visual_score_FU2,auditory_score_FU2)
 ##Create a new column of overall sensory sensitivity 
 SeSS_score_FU2$SeSS_FU2 = SeSS_score_FU2 %&gt;% dplyr::select(-ID) %&gt;% rowMeans(na.rm=T)</code></pre>
-<div
-id="asi-abberrant-salience-inventory---increased-significance-subscale"
-class="section level2">
-<h2>ASI (abberrant salience inventory - increased significance
-subscale)</h2>
+<p>ASI (abberrant salience inventory - increased significance
+subscale)</p>
 <pre class="r"><code>data_FU2 %&gt;% dplyr::select(starts_with(&quot;ASI&quot;)) %&gt;% psych::alpha()</code></pre>
 <pre><code>## 
 ## Reliability analysis   
@@ -1526,7 +1499,7 @@ subscale)</h2>
 ## ASI_7  0.11 0.89 0.00</code></pre>
 <pre class="r"><code>ASI_score_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;ASI&quot;))  %&gt;% rowMeans(na.rm = T)
 ASI_df_FU2 = data.frame(ID = data_FU2$ID, ASI_score_FU2)</code></pre>
-<p>##REI (Rational/Experiential Inventory )</p>
+<p>REI (Rational/Experiential Inventory)</p>
 <pre class="r"><code>REI_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;REI&quot;))
 data_FU2 %&gt;% dplyr::select(starts_with(&quot;REI&quot;)) %&gt;% psych::alpha()</code></pre>
 <pre><code>## 
@@ -1579,7 +1552,7 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;REI&quot;)) %&gt;% psych::alpha(
 ## REI._9  0.02 0.07 0.23 0.47 0.22    0
 ## REI._10 0.02 0.09 0.13 0.48 0.27    0
 ## REI._11 0.03 0.10 0.23 0.43 0.22    0</code></pre>
-<p>##REI Need for Cognition (Rational)</p>
+<p>REI Need for Cognition (Rational)</p>
 <pre class="r"><code>REI_FU2 %&gt;% dplyr::select(REI._1:REI._6) %&gt;% psych::alpha()</code></pre>
 <pre><code>## 
 ## Reliability analysis   
@@ -1617,7 +1590,7 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;REI&quot;)) %&gt;% psych::alpha(
 ## REI._4 0.08 0.21 0.23 0.36 0.13    0
 ## REI._6 0.11 0.22 0.23 0.33 0.11    0</code></pre>
 <pre class="r"><code>REI_NFC_score_FU2 = REI_FU2 %&gt;% dplyr::select(REI._1:REI._6) %&gt;% rowMeans(na.rm=T)</code></pre>
-<p>##REI Faith in Intuition (Experiential)</p>
+<p>REI Faith in Intuition (Experiential)</p>
 <pre class="r"><code>REI_FU2 %&gt;% dplyr::select(REI._7:REI._11) %&gt;% psych::alpha()</code></pre>
 <pre><code>## 
 ## Reliability analysis   
@@ -1656,7 +1629,7 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;REI&quot;)) %&gt;% psych::alpha(
 ## REI._11 0.03 0.10 0.23 0.43 0.22    0</code></pre>
 <pre class="r"><code>REI_FI_score_FU2 = REI_FU2 %&gt;% dplyr::select(REI._7:REI._11) %&gt;% rowMeans(na.rm=T)</code></pre>
 <pre class="r"><code>REI_score_FU2 = data.frame(ID = data_FU2$ID, REI_NFC_score_FU2, REI_FI_score_FU2)</code></pre>
-<p>##Behavior Identification Form</p>
+<p>Behavior Identification Form</p>
 <pre class="r"><code>BIF_scores_FU2 = data_FU2 %&gt;% dplyr::select(starts_with(&quot;Q&quot;)) %&gt;% rowMeans(na.rm = T)
 BIF_FU2 = data.frame(ID = data_FU2$ID, BIF = BIF_scores_FU2)
 
@@ -1754,6 +1727,7 @@ data_FU2 %&gt;% dplyr::select(starts_with(&quot;Q&quot;)) %&gt;% psych::alpha()<
 
 
 complete_scores_FU2 = score_list_FU2%&gt;% reduce(full_join, by=&#39;ID&#39;)</code></pre>
+<p>Winsorize the scores to replace outliers</p>
 <pre class="r"><code>winsor = function(x){
   upper = mean(x, na.rm=T) + 3 * sd(x, na.rm=T)
   lower = mean(x, na.rm=T) - 3 * sd(x, na.rm=T)
@@ -1765,8 +1739,6 @@ complete_scores_FU2 = score_list_FU2%&gt;% reduce(full_join, by=&#39;ID&#39;)</c
 complete_scores_winsorized_FU2 = complete_scores_FU2 %&gt;% mutate(across(original_AQ_social_anhedonia_FU2:BIF, winsor))</code></pre>
 <pre class="r"><code>write.csv(complete_scores_FU2, &quot;complete scores FU2.csv&quot;)
 write.csv(complete_scores_winsorized_FU2, &quot;complete scores winsorzied FU2.csv&quot;)</code></pre>
-</div>
-</div>
 
 
 

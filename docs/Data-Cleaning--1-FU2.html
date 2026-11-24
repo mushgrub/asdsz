@@ -249,26 +249,31 @@ $(document).ready(function () {
 <li>
   <a href="about.html">About</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Follow Up 1
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="Data-Cleaning-FU1.html">Data Cleaning #1</a>
-    </li>
-    <li>
-      <a href="AQ-Factors-FU1.html">AQ Factors</a>
-    </li>
-    <li>
-      <a href="Data-Cleaning--2-FU1.html">Data Cleaning #2</a>
-    </li>
-    <li>
-      <a href="AQ-schizotypy-factor-analysis-FU1.html">AQ &amp; Schizotypy Factor Analysis</a>
-    </li>
-  </ul>
+<li class="dropdown-header">Follow Up 1</li>
+<li>
+  <a href="Data-Cleaning-FU1.html">Data Cleaning #1</a>
+</li>
+<li>
+  <a href="AQ-Factors-FU1.html">AQ Factors</a>
+</li>
+<li>
+  <a href="Data-Cleaning--2-FU1.html">Data Cleaning #2</a>
+</li>
+<li>
+  <a href="AQ-schizotypy-factor-analysis-FU1.html">AQ &amp; Schizotypy Factor Analysis</a>
+</li>
+<li class="dropdown-header">Follow Up 2</li>
+<li>
+  <a href="Data-Cleaning--1-FU2.html">Data Cleaning #1</a>
+</li>
+<li>
+  <a href="AQ-Factors-FU2.html">AQ Factors</a>
+</li>
+<li>
+  <a href="Data-Cleaning--2-FU2.html">Data Cleaning #2</a>
+</li>
+<li>
+  <a href="AQ-schizotypy-factor-analysis-FU2.html">AQ &amp; Schizotypy Factor Analysis</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -292,28 +297,26 @@ $(document).ready(function () {
 <pre class="r"><code>library(dplyr)
 getwd()</code></pre>
 <pre><code>## [1] &quot;C:/r_projects/Autism and Schizotypy/asdsz&quot;</code></pre>
-<pre class="r"><code>getwd()</code></pre>
-<pre><code>## [1] &quot;C:/r_projects/Autism and Schizotypy/asdsz&quot;</code></pre>
-<pre class="r"><code>data_originalFU2 = read.csv(&quot;C:/Users/laura/OneDrive/Documents/Autism and Schizotypy/Autism and Schizotypy/Schizotypy and Autism_FU2.csv&quot;)</code></pre>
-<pre class="r"><code>##create a data frame with all of the questions
-content_FU2 = data_originalFU2 %&gt;% dplyr::select(MSS._1:Q58)
+<pre class="r"><code>data_originalFU2 = read.csv(&quot;C:/r_projects/Autism and Schizotypy/asdsz/Schizotypy and Autism_FU2.csv&quot;)</code></pre>
+<p>Create a data frame with all of the questions</p>
+<pre class="r"><code>content_FU2 = data_originalFU2 %&gt;% dplyr::select(MSS._1:Q58)
 questions_FU2 &lt;- sapply(content_FU2[1, ], function(x) sub(&quot;^.*?- &quot;, &quot;&quot;, as.character(x)))
 
 df_FU2=as.data.frame(questions_FU2)
 
 write.csv(df_FU2, &quot;all questions_FU2.csv&quot;)</code></pre>
-<pre class="r"><code>##filter out folks without IDs, who did not consent, and who have been living in the US less than 2 years
-
-data_FU2 &lt;- data_originalFU2 %&gt;% dplyr::filter(ID != &quot;&quot;, consent1 != &quot;&quot;, US &gt;= 2)
-
-?filter
+<p>Filter out folks without IDs, who did not consent, and who have been
+living in the US less than 2 years.</p>
+<pre class="r"><code>data_FU2 &lt;- data_originalFU2 %&gt;% dplyr::filter(ID != &quot;&quot;, consent1 != &quot;&quot;, US &gt;= 2)
 
 ##remove unnecessary rows (first row)
 data_FU2 = data_FU2[-1,]
 
 ##and unnecessary columns so that only ID and survey questions remain ##need to add demos to a separate df
 data_FU2 = data_FU2 %&gt;% dplyr::select(-(StartDate:parent_edu), -PROLIFIC_PID)</code></pre>
-<p>Attention Check Items</p>
+<p>Attention Check Items. Only retain participants who passed 5
+attention check items and then remove the attention check columns so
+they are not counted in the data analysis.</p>
 <pre class="r"><code>question_FU2 = data_FU2[1,] %&gt;% as.vector() %&gt;% unlist() %&gt;% unname()
 name_FU2 = colnames(data_FU2)
 quest_df_FU2 = data.frame(question_FU2, name_FU2)
@@ -414,7 +417,7 @@ df_boolean_FU2 = data_attention_checked_FU2 %&gt;% dplyr::select(contains(c(&quo
 df_numeric_FU2 = data_attention_checked_FU2 %&gt;% dplyr::select(contains(c(&quot;SeSS&quot;, &quot;SPQ&quot;, &quot;AQ&quot;, &quot;Q&quot;, &quot;REI&quot;))) %&gt;% dplyr::mutate_all(as.integer)
 
 df_content_FU2 = cbind(ID = data_attention_checked_FU2$ID, df_boolean_FU2, df_numeric_FU2)</code></pre>
-<p>##Reverse score items</p>
+<p>Reverse score items</p>
 <pre class="r"><code>##checked using df_FU2 
 df_content_FU2$AQ._14 = 6 - df_content_FU2$AQ._14
 df_content_FU2$AQ._16 = 6 - df_content_FU2$AQ._16
