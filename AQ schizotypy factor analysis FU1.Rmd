@@ -292,3 +292,36 @@ correlation_mod = sem(correlation_syntax, data)
 summary(correlation_mod,fit.measures=T,standardized=TRUE)
 
 ```
+
+
+
+Finally, we look at the associations between all individual autism and schizotypy subscales with aberrant salience and sensory sensitivity.
+
+```{r}
+
+complete_scores <- read.csv("complete scores.csv")
+
+subscales <- complete_scores %>% dplyr::select(-X, -ID)
+
+correlation_matrix <- corr.test(subscales, use = "pairwise", method = "pearson")
+
+p_matrix <- correlation_matrix$p
+p_adj_matrix <- matrix(NA, nrow =  ncol(subscales), ncol = ncol(subscales))
+p_adj_matrix[lower.tri(p_adj_matrix)] <- p.adjust(p_matrix[lower.tri(p_matrix)], method = "fdr")
+
+stars <- ifelse(p_adj_matrix < .001, "***",
+         ifelse(p_adj_matrix < .01, "**",
+         ifelse(p_adj_matrix < .05, "*", "")))
+
+r_table <- matrix(
+  paste0(sprintf("%.2f", correlation_matrix$r), stars),
+  nrow = ncol(subscales),
+  dimnames = list(colnames(subscales), colnames(subscales))
+)
+
+r_table[upper.tri(r_table, diag = TRUE)] <- ""
+rownames(r_table) <- paste0(seq_len(nrow(r_table)), ". ", rownames(r_table))
+colnames(r_table) <- seq_len(ncol(r_table))
+
+kable(r_table, caption = "Correlation Matrix")
+```
